@@ -1,2 +1,2 @@
 # agile
-# andrew is a cool guy
+# andrew is the cool guy
