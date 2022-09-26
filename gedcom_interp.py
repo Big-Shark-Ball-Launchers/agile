@@ -2,6 +2,7 @@
 #I pledge my honor that I have abided by the Stevens Honor System
 import sys
 import datetime
+
 def isValidTag(tag):
     validTags = ["INDI", "NAME", "SEX", "BIRT", "DEAT", "FAMC", 
          "FAMS", "FAM", "MARR", "HUSB", "WIFE", "CHIL", "DIV", 
@@ -46,7 +47,8 @@ def addElement(entry, elem, level):
 def makeIndiAssumptions(indi):
     '''Fills in assumptions about the data. Such as missing death records, child/spouse records, etc.'''
     if not "DEAT" in indi:
-        indi["DEAT"] = "NA"
+        indi["DEAT DATE"] = "NA"
+        indi["DEAT"] = "N"
     if not "FAMC" in indi:
         indi["FAMC"] = "NA"
     if not "FAMS" in indi:
@@ -75,12 +77,20 @@ def timedeltaToYears(d):
 
 def calculateAge(indi):
     '''returns age of individual based on birth and death dates. If no death date, use current time.'''
-    if (indi["DEAT"] == "NA"):
+    if (indi["DEAT"] == "N"):
         end = datetime.datetime.now()
     else:
         end = gedStringToDatetime(indi["DEAT DATE"])
     indi['AGE'] =  timedeltaToYears(end - gedStringToDatetime(indi["BIRT DATE"]))
     return indi
+
+def dictListToPrettyTable(d):
+    '''converts a list of dictionarys to PrettyTable'''
+    from prettytable import PrettyTable
+    t = PrettyTable(d[0].keys())
+    for i in d:
+        t.add_row(i.values())
+    return t
 
 '''
 0 @I3@ INDI
@@ -159,6 +169,10 @@ def main():
         print(indi)
         print(len(fam))
         print(fam)
+        print(dictListToPrettyTable(indi))
+        print(dictListToPrettyTable(fam))
+        for i in indi:
+            print(len(i))
 
 if __name__ == "__main__":
     main()
