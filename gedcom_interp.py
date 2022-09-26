@@ -1,6 +1,7 @@
 #David Treder
 #I pledge my honor that I have abided by the Stevens Honor System
 import sys
+import datetime
 def isValidTag(tag):
     validTags = ["INDI", "NAME", "SEX", "BIRT", "DEAT", "FAMC", 
          "FAMS", "FAM", "MARR", "HUSB", "WIFE", "CHIL", "DIV", 
@@ -41,6 +42,45 @@ def addElement(entry, elem, level):
             entry[elem[1]] += [elem[2]]
     else:
         entry[elem[1]] = elem[2]
+
+def makeIndiAssumptions(indi):
+    '''Fills in assumptions about the data. Such as missing death records, child/spouse records, etc.'''
+    if not "DEAT" in indi:
+        indi["DEAT"] = "NA"
+    if not "FAMC" in indi:
+        indi["FAMC"] = "NA"
+    if not "FAMS" in indi:
+        indi["FAMS"] = "NA"
+    return indi
+
+def makeFamAssumptions(fam):
+    '''Fills in assumptions about the data. Such as missing DIV and CHIL records, etc.'''
+    if not "DIV" in fam:
+        fam["DIV"] = "NA"
+    if not "CHIL" in fam:
+        fam["CHIL"] = "NA"
+    return fam
+
+def gedStringToDatetime(s):
+    '''Converts a gedcom date string to a datetime object'''
+    return datetime.datetime.strptime(s, '%d %b %Y')
+
+def datetimeToString(d):
+    '''Converts a datetime object to a string in the format of a gedcom date'''
+    return d.strftime('%d %b %Y')
+
+def timedeltaToYears(d):
+    '''converts a timedelta object to years'''
+    return int(d.days/365.25)
+
+def calculateAge(indi):
+    '''returns age of individual based on birth and death dates. If no death date, use current time.'''
+    if (indi["DEAT"] == "NA"):
+        end = datetime.datetime.now()
+    else:
+        end = gedStringToDatetime(indi["DEAT DATE"])
+    indi['AGE'] =  timedeltaToYears(end - gedStringToDatetime(indi["BIRT DATE"]))
+    return indi
 
 '''
 0 @I3@ INDI
@@ -111,6 +151,10 @@ def main():
 
 
             print(f'<-- {l[0]}|{l[1]}|{valid}|{l[2]}')
+        indi = [makeIndiAssumptions(i) for i in indi]
+        fam = [makeFamAssumptions(f) for f in fam]
+
+        indi = [calculateAge(i) for i in indi]
         print(len(indi))
         print(indi)
         print(len(fam))
