@@ -34,12 +34,11 @@ def addElement(entry, elem, level):
         entry[s] = elem[2]
     elif (elem[1] == "BIRT"):
         pass
-    elif (elem[1]=="CHIL"):
-        if not "CHIL" in entry:
+    elif (elem[1]=="CHIL" or elem[1]=="FAMS" or elem[1]=="FAMC"):
+        if not elem[1] in entry:
             entry[elem[1]] = [elem[2]]
         else:
             entry[elem[1]] += [elem[2]]
-    
     else:
         entry[elem[1]] = elem[2]
 
