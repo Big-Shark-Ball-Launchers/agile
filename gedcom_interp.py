@@ -34,7 +34,7 @@ def addElement(entry, elem, level):
     if (level[2] == "DATE"):
         s = level[1] + " " + level[2]
         entry[s] = elem[2]
-    elif (elem[1] == "BIRT"):
+    elif (elem[1] == "BIRT" or elem[1] == "MARR"):
         pass
     elif (elem[1]=="CHIL" or elem[1]=="FAMS" or elem[1]=="FAMC"):
         if not elem[1] in entry:
