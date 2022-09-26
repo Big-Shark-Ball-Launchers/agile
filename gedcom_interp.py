@@ -22,18 +22,26 @@ def formatLine(s):
     return [level, tag, args]
 
 def addElement(entry, elem, level):
-    if (level[2] == "DATE"):
-        s = level[1] + " " + level[2]
-        entry[s] = elem[2]
+    key = ""
+    value = ""
+    if (level[2] == "DATE" and (level[1] == "BIRT" or level[1] == "DEAT" or level[1] == "MARR" or level[1] == "DIV")):
+        key = level[1] + " " + level[2]
+        value = elem[2]
     elif (elem[1] == "BIRT" or elem[1] == "MARR"):
-        pass
+        return
     elif (elem[1]=="CHIL" or elem[1]=="FAMS" or elem[1]=="FAMC"):
         if not elem[1] in entry:
-            entry[elem[1]] = [elem[2]]
+            key = elem[1]
+            value = [elem[2]]
         else:
-            entry[elem[1]] += [elem[2]]
+            key = elem[1]
+            value = entry[elem[1]] + [elem[2]]
     else:
-        entry[elem[1]] = elem[2]
+        key = elem[1]
+        value = elem[2]
+
+    if key != "":
+        entry[key] = value
 
 def makeIndiAssumptions(indi):
     '''Fills in assumptions about the data.'''
@@ -48,7 +56,10 @@ def makeFamAssumptions(fam, indi):
 
 def gedStringToDatetime(s):
     '''Converts a gedcom date string to a datetime object'''
-    return datetime.datetime.strptime(s, '%d %b %Y')
+    try:
+        return datetime.datetime.strptime(s, '%d %b %Y')
+    except ValueError:
+        return datetime.datetime(1,1,1) #default in case of error
 
 def datetimeToString(d):
     '''Converts a datetime object to a string in the format of a gedcom date'''
@@ -156,7 +167,6 @@ def main():
             print(f'<-- {l[0]}|{l[1]}|{valid}|{l[2]}')
         indi = [makeIndiAssumptions(i) for i in indi]
         fam = [makeFamAssumptions(f, indi) for f in fam]
-
         print(dictListToPrettyTable(sorted(indi, key = lambda x: x["INDI"])))
         print(dictListToPrettyTable(sorted(fam, key = lambda x: x["FAM"])))
 
