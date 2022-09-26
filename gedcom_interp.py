@@ -45,26 +45,14 @@ def addElement(entry, elem, level):
         entry[elem[1]] = elem[2]
 
 def makeIndiAssumptions(indi):
-    '''Fills in assumptions about the data. Such as missing death records, child/spouse records, etc.'''
-    if not "DEAT" in indi:
-        indi["DEAT DATE"] = "NA"
-        indi["DEAT"] = "N"
-    if not "FAMC" in indi:
-        indi["FAMC"] = "NA"
-    if not "FAMS" in indi:
-        indi["FAMS"] = "NA"
+    '''Fills in assumptions about the data.'''
+    indi["AGE"] = calculateAge(indi)
     return indi
 
 def makeFamAssumptions(fam, indi):
-    '''Fills in assumptions about the data. Such as missing DIV and CHIL records, etc.'''
-    if not "DIV" in fam:
-        fam["DIV"] = "NA"
-    if not "CHIL" in fam:
-        fam["CHIL"] = "NA"
-    if not "HUSB NAME" in fam:
-        fam["HUSB NAME"] = indiIDtoName(indi, fam["HUSB"])
-    if not "WIFE NAME" in fam:
-        fam["WIFE NAME"] = indiIDtoName(indi, fam["WIFE"])
+    '''Fills in assumptions about the data.'''
+    fam["HUSB NAME"] = indiIDtoName(indi, fam["HUSB"])
+    fam["WIFE NAME"] = indiIDtoName(indi, fam["WIFE"])
     return fam
 
 def gedStringToDatetime(s):
@@ -85,8 +73,8 @@ def calculateAge(indi):
         end = datetime.datetime.now()
     else:
         end = gedStringToDatetime(indi["DEAT DATE"])
-    indi['AGE'] =  timedeltaToYears(end - gedStringToDatetime(indi["BIRT DATE"]))
-    return indi
+    return timedeltaToYears(end - gedStringToDatetime(indi["BIRT DATE"]))
+    # return indi
 
 def dictListToPrettyTable(d):
     '''converts a list of dictionarys to PrettyTable'''
@@ -103,20 +91,33 @@ def indiIDtoName(indi, id):
             return i["NAME"]
     return "NA"
 
-'''
-0 @I3@ INDI
-1 NAME Joe /Williams/
-2 SURN Williams
-2 GIVN Joe
-1 SEX M
-1 BIRT
-2 DATE 11 Jun 1861
-2 PLAC Idaho Falls, Bonneville, Idaho, United States of America
-1 FAMC @F1@
-1 FAMC @F2@
-2 PEDI adopted
-1 ADOP 
-2 DATE 16 Mar 1864'''
+def defaultIndi():
+    '''returns a default individual dictionary'''
+    return {
+        "INDI": "NA",
+        "NAME": "NA",
+        "SEX": "NA",
+        "BIRT DATE": "NA",
+        "AGE": 0,
+        "DEAT": "N",
+        "DEAT DATE": "NA",
+        "FAMC": [],
+        "FAMS": []
+    }
+
+def defaultFam():
+    '''returns a default family dictionary'''
+    return {
+        "FAM": "NA",
+        "MARR DATE": "NA",
+        "DIV": "NA",
+        "HUSB": "NA",
+        "HUSB NAME": "NA",
+        "WIFE": "NA",
+        "WIFE NAME": "NA",
+        "CHIL": []
+    }
+
 
 def main():
     if (len(sys.argv) <= 1):
@@ -157,7 +158,7 @@ def main():
                         fam.append(curr)
                 if ((l[1] == 'INDI' or l[1] == 'FAM') and l[0] == 0):
                     print(1)
-                    curr = {}
+                    curr = defaultIndi() if l[1] == 'INDI' else defaultFam()
                     addElement(curr, l, level)
                     print("curr")
                     print(curr)
@@ -175,7 +176,7 @@ def main():
         indi = [makeIndiAssumptions(i) for i in indi]
         fam = [makeFamAssumptions(f, indi) for f in fam]
 
-        indi = [calculateAge(i) for i in indi]
+        # indi = [calculateAge(i) for i in indi]
         print(len(indi))
         print(indi)
         print(len(fam))
