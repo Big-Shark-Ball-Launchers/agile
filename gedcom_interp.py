@@ -1,5 +1,7 @@
-#David Treder
+#https://github.com/Big-Shark-Ball-Launchers/agile
+#David Treder, Tyler Seliber, Andrew Capro
 #I pledge my honor that I have abided by the Stevens Honor System
+
 import sys
 import datetime
 
