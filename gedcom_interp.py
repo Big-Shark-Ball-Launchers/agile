@@ -62,7 +62,10 @@ def main():
                 #if tag is valid, check if INDI or FAM to save the information
                 if ((l[1] == 'INDI' or l[1] == 'FAM') and l[0] == 0):
                     print(1)
-                    curr = addElement({}, l)
+                    curr = {}
+                    addElement(curr, l)
+                    print("curr")
+                    print(curr)
                 if (indiFlag or famFlag) and l[0] == 0:
                     print(2)
                     #if we reach the end of an individual or family, add it to the list
