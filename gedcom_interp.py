@@ -3,7 +3,7 @@
 import sys
 def isValidTag(tag):
     validTags = ["INDI", "NAME", "SEX", "BIRT", "DEAT", "FAMC", 
-         "FAMS", "FAM", "MARR", "HUBS", "WIFE", "CHIL", "DIV", 
+         "FAMS", "FAM", "MARR", "HUSB", "WIFE", "CHIL", "DIV", 
          "DATE", "HEAD", "TRLR", "NOTE"]
     return tag in validTags
 
@@ -100,13 +100,6 @@ def main():
                     addElement(curr, l, level)
                     print("curr")
                     print(curr)
-                if (indiFlag or famFlag) and l[0] == 0:
-                    print(2)
-                    #if we reach the end of an individual or family, add it to the list
-                    if (indiFlag):
-                        indi.append(curr)
-                    else:
-                        fam.append(curr)
                 if (l[0] == 0):
                     print(3)
                     indiFlag = True if l[1] == 'INDI' else False
@@ -118,7 +111,9 @@ def main():
 
 
             print(f'<-- {l[0]}|{l[1]}|{valid}|{l[2]}')
+        print(len(indi))
         print(indi)
+        print(len(fam))
         print(fam)
 
 if __name__ == "__main__":
