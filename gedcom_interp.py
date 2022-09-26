@@ -9,21 +9,36 @@ def isValidTag(tag):
 
 def formatLine(s):
     '''Returns list in format [level, tag, arguments]'''
+    print("formatting")
     l = s.split()
     if (len(l) < 2):
         return [0, 'ERROR', '']
-    level = l[0]
+    level = int(l[0])
     tag = l[1]
     args = ' '.join(l[2:])
-    if ('INDI' in s) or ('FAM' in s):
-        return [int(level), args, tag] #edge cases for INDI and FAM mean that the third element in s is the tag
-    return [int(level), tag, args]
+    print(level)
+    print(tag)
+    print(args)
+    if level == 0 and (args == "FAM" or args == "INDI"):
+        print("special case")
+        return [level, args, tag] #edge cases for INDI and FAM mean that the third element in s is the tag
+    return [level, tag, args]
 
-def addElement(entry, elem):
+def addElement(entry, elem, level):
     #todo add special cases
+    print("Adding element")
     print(entry)
     print(elem)
-    entry[elem[1]] = elem[2]
+    if (level[2] == "DATE"):
+        s = level[1] + " " + level[2]
+        entry[s] = elem[2]
+    elif (elem[1]=="CHIL"):
+        if not "CHIL" in entry:
+            entry[elem[1]] = [elem[2]]
+        else:
+            entry[elem[1]] += [elem[2]]
+    else:
+        entry[elem[1]] = elem[2]
 
 '''
 0 @I3@ INDI
@@ -42,7 +57,7 @@ def addElement(entry, elem):
 
 def main():
     if (len(sys.argv) <= 1):
-        filename = 'gedcom.ged' #default file path
+        filename = 'My-Family-25-Sep-2022-221241779.ged' #default file path
     else:
         filename = sys.argv[1]
 
@@ -50,27 +65,37 @@ def main():
     fam = []
     #keeps track of the tag of levels
     level = []
+    indiFlag = False
+    famFlag = False
     with open(filename, 'r') as f:
-        indiFlag = False
-        famFlag = False
+   
         for line in f:
             print(f'--> {line}', end='')
             l = formatLine(line)
             valid = 'Y' if isValidTag(l[1]) else 'N'
             if isValidTag(l[1]):
-                print(l)
+                
                 #if tag is valid, check if INDI or FAM to save the information
                 if (l[0] == 0):
                     level = [l[1], None, None]
                 if (l[0] == 1):
-                    level[1] = l[1]
+                    level = [level[0], l[1], None]
                 if (l[0] == 2):
-                    level[2] = l[1]
-
+                    level = [level[0], level[1], l[1]]
+                print("--")
+                print(l)
+                print(level)
+                if (indiFlag or famFlag) and l[0] == 0:
+                    print(2)
+                    #if we reach the end of an individual or family, add it to the list
+                    if (indiFlag):
+                        indi.append(curr)
+                    else:
+                        fam.append(curr)
                 if ((l[1] == 'INDI' or l[1] == 'FAM') and l[0] == 0):
                     print(1)
                     curr = {}
-                    addElement(curr, l)
+                    addElement(curr, l, level)
                     print("curr")
                     print(curr)
                 if (indiFlag or famFlag) and l[0] == 0:
@@ -86,7 +111,7 @@ def main():
                     famFlag = True if l[1] == 'FAM' else False
                 if indiFlag or famFlag:
                     print(4)
-                    addElement(curr, l)
+                    addElement(curr, l, level)
                 
 
 
