@@ -55,12 +55,16 @@ def makeIndiAssumptions(indi):
         indi["FAMS"] = "NA"
     return indi
 
-def makeFamAssumptions(fam):
+def makeFamAssumptions(fam, indi):
     '''Fills in assumptions about the data. Such as missing DIV and CHIL records, etc.'''
     if not "DIV" in fam:
         fam["DIV"] = "NA"
     if not "CHIL" in fam:
         fam["CHIL"] = "NA"
+    if not "HUSB NAME" in fam:
+        fam["HUSB NAME"] = indiIDtoName(indi, fam["HUSB"])
+    if not "WIFE NAME" in fam:
+        fam["WIFE NAME"] = indiIDtoName(indi, fam["WIFE"])
     return fam
 
 def gedStringToDatetime(s):
@@ -91,6 +95,13 @@ def dictListToPrettyTable(d):
     for i in d:
         t.add_row(i.values())
     return t
+
+def indiIDtoName(indi, id):
+    '''returns name of individual based on their id'''
+    for i in indi:
+        if i["INDI"] == id:
+            return i["NAME"]
+    return "NA"
 
 '''
 0 @I3@ INDI
@@ -162,7 +173,7 @@ def main():
 
             print(f'<-- {l[0]}|{l[1]}|{valid}|{l[2]}')
         indi = [makeIndiAssumptions(i) for i in indi]
-        fam = [makeFamAssumptions(f) for f in fam]
+        fam = [makeFamAssumptions(f, indi) for f in fam]
 
         indi = [calculateAge(i) for i in indi]
         print(len(indi))
