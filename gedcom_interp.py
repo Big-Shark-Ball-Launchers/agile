@@ -46,10 +46,10 @@ def main():
     else:
         filename = sys.argv[1]
 
-    #list of individuals with format: [id, name, gender, birthday, age, alive, death, child, spouse]
     indi = []
-    #list of families with format: [id, married, divorced, husband id, husband name, wife id, wife name, children]
     fam = []
+    #keeps track of the tag of levels
+    level = []
     with open(filename, 'r') as f:
         indiFlag = False
         famFlag = False
@@ -60,6 +60,13 @@ def main():
             if isValidTag(l[1]):
                 print(l)
                 #if tag is valid, check if INDI or FAM to save the information
+                if (l[0] == 0):
+                    level = [l[1], None, None]
+                if (l[0] == 1):
+                    level[1] = l[1]
+                if (l[0] == 2):
+                    level[2] = l[1]
+
                 if ((l[1] == 'INDI' or l[1] == 'FAM') and l[0] == 0):
                     print(1)
                     curr = {}
