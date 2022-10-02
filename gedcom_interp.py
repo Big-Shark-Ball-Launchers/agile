@@ -4,6 +4,7 @@
 
 import sys
 import datetime
+from user_stories import stories
 
 def isValidTag(tag):
     validTags = ["INDI", "NAME", "SEX", "BIRT", "DEAT", "FAMC", 
@@ -122,6 +123,11 @@ def defaultFam():
         "CHIL": []
     }
 
+def displayAnomaly(storyKey, **kwargs):
+    '''prints a formatted error/anomaly message'''
+    anomalyString = stories[storyKey]
+    formattedAnaomalyString = anomalyString.format(**kwargs, story=storyKey)
+    print(formattedAnaomalyString)
 
 def main():
     if (len(sys.argv) <= 1):
@@ -171,6 +177,7 @@ def main():
         fam = [makeFamAssumptions(f, indi) for f in fam]
         print(dictListToPrettyTable(sorted(indi, key = lambda x: x["INDI"])))
         print(dictListToPrettyTable(sorted(fam, key = lambda x: x["FAM"])))
+
 
 if __name__ == "__main__":
     main()
