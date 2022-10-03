@@ -178,6 +178,17 @@ def main():
         print(dictListToPrettyTable(sorted(indi, key = lambda x: x["INDI"])))
         print(dictListToPrettyTable(sorted(fam, key = lambda x: x["FAM"])))
 
+        # Loop through each individual and family to check for errors/anomalies
+        for i in indi:
+            # Template
+            if (False):
+                displayAnomaly('USXX', indi=i["INDI"])
+
+        for f in fam:
+            # Template
+            if (False):
+                displayAnomaly('USXX', fam=f["FAM"])
+
 
 if __name__ == "__main__":
     main()
