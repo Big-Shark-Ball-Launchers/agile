@@ -68,7 +68,7 @@ class gedcom_tests(unittest.TestCase):
         1 DIV
         2 DATE 14 FEB 1970
         0 TRLR'''
-        expectedOutput = "ERROR: FAMILY: US04: @F1@: Divorce date 14 FEB 1970 occurs before marriage date 14 FEB 1980"
+        expectedOutput = "ERROR: US04: FAM @F1@: Divorce date 14 FEB 1970 occurs before marriage date 14 FEB 1980"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
         
 
