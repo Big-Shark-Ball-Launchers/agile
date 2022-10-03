@@ -194,11 +194,24 @@ def main():
             # Template
             if (False):
                 displayAnomaly('USXX', indi=i["INDI"])
+            # US03
+            if(i["AGE"] > 0):
+                displayAnomaly("US03", id = i["INDI"], dDate = i["DEAT DATE"], bDate = i["BIRT DATE"])
 
         for f in fam:
             # Template
             if (False):
                 displayAnomaly('USXX', fam=f["FAM"])
+            # US02
+            husb = f["HUSB"]
+            wife = f["WIFE"]
+            husbIndi = findIndi(husb, indi)
+            wifeIndi = findIndi(wife, indi)
+            if(timedeltaToYears(gedStringToDatetime(f["MARR DATE"]) - gedStringToDatetime(husbIndi["BIRT DATE"])) < 0):
+                displayAnomaly("US02", id = husbIndi["INDI"], mDate = f["MARR DATE"], bDate = husbIndi["BIRT DATE"])
+            if(timedeltaToYears(gedStringToDatetime(f["MARR DATE"]) - gedStringToDatetime(wifeIndi["BIRT DATE"])) < 0):
+                displayAnomaly("US02", id = wifeIndi["INDI"], mDate = f["MARR DATE"], bDate = wifeIndi["BIRT DATE"])
+
 
 
 if __name__ == "__main__":
