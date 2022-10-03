@@ -21,6 +21,7 @@ class gedcom_tests(unittest.TestCase):
                     gi.main()
                     f(expected_output, fake_out.getvalue())
 
+    # Example test. Use as a template. Should always pass.
     def testexample(self):
         testFile = '''0 NOTE https://github.com/Big-Shark-Ball-Launchers/agile
         0 HEAD
