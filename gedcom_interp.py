@@ -204,6 +204,7 @@ def main():
                 displayAnomaly("US03", id = i["INDI"], dDate = i["DEAT DATE"], bDate = i["BIRT DATE"])
 
         for f in fam:
+        
             # US01
             if (f["MARR DATE"] != "NA" and gedStringToDatetime(f["MARR DATE"]) > currentDate):
                 displayAnomaly("US01", id=f["FAM"], date=f["MARR DATE"], dateType="MARR", currentDate=datetimeToString(currentDate))
@@ -219,6 +220,13 @@ def main():
                 displayAnomaly("US02", id = husbIndi["INDI"], mDate = f["MARR DATE"], bDate = husbIndi["BIRT DATE"])
             if(timedeltaToYears(gedStringToDatetime(f["MARR DATE"]) - gedStringToDatetime(wifeIndi["BIRT DATE"])) < 0):
                 displayAnomaly("US02", id = wifeIndi["INDI"], mDate = f["MARR DATE"], bDate = wifeIndi["BIRT DATE"])
+                
+            # US06 Divorce before death
+            divDate = gedStringToDatetime(f["DIV DATE"])
+            husbDeathDate = findIndi(f["HUSB"], indi)["DEAT DATE"]
+            wifeDeathDate = findIndi(f["WIFE"], indi)["DEAT DATE"]
+            if (divDate != "NA" and (husbDeathDate != "NA" and divDate > gedStringToDatetime(husbDeathDate)) or (wifeDeathDate != "NA" and divDate > gedStringToDatetime(wifeDeathDate))):
+                displayAnomaly('US06', id=f["FAM"])
 
 if __name__ == "__main__":
     main()
