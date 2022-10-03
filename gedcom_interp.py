@@ -115,7 +115,6 @@ def defaultFam():
     return {
         "FAM": "NA",
         "MARR DATE": "NA",
-        "DIV": "NA",
         "DIV DATE": "NA",
         "HUSB": "NA",
         "HUSB NAME": "NA",
@@ -209,7 +208,7 @@ def main():
             if (f["MARR DATE"] != "NA" and gedStringToDatetime(f["MARR DATE"]) > currentDate):
                 displayAnomaly("US01", id=f["FAM"], date=f["MARR DATE"], dateType="MARR", currentDate=datetimeToString(currentDate))
             if (f["DIV DATE"] != "NA" and gedStringToDatetime(f["DIV DATE"]) > currentDate):
-                displayAnomaly("US01", id=f["INDI"], date=f["DIV DATE"], dateType="DIV", currentDate=datetimeToString(currentDate))
+                displayAnomaly("US01", id=f["FAM"], date=f["DIV DATE"], dateType="DIV", currentDate=datetimeToString(currentDate))
                 
             # US02
             husb = f["HUSB"]
