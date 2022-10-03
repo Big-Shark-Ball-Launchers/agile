@@ -9,6 +9,10 @@ import gedcom_interp as gi
 
 class gedcom_tests(unittest.TestCase):
 
+    # Function to help with testing.
+    # Automatically creates a temporary file with the given contents, 
+    # passes the file to the main program, and runs the passeed assertion 
+    # with the expected output.
     def run_gedcom_test(self, gedcom_file, expected_output, f):
         '''gedcom_file is a string containing the gedcom file to be tested.
             expected_output is a string containing the expected output.
