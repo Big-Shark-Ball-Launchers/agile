@@ -220,7 +220,12 @@ def main():
                 displayAnomaly("US02", id = husbIndi["INDI"], mDate = f["MARR DATE"], bDate = husbIndi["BIRT DATE"])
             if(timedeltaToYears(gedStringToDatetime(f["MARR DATE"]) - gedStringToDatetime(wifeIndi["BIRT DATE"])) < 0):
                 displayAnomaly("US02", id = wifeIndi["INDI"], mDate = f["MARR DATE"], bDate = wifeIndi["BIRT DATE"])
-                
+            
+            # US04
+            if(f["DIV DATE"] != "NA"):
+                if(timedeltaToYears(gedStringToDatetime(f["DIV DATE"]) - gedStringToDatetime(f["MARR DATE"])) < 0):
+                    displayAnomaly("US04", id = f["FAM"], mDate = f["MARR DATE"], dDate = f["DIV DATE"])
+            
             # US06 Divorce before death
             divDate = gedStringToDatetime(f["DIV DATE"])
             husbDeathDate = findIndi(f["HUSB"], indi)["DEAT DATE"]
