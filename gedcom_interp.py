@@ -116,6 +116,7 @@ def defaultFam():
         "FAM": "NA",
         "MARR DATE": "NA",
         "DIV": "NA",
+        "DIV DATE": "NA",
         "HUSB": "NA",
         "HUSB NAME": "NA",
         "WIFE": "NA",
