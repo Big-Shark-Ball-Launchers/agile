@@ -48,6 +48,7 @@ class gedcom_tests(unittest.TestCase):
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
     def testUS04_1(self):
+        # Normal situation where error should occur
         testFile = '''
         0 HEAD
         0 @I1@ INDI
@@ -70,7 +71,105 @@ class gedcom_tests(unittest.TestCase):
         0 TRLR'''
         expectedOutput = "ERROR: US04: FAM @F1@: Divorce date 14 FEB 1970 occurs before marriage date 14 FEB 1980"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
-        
+
+    def testUS04_2(self):
+        #Marriage and divorce on the same day is strange, but not impossible.
+        testFile = '''
+        0 HEAD
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        2 GIVN Dick
+        2 SURN Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMC @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 CHIL @I1@
+        1 CHIL @I4@
+        1 MARR
+        2 DATE 14 FEB 1980
+        1 DIV
+        2 DATE 14 FEB 1980
+        0 TRLR'''
+        expectedOutput = "US04"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    def testUS04_3(self):
+        # Normal situation where error should not occur
+        testFile = '''
+        0 HEAD
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        2 GIVN Dick
+        2 SURN Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMC @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 CHIL @I1@
+        1 CHIL @I4@
+        1 MARR
+        2 DATE 14 FEB 1980
+        1 DIV
+        2 DATE 20 JUN 1990
+        0 TRLR'''
+        expectedOutput = "US04"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    def testUS04_4(self):
+        # Divorce date missing. Should assume not divorced and not error.
+        testFile = '''
+        0 HEAD
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        2 GIVN Dick
+        2 SURN Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMC @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 CHIL @I1@
+        1 CHIL @I4@
+        1 MARR
+        2 DATE 14 FEB 1980
+        0 TRLR'''
+        expectedOutput = "US04"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+    
+    def testUS04_5(self):
+        # weird dates, error should occur
+        testFile = '''
+        0 HEAD
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        2 GIVN Dick
+        2 SURN Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMC @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 CHIL @I1@
+        1 CHIL @I4@
+        1 MARR
+        2 DATE 14 JUN 2300
+        1 DIV
+        2 DATE 21 JAN 2200
+        0 TRLR'''
+        expectedOutput = "ERROR: US04: FAM @F1@: Divorce date 21 JAN 2200 occurs before marriage date 14 JUN 2300"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
 
 if __name__ == '__main__':
     unittest.main()
