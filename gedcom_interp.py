@@ -66,7 +66,7 @@ def gedStringToDatetime(s):
 
 def datetimeToString(d):
     '''Converts a datetime object to a string in the format of a gedcom date'''
-    return d.strftime('%d %b %Y')
+    return d.strftime('%d %b %Y').upper()
 
 def timedeltaToYears(d):
     '''converts a timedelta object to years'''
@@ -191,20 +191,42 @@ def main():
 
         # Loop through each individual and family to check for errors/anomalies
         for i in indi:
-            # Template
-            if (False):
-                displayAnomaly('USXX', indi=i["INDI"])
+
+            # US01
+            currentDate = datetime.datetime.now()
+            if (i["BIRT DATE"] != "NA" and gedStringToDatetime(i["BIRT DATE"]) > currentDate):
+                displayAnomaly("US01", id=i["INDI"], date=i["BIRT DATE"], dateType="BIRT", currentDate=datetimeToString(currentDate))
+            if (i["DEAT DATE"] != "NA" and gedStringToDatetime(i["DEAT DATE"]) > currentDate):
+                displayAnomaly("US01", id=i["INDI"], date=i["DEAT DATE"], dateType="DEAT", currentDate=datetimeToString(currentDate))
+                
+            # US03
+            if(i["AGE"] > 0):
+                displayAnomaly("US03", id = i["INDI"], dDate = i["DEAT DATE"], bDate = i["BIRT DATE"])
 
         for f in fam:
+        
+            # US01
+            if (f["MARR DATE"] != "NA" and gedStringToDatetime(f["MARR DATE"]) > currentDate):
+                displayAnomaly("US01", id=f["FAM"], date=f["MARR DATE"], dateType="MARR", currentDate=datetimeToString(currentDate))
+            if (f["DIV DATE"] != "NA" and gedStringToDatetime(f["DIV DATE"]) > currentDate):
+                displayAnomaly("US01", id=f["INDI"], date=f["DIV DATE"], dateType="DIV", currentDate=datetimeToString(currentDate))
+                
+            # US02
+            husb = f["HUSB"]
+            wife = f["WIFE"]
+            husbIndi = findIndi(husb, indi)
+            wifeIndi = findIndi(wife, indi)
+            if(timedeltaToYears(gedStringToDatetime(f["MARR DATE"]) - gedStringToDatetime(husbIndi["BIRT DATE"])) < 0):
+                displayAnomaly("US02", id = husbIndi["INDI"], mDate = f["MARR DATE"], bDate = husbIndi["BIRT DATE"])
+            if(timedeltaToYears(gedStringToDatetime(f["MARR DATE"]) - gedStringToDatetime(wifeIndi["BIRT DATE"])) < 0):
+                displayAnomaly("US02", id = wifeIndi["INDI"], mDate = f["MARR DATE"], bDate = wifeIndi["BIRT DATE"])
+                
             # US06 Divorce before death
             divDate = gedStringToDatetime(f["DIV DATE"])
             husbDeathDate = findIndi(f["HUSB"], indi)["DEAT DATE"]
             wifeDeathDate = findIndi(f["WIFE"], indi)["DEAT DATE"]
             if (divDate != "NA" and (husbDeathDate != "NA" and divDate > gedStringToDatetime(husbDeathDate)) or (wifeDeathDate != "NA" and divDate > gedStringToDatetime(wifeDeathDate))):
                 displayAnomaly('US06', id=f["FAM"])
-
-
-
 
 if __name__ == "__main__":
     main()
