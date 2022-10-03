@@ -4,7 +4,7 @@ stories = {
     "US03": "",
     "US04": "",
     "US05": "ERROR: {story}",
-    "US06": "",
+    "US06": "ERROR: {story}: INDI/FAM {id}: Divorce can only occur before death of both spouses",
     "US07": "",
     "US08": "",
     "US09": "",

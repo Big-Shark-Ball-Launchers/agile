@@ -196,9 +196,14 @@ def main():
                 displayAnomaly('USXX', indi=i["INDI"])
 
         for f in fam:
-            # Template
-            if (False):
-                displayAnomaly('USXX', fam=f["FAM"])
+            # US06 Divorce before death
+            divDate = gedStringToDatetime(f["DIV DATE"])
+            husbDeathDate = findIndi(f["HUSB"], indi)["DEAT DATE"]
+            wifeDeathDate = findIndi(f["WIFE"], indi)["DEAT DATE"]
+            if (divDate != "NA" and (husbDeathDate != "NA" and divDate > gedStringToDatetime(husbDeathDate)) or (wifeDeathDate != "NA" and divDate > gedStringToDatetime(wifeDeathDate))):
+                displayAnomaly('US06', id=f["FAM"])
+
+
 
 
 if __name__ == "__main__":
