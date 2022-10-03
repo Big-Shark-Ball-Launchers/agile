@@ -52,6 +52,7 @@ class gedcom_tests(unittest.TestCase):
         expectedOutput = 'MARR'
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
+    #US04 tests (Marriage before divorce)
     def testUS04_1(self):
         # Normal situation where error should occur
         testFile = '''
@@ -173,6 +174,156 @@ class gedcom_tests(unittest.TestCase):
         2 DATE 21 JAN 2200
         0 TRLR'''
         expectedOutput = "ERROR: US04: FAM @F1@: Divorce date 21 JAN 2200 occurs before marriage date 14 JUN 2300"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+    
+    #US05 Tests (marriage before death)
+    def testUS05_1(self):
+        # both members are alive. No error should occur.
+        testFile = '''
+        0 HEAD
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMS @F1@
+
+        0 @I1@ INDI
+        1 NAME Mary /Smith/
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMS @F1@
+        
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 JUN 2000
+        0 TRLR'''
+        expectedOutput = "US05"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    def testUS05_2(self):
+        # both members are dead. Error should not occur.
+        testFile = '''
+        0 HEAD
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 DEAT
+        2 DATE 13 MAR 2000
+        1 FAMS @F1@
+
+        0 @I1@ INDI
+        1 NAME Mary /Smith/
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 DEAT
+        2 DATE 20 FEB 1999
+        1 FAMS @F1@
+        
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 JUN 1998
+        0 TRLR'''
+        expectedOutput = "US05"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    def testUS05_3(self):
+        # both members are dead. Error should occur.
+        testFile = '''
+        0 HEAD
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 DEAT
+        2 DATE 13 MAR 2000
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary /Smith/
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 DEAT
+        2 DATE 20 FEB 1999
+        1 FAMS @F1@
+        
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 JUN 2002
+        0 TRLR'''
+        expectedOutput = "ERROR: US05: FAM @F1@: Marriage date 14 JUN 2002 occurs after death of one or both spouses"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+    
+    def testUS05_4(self):
+        # both members dead. Only one is erroneous. Error should occur.
+        testFile = '''
+        0 HEAD
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 DEAT
+        2 DATE 13 MAR 2004
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary /Smith/
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 DEAT
+        2 DATE 20 FEB 1999
+        1 FAMS @F1@
+        
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 JUN 2002
+        0 TRLR'''
+        expectedOutput = "ERROR: US05: FAM @F1@: Marriage date 14 JUN 2002 occurs after death of one or both spouses"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+    
+    def testUS05_5(self):
+        # one member dead. Error should occur.
+        testFile = '''
+        0 HEAD
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 DEAT
+        2 DATE 13 MAR 2000
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary /Smith/
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMS @F1@
+        
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 JUN 2002
+        0 TRLR'''
+        expectedOutput = "ERROR: US05: FAM @F1@: Marriage date 14 JUN 2002 occurs after death of one or both spouses"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
 
