@@ -216,21 +216,21 @@ def main():
             wife = f["WIFE"]
             husbIndi = findIndi(husb, indi)
             wifeIndi = findIndi(wife, indi)
-            if(timedeltaToYears(gedStringToDatetime(f["MARR DATE"]) - gedStringToDatetime(husbIndi["BIRT DATE"])) < 0):
+            if(husbIndi and timedeltaToYears(gedStringToDatetime(f["MARR DATE"]) - gedStringToDatetime(husbIndi["BIRT DATE"])) < 0):
                 displayAnomaly("US02", id = husbIndi["INDI"], mDate = f["MARR DATE"], bDate = husbIndi["BIRT DATE"])
-            if(timedeltaToYears(gedStringToDatetime(f["MARR DATE"]) - gedStringToDatetime(wifeIndi["BIRT DATE"])) < 0):
+            if(wifeIndi and timedeltaToYears(gedStringToDatetime(f["MARR DATE"]) - gedStringToDatetime(wifeIndi["BIRT DATE"])) < 0):
                 displayAnomaly("US02", id = wifeIndi["INDI"], mDate = f["MARR DATE"], bDate = wifeIndi["BIRT DATE"])
             
             # US04
             if(f["DIV DATE"] != "NA"):
                 if(timedeltaToYears(gedStringToDatetime(f["DIV DATE"]) - gedStringToDatetime(f["MARR DATE"])) < 0):
                     displayAnomaly("US04", id = f["FAM"], mDate = f["MARR DATE"], dDate = f["DIV DATE"])
-            
+
             # US06 Divorce before death
             divDate = gedStringToDatetime(f["DIV DATE"])
-            husbDeathDate = findIndi(f["HUSB"], indi)["DEAT DATE"]
-            wifeDeathDate = findIndi(f["WIFE"], indi)["DEAT DATE"]
-            if (divDate != "NA" and (husbDeathDate != "NA" and divDate > gedStringToDatetime(husbDeathDate)) or (wifeDeathDate != "NA" and divDate > gedStringToDatetime(wifeDeathDate))):
+            husb = findIndi(f["HUSB"], indi)
+            wife = findIndi(f["WIFE"], indi)
+            if (husb and wife and divDate != "NA" and ((husb["DEAT DATE"] != "NA" and divDate > gedStringToDatetime(husb["DEAT DATE"])) or (wife["DEAT DATE"] != "NA" and divDate > gedStringToDatetime(wife["DEAT DATE"])))):
                 displayAnomaly('US06', id=f["FAM"])
 
 if __name__ == "__main__":
