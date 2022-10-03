@@ -66,7 +66,7 @@ def gedStringToDatetime(s):
 
 def datetimeToString(d):
     '''Converts a datetime object to a string in the format of a gedcom date'''
-    return d.strftime('%d %b %Y')
+    return d.strftime('%d %b %Y').upper()
 
 def timedeltaToYears(d):
     '''converts a timedelta object to years'''
@@ -181,15 +181,19 @@ def main():
 
         # Loop through each individual and family to check for errors/anomalies
         for i in indi:
-            # Template
-            if (False):
-                displayAnomaly('USXX', indi=i["INDI"])
+            # US01
+            currentDate = datetime.datetime.now()
+            if (i["BIRT DATE"] != "NA" and gedStringToDatetime(i["BIRT DATE"]) > currentDate):
+                displayAnomaly("US01", id=i["INDI"], date=i["BIRT DATE"], dateType="BIRT", currentDate=datetimeToString(currentDate))
+            if (i["DEAT DATE"] != "NA" and gedStringToDatetime(i["DEAT DATE"]) > currentDate):
+                displayAnomaly("US01", id=i["INDI"], date=i["DEAT DATE"], dateType="DEAT", currentDate=datetimeToString(currentDate))
 
         for f in fam:
-            # Template
-            if (False):
-                displayAnomaly('USXX', fam=f["FAM"])
-
+            # US01
+            if (f["MARR DATE"] != "NA" and gedStringToDatetime(f["MARR DATE"]) > currentDate):
+                displayAnomaly("US01", id=f["FAM"], date=f["MARR DATE"], dateType="MARR", currentDate=datetimeToString(currentDate))
+            if (f["DIV DATE"] != "NA" and gedStringToDatetime(f["DIV DATE"]) > currentDate):
+                displayAnomaly("US01", id=f["INDI"], date=f["DIV DATE"], dateType="DIV", currentDate=datetimeToString(currentDate))
 
 if __name__ == "__main__":
     main()
