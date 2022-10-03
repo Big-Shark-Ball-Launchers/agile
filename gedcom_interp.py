@@ -124,6 +124,16 @@ def defaultFam():
         "CHIL": []
     }
 
+def findIndi(iId, list):
+    for i in list:
+        if (i["INDI"] == iId):
+            return i
+
+def findFam(fId, list):
+    for f in list:
+        if (f["FAM"] == fId):
+            return f
+
 def displayAnomaly(storyKey, **kwargs):
     '''prints a formatted error/anomaly message'''
     anomalyString = stories[storyKey]
