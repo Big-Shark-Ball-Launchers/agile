@@ -199,7 +199,7 @@ def main():
                 displayAnomaly("US01", id=i["INDI"], date=i["DEAT DATE"], dateType="DEAT", currentDate=datetimeToString(currentDate))
                 
             # US03
-            if(i["AGE"] > 0):
+            if(i["AGE"] < 0):
                 displayAnomaly("US03", id = i["INDI"], dDate = i["DEAT DATE"], bDate = i["BIRT DATE"])
 
         for f in fam:

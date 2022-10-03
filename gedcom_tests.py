@@ -52,6 +52,697 @@ class gedcom_tests(unittest.TestCase):
         expectedOutput = 'MARR'
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
+        #US02 tests (Marriage after birth)
+    def testUS02_1(self):
+        # Born after marriage
+        testFile = '''
+        0 NOTE https://github.com/Big-Shark-Ball-Launchers/agile
+        0 HEAD
+        1 SOUR Family Echo
+        2 WWW http://www.familyecho.com/
+        1 FILE My Family
+        1 DATE 25 SEP 2022
+        1 DEST ANSTFILE
+        1 GEDC
+        2 VERS 5.5.1
+        2 FORM LINEAGE-LINKED
+        1 SUBM @I1@
+        2 NAME jeweler-giggle-0f@icloud.com
+        1 SUBN
+        1 CHAR UTF-8
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        2 GIVN Dick
+        2 SURN Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 RESI
+        2 ADDR carnage_flaky0o@icloud.com
+        1 FAMC @F1@
+        0 @I2@ INDI
+        1 NAME Jennifer /Smith/
+        2 GIVN Jennifer
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 23 SEP 1960
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 2000
+        1 DEAT Y
+        2 DATE 31 DEC 2013
+        1 FAMS @F1@
+        0 @I4@ INDI
+        1 NAME Jane /Smith/
+        2 GIVN Jane
+        2 SURN Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 2 JUN 1983
+        1 FAMC @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 CHIL @I1@
+        1 CHIL @I4@
+        1 MARR
+        2 DATE 14 FEB 1980
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 TRLR'''
+        expectedOutput = "ANNOMALY: US02: INDI/FAM @I3@: Marriage date: 14 FEB 1980 occurs before the individual's birthdate 15 JUL 2000"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    #US02 tests (Marriage after birth)
+    def testUS02_2(self):
+        # Wife born after marriage
+        testFile = '''
+        0 NOTE https://github.com/Big-Shark-Ball-Launchers/agile
+        0 HEAD
+        1 SOUR Family Echo
+        2 WWW http://www.familyecho.com/
+        1 FILE My Family
+        1 DATE 25 SEP 2022
+        1 DEST ANSTFILE
+        1 GEDC
+        2 VERS 5.5.1
+        2 FORM LINEAGE-LINKED
+        1 SUBM @I1@
+        2 NAME jeweler-giggle-0f@icloud.com
+        1 SUBN
+        1 CHAR UTF-8
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        2 GIVN Dick
+        2 SURN Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 RESI
+        2 ADDR carnage_flaky0o@icloud.com
+        1 FAMC @F1@
+        0 @I2@ INDI
+        1 NAME Jennifer /Smith/
+        2 GIVN Jennifer
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 23 SEP 1960
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1960
+        1 DEAT Y
+        2 DATE 31 DEC 2013
+        1 FAMS @F1@
+        0 @I4@ INDI
+        1 NAME Jane /Smith/
+        2 GIVN Jane
+        2 SURN Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 2 JUN 1983
+        1 FAMC @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 CHIL @I1@
+        1 CHIL @I4@
+        1 MARR
+        2 DATE 14 FEB 1980
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 TRLR'''
+        expectedOutput = "ANNOMALY: US02: INDI/FAM @I2@: Marriage date: 14 FEB 1980 occurs before the individual's birthdate 23 SEP 1960"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    #US02 tests (Marriage after birth)
+    def testUS02_3(self):
+        # Wife born after marriage
+        testFile = '''
+        0 NOTE https://github.com/Big-Shark-Ball-Launchers/agile
+        0 HEAD
+        1 SOUR Family Echo
+        2 WWW http://www.familyecho.com/
+        1 FILE My Family
+        1 DATE 25 SEP 2022
+        1 DEST ANSTFILE
+        1 GEDC
+        2 VERS 5.5.1
+        2 FORM LINEAGE-LINKED
+        1 SUBM @I1@
+        2 NAME jeweler-giggle-0f@icloud.com
+        1 SUBN
+        1 CHAR UTF-8
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        2 GIVN Dick
+        2 SURN Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 RESI
+        2 ADDR carnage_flaky0o@icloud.com
+        1 FAMC @F1@
+        0 @I2@ INDI
+        1 NAME Jennifer /Smith/
+        2 GIVN Jennifer
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 23 SEP 1960
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1960
+        1 DEAT Y
+        2 DATE 31 DEC 2013
+        1 FAMS @F1@
+        0 @I4@ INDI
+        1 NAME Jane /Smith/
+        2 GIVN Jane
+        2 SURN Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 2 JUN 1983
+        1 FAMC @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 CHIL @I1@
+        1 CHIL @I4@
+        1 MARR
+        2 DATE 14 FEB 1940
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 TRLR'''
+        expectedOutput = "ANNOMALY: US02: INDI/FAM @I3@: Marriage date: 14 FEB 1980 occurs before the individual's birthdate 15 JUL 2000","ANNOMALY: US02: INDI/FAM @I2@: Marriage date: 14 FEB 1980 occurs before the individual's birthdate 23 SEP 1960"
+        
+    #US02 tests (Marriage after birth)
+    def testUS02_4(self):
+        # Marriage date and birthdate are the same (no error)
+        testFile = '''
+        0 NOTE https://github.com/Big-Shark-Ball-Launchers/agile
+        0 HEAD
+        1 SOUR Family Echo
+        2 WWW http://www.familyecho.com/
+        1 FILE My Family
+        1 DATE 25 SEP 2022
+        1 DEST ANSTFILE
+        1 GEDC
+        2 VERS 5.5.1
+        2 FORM LINEAGE-LINKED
+        1 SUBM @I1@
+        2 NAME jeweler-giggle-0f@icloud.com
+        1 SUBN
+        1 CHAR UTF-8
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        2 GIVN Dick
+        2 SURN Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 RESI
+        2 ADDR carnage_flaky0o@icloud.com
+        1 FAMC @F1@
+        0 @I2@ INDI
+        1 NAME Jennifer /Smith/
+        2 GIVN Jennifer
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 23 SEP 1960
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1960
+        1 DEAT Y
+        2 DATE 31 DEC 2013
+        1 FAMS @F1@
+        0 @I4@ INDI
+        1 NAME Jane /Smith/
+        2 GIVN Jane
+        2 SURN Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 2 JUN 1983
+        1 FAMC @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 CHIL @I1@
+        1 CHIL @I4@
+        1 MARR
+        2 DATE 15 JUL 1960
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 TRLR'''
+        expectedOutput = "US02"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    #US02 tests (Marriage after birth)
+    def testUS02_5(self):
+        # No error
+        testFile = '''
+        0 NOTE https://github.com/Big-Shark-Ball-Launchers/agile
+        0 HEAD
+        1 SOUR Family Echo
+        2 WWW http://www.familyecho.com/
+        1 FILE My Family
+        1 DATE 25 SEP 2022
+        1 DEST ANSTFILE
+        1 GEDC
+        2 VERS 5.5.1
+        2 FORM LINEAGE-LINKED
+        1 SUBM @I1@
+        2 NAME jeweler-giggle-0f@icloud.com
+        1 SUBN
+        1 CHAR UTF-8
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        2 GIVN Dick
+        2 SURN Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 RESI
+        2 ADDR carnage_flaky0o@icloud.com
+        1 FAMC @F1@
+        0 @I2@ INDI
+        1 NAME Jennifer /Smith/
+        2 GIVN Jennifer
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 23 SEP 1960
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1960
+        1 DEAT Y
+        2 DATE 31 DEC 2013
+        1 FAMS @F1@
+        0 @I4@ INDI
+        1 NAME Jane /Smith/
+        2 GIVN Jane
+        2 SURN Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 2 JUN 1983
+        1 FAMC @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 CHIL @I1@
+        1 CHIL @I4@
+        1 MARR
+        2 DATE 14 FEB 1900
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 TRLR'''
+        expectedOutput = "US02"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    #US03 tests (Birth before death)
+    def testUS03_1(self):
+        # No error
+        testFile = '''
+       0 NOTE https://github.com/Big-Shark-Ball-Launchers/agile
+        0 HEAD
+        1 SOUR Family Echo
+        2 WWW http://www.familyecho.com/
+        1 FILE My Family
+        1 DATE 25 SEP 2022
+        1 DEST ANSTFILE
+        1 GEDC
+        2 VERS 5.5.1
+        2 FORM LINEAGE-LINKED
+        1 SUBM @I1@
+        2 NAME jeweler-giggle-0f@icloud.com
+        1 SUBN
+        1 CHAR UTF-8
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        2 GIVN Dick
+        2 SURN Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 RESI
+        2 ADDR carnage_flaky0o@icloud.com
+        1 FAMC @F1@
+        0 @I2@ INDI
+        1 NAME Jennifer /Smith/
+        2 GIVN Jennifer
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 23 SEP 1960
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1960
+        1 DEAT Y
+        2 DATE 31 DEC 2013
+        1 FAMS @F1@
+        0 @I4@ INDI
+        1 NAME Jane /Smith/
+        2 GIVN Jane
+        2 SURN Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 2 JUN 1983
+        1 FAMC @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 CHIL @I1@
+        1 CHIL @I4@
+        1 MARR
+        2 DATE 14 FEB 1980
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 TRLR'''
+        expectedOutput = "US03"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    #US03 tests (Birth before death)
+    def testUS03_2(self):
+        # bDay after dDay
+        testFile = '''
+        0 NOTE https://github.com/Big-Shark-Ball-Launchers/agile
+        0 HEAD
+        1 SOUR Family Echo
+        2 WWW http://www.familyecho.com/
+        1 FILE My Family
+        1 DATE 25 SEP 2022
+        1 DEST ANSTFILE
+        1 GEDC
+        2 VERS 5.5.1
+        2 FORM LINEAGE-LINKED
+        1 SUBM @I1@
+        2 NAME jeweler-giggle-0f@icloud.com
+        1 SUBN
+        1 CHAR UTF-8
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        2 GIVN Dick
+        2 SURN Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 RESI
+        2 ADDR carnage_flaky0o@icloud.com
+        1 FAMC @F1@
+        0 @I2@ INDI
+        1 NAME Jennifer /Smith/
+        2 GIVN Jennifer
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 23 SEP 1960
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1960
+        1 DEAT Y
+        2 DATE 31 DEC 1955
+        1 FAMS @F1@
+        0 @I4@ INDI
+        1 NAME Jane /Smith/
+        2 GIVN Jane
+        2 SURN Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 2 JUN 1983
+        1 FAMC @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 CHIL @I1@
+        1 CHIL @I4@
+        1 MARR
+        2 DATE 14 FEB 1980
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 TRLR'''
+        expectedOutput = "US03"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    #US03 tests (Birth before death)
+    def testUS03_3(self):
+        # bDay and dDay same year (no error)
+        testFile = '''
+        0 NOTE https://github.com/Big-Shark-Ball-Launchers/agile
+        0 HEAD
+        1 SOUR Family Echo
+        2 WWW http://www.familyecho.com/
+        1 FILE My Family
+        1 DATE 25 SEP 2022
+        1 DEST ANSTFILE
+        1 GEDC
+        2 VERS 5.5.1
+        2 FORM LINEAGE-LINKED
+        1 SUBM @I1@
+        2 NAME jeweler-giggle-0f@icloud.com
+        1 SUBN
+        1 CHAR UTF-8
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        2 GIVN Dick
+        2 SURN Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 RESI
+        2 ADDR carnage_flaky0o@icloud.com
+        1 FAMC @F1@
+        0 @I2@ INDI
+        1 NAME Jennifer /Smith/
+        2 GIVN Jennifer
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 23 SEP 1960
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1960
+        1 DEAT Y
+        2 DATE 31 DEC 1960
+        1 FAMS @F1@
+        0 @I4@ INDI
+        1 NAME Jane /Smith/
+        2 GIVN Jane
+        2 SURN Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 2 JUN 1983
+        1 FAMC @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 CHIL @I1@
+        1 CHIL @I4@
+        1 MARR
+        2 DATE 14 FEB 1980
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 TRLR'''
+        expectedOutput = "US03"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+        #US03 tests (Birth before death)
+    def testUS03_4(self):
+        # birthdate and death date on same day (no issue)
+        testFile = '''
+        0 NOTE https://github.com/Big-Shark-Ball-Launchers/agile
+        0 HEAD
+        1 SOUR Family Echo
+        2 WWW http://www.familyecho.com/
+        1 FILE My Family
+        1 DATE 25 SEP 2022
+        1 DEST ANSTFILE
+        1 GEDC
+        2 VERS 5.5.1
+        2 FORM LINEAGE-LINKED
+        1 SUBM @I1@
+        2 NAME jeweler-giggle-0f@icloud.com
+        1 SUBN
+        1 CHAR UTF-8
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        2 GIVN Dick
+        2 SURN Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 RESI
+        2 ADDR carnage_flaky0o@icloud.com
+        1 FAMC @F1@
+        0 @I2@ INDI
+        1 NAME Jennifer /Smith/
+        2 GIVN Jennifer
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 23 SEP 1960
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1960
+        1 DEAT Y
+        2 DATE 31 DEC 2013
+        1 FAMS @F1@
+        0 @I4@ INDI
+        1 NAME Jane /Smith/
+        2 GIVN Jane
+        2 SURN Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 14 FEB 1980
+        1 FAMC @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 CHIL @I1@
+        1 CHIL @I4@
+        1 MARR
+        2 DATE 14 FEB 1980
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 TRLR'''
+        expectedOutput = "US03"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+        #US03 tests (Birth before death)
+    def testUS03_5(self):
+        # dates far apart no issue
+        testFile = '''
+        0 NOTE https://github.com/Big-Shark-Ball-Launchers/agile
+        0 HEAD
+        1 SOUR Family Echo
+        2 WWW http://www.familyecho.com/
+        1 FILE My Family
+        1 DATE 25 SEP 2022
+        1 DEST ANSTFILE
+        1 GEDC
+        2 VERS 5.5.1
+        2 FORM LINEAGE-LINKED
+        1 SUBM @I1@
+        2 NAME jeweler-giggle-0f@icloud.com
+        1 SUBN
+        1 CHAR UTF-8
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        2 GIVN Dick
+        2 SURN Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 RESI
+        2 ADDR carnage_flaky0o@icloud.com
+        1 FAMC @F1@
+        0 @I2@ INDI
+        1 NAME Jennifer /Smith/
+        2 GIVN Jennifer
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 23 SEP 1960
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1960
+        1 DEAT Y
+        2 DATE 31 DEC 2013
+        1 FAMS @F1@
+        0 @I4@ INDI
+        1 NAME Jane /Smith/
+        2 GIVN Jane
+        2 SURN Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 2 JUN 1983
+        1 FAMC @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 CHIL @I1@
+        1 CHIL @I4@
+        1 MARR
+        2 DATE 14 FEB 1800
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 TRLR'''
+        expectedOutput = "US03"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    
+
     #US04 tests (Marriage before divorce)
     def testUS04_1(self):
         # Normal situation where error should occur
