@@ -47,5 +47,30 @@ class gedcom_tests(unittest.TestCase):
         expectedOutput = 'MARR'
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
+    def testUS04_1(self):
+        testFile = '''
+        0 HEAD
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        2 GIVN Dick
+        2 SURN Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMC @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 CHIL @I1@
+        1 CHIL @I4@
+        1 MARR
+        2 DATE 14 FEB 1980
+        1 DIV
+        2 DATE 14 FEB 1970
+        0 TRLR'''
+        expectedOutput = "ERROR: FAMILY: US04: @F1@: Divorce date 14 FEB 1970 occurs before marriage date 14 FEB 1980"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+        
+
 if __name__ == '__main__':
     unittest.main()
