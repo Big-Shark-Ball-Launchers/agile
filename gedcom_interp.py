@@ -153,7 +153,7 @@ def main():
     famFlag = False
     with open(filename, 'r') as f:
         for line in f:
-            print(f'--> {line}', end='')
+            # print(f'--> {line}', end='')
             l = formatLine(line)
             valid = 'Y' if isValidTag(l[1]) else 'N'
             if isValidTag(l[1]):
@@ -182,7 +182,7 @@ def main():
                 
 
 
-            print(f'<-- {l[0]}|{l[1]}|{valid}|{l[2]}')
+            # print(f'<-- {l[0]}|{l[1]}|{valid}|{l[2]}')
         indi = [makeIndiAssumptions(i) for i in indi]
         fam = [makeFamAssumptions(f, indi) for f in fam]
         print(dictListToPrettyTable(sorted(indi, key = lambda x: x["INDI"])))
