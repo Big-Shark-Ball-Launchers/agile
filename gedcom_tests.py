@@ -7,11 +7,15 @@ import tempfile
 
 import gedcom_interp as gi
 
+import datetime
+from gedcom_interp import datetimeToString
+
+
 class gedcom_tests(unittest.TestCase):
 
     # Function to help with testing.
-    # Automatically creates a temporary file with the given contents, 
-    # passes the file to the main program, and runs the passeed assertion 
+    # Automatically creates a temporary file with the given contents,
+    # passes the file to the main program, and runs the passeed assertion
     # with the expected output.
     def run_gedcom_test(self, gedcom_file, expected_output, f):
         '''gedcom_file is a string containing the gedcom file to be tested.
@@ -52,7 +56,177 @@ class gedcom_tests(unittest.TestCase):
         expectedOutput = 'MARR'
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
-    #US04 tests (Marriage before divorce)
+    # US01 tests (Dates before current date)
+    def testUS01_1(self):
+        # Normal - no errors
+        testFile = '''
+        0 HEAD
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        2 GIVN Dick
+        2 SURN Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 RESI
+        2 ADDR carnage_flaky0o@icloud.com
+        1 FAMC @F1@
+        0 @I2@ INDI
+        1 NAME Jennifer /Smith/
+        2 GIVN Jennifer
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 23 SEP 1960
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1960
+        1 DEAT Y
+        2 DATE 31 DEC 2013
+        1 FAMS @F1@
+        0 @I4@ INDI
+        1 NAME Jane /Smith/
+        2 GIVN Jane
+        2 SURN Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 2 JUN 1983
+        1 FAMC @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 CHIL @I1@
+        1 CHIL @I4@
+        1 MARR
+        2 DATE 14 FEB 1980
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 TRLR'''
+        expectedOutput = "US01"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    def testUS01_2(self):
+        # individual born after current date
+        testFile = '''
+        0 HEAD
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        2 GIVN Dick
+        2 SURN Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 2023
+        0 @F1@ FAM
+        1 HUSB @I3@
+        0 TRLR'''
+        currDateString = datetimeToString(datetime.datetime.now())
+        expectedOutput = "ERROR: US01: INDI/FAM @I1@: Date BIRT 13 FEB 2023 occurs after current date " + currDateString
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    def testUS01_3(self):
+        # individual died after current date
+        testFile = '''
+        0 HEAD
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1960
+        1 DEAT Y
+        2 DATE 31 DEC 2022
+        1 FAMS @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        0 TRLR'''
+        currDateString = datetimeToString(datetime.datetime.now())
+        expectedOutput = "ERROR: US01: INDI/FAM @I3@: Date DEAT 31 DEC 2022 occurs after current date " + currDateString
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    def testUS01_4(self):
+        # family married after current date
+        testFile = '''
+        0 HEAD
+        0 @I2@ INDI
+        1 NAME Jennifer /Smith/
+        2 GIVN Jennifer
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 23 SEP 1960
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1960
+        1 DEAT Y
+        2 DATE 31 DEC 2013
+        1 FAMS @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 2023
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 TRLR'''
+        currDateString = datetimeToString(datetime.datetime.now())
+        expectedOutput = "ERROR: US01: INDI/FAM @F1@: Date MARR 14 FEB 2023 occurs after current date " + currDateString
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    def testUS01_5(self):
+        # family divorced after current date
+        testFile = '''
+        0 HEAD
+        0 @I2@ INDI
+        1 NAME Jennifer /Smith/
+        2 GIVN Jennifer
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 23 SEP 1960
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1960
+        1 FAMS @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 1980
+        1 DIV
+        2 DATE 20 APR 2024
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 TRLR'''
+        currDateString = datetimeToString(datetime.datetime.now())
+        expectedOutput = "ERROR: US01: INDI/FAM @F1@: Date DIV 20 APR 2024 occurs after current date " + currDateString
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+
+    # US04 tests (Marriage before divorce)
+
     def testUS04_1(self):
         # Normal situation where error should occur
         testFile = '''
@@ -79,7 +253,7 @@ class gedcom_tests(unittest.TestCase):
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
     def testUS04_2(self):
-        #Marriage and divorce on the same day is strange, but not impossible.
+        # Marriage and divorce on the same day is strange, but not impossible.
         testFile = '''
         0 HEAD
         0 @I1@ INDI
@@ -150,7 +324,7 @@ class gedcom_tests(unittest.TestCase):
         0 TRLR'''
         expectedOutput = "US04"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
-    
+
     def testUS04_5(self):
         # weird dates, error should occur
         testFile = '''
@@ -175,8 +349,8 @@ class gedcom_tests(unittest.TestCase):
         0 TRLR'''
         expectedOutput = "ERROR: US04: FAM @F1@: Divorce date 21 JAN 2200 occurs before marriage date 14 JUN 2300"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
-    
-    #US05 Tests (marriage before death)
+
+    # US05 Tests (marriage before death)
     def testUS05_1(self):
         # both members are alive. No error should occur.
         testFile = '''
@@ -265,7 +439,7 @@ class gedcom_tests(unittest.TestCase):
         0 TRLR'''
         expectedOutput = "ERROR: US05: FAM @F1@: Marriage date 14 JUN 2002 occurs after death of one or both spouses"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
-    
+
     def testUS05_4(self):
         # both members dead. Only one is erroneous. Error should occur.
         testFile = '''
@@ -296,7 +470,7 @@ class gedcom_tests(unittest.TestCase):
         0 TRLR'''
         expectedOutput = "ERROR: US05: FAM @F1@: Marriage date 14 JUN 2002 occurs after death of one or both spouses"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
-    
+
     def testUS05_5(self):
         # one member dead. Error should occur.
         testFile = '''
