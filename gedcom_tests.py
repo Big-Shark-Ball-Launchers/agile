@@ -1,6 +1,7 @@
 import io
 import unittest
 import unittest.mock
+import os
 
 import sys
 import tempfile
@@ -17,13 +18,15 @@ class gedcom_tests(unittest.TestCase):
         '''gedcom_file is a string containing the gedcom file to be tested.
             expected_output is a string containing the expected output.
             f is the assertion to be used (e.g. self.assertIn, self.assertNotIn, etc.)'''
-        with tempfile.NamedTemporaryFile() as tmp:
+        with tempfile.NamedTemporaryFile(delete=False) as tmp:
             with unittest.mock.patch.object(sys, 'argv', ['prog', tmp.name]):
                 with unittest.mock.patch('sys.stdout', new=io.StringIO()) as fake_out:
                     tmp.write(gedcom_file.encode('utf-8'))
                     tmp.seek(0)
                     gi.main()
                     f(expected_output, fake_out.getvalue())
+                    tmp.close()
+                    os.unlink(tmp.name)
 
     # Example test. Use as a template. Should always pass.
     def testexample(self):
@@ -165,7 +168,7 @@ class gedcom_tests(unittest.TestCase):
         2 _MARNM Smith
         1 SEX M
         1 BIRT
-        2 DATE 15 JUL 1960
+        2 DATE 15 JUL 1940
         1 DEAT Y
         2 DATE 31 DEC 2013
         1 FAMS @F1@
@@ -183,11 +186,11 @@ class gedcom_tests(unittest.TestCase):
         1 CHIL @I1@
         1 CHIL @I4@
         1 MARR
-        2 DATE 14 FEB 1980
+        2 DATE 14 FEB 1950
         1 _CURRENT Y
         1 _PRIMARY Y
         0 TRLR'''
-        expectedOutput = "ANNOMALY: US02: INDI/FAM @I2@: Marriage date: 14 FEB 1980 occurs before the individual's birthdate 23 SEP 1960"
+        expectedOutput = "ANNOMALY: US02: INDI/FAM @I2@: Marriage date: 14 FEB 1950 occurs before the individual's birthdate 23 SEP 1960"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
     #US02 tests (Marriage after birth)
@@ -256,7 +259,7 @@ class gedcom_tests(unittest.TestCase):
         1 _CURRENT Y
         1 _PRIMARY Y
         0 TRLR'''
-        expectedOutput = "ANNOMALY: US02: INDI/FAM @I3@: Marriage date: 14 FEB 1980 occurs before the individual's birthdate 15 JUL 2000","ANNOMALY: US02: INDI/FAM @I2@: Marriage date: 14 FEB 1980 occurs before the individual's birthdate 23 SEP 1960"
+        expectedOutput = "\nANNOMALY: US02: INDI/FAM @I3@: Marriage date: 14 FEB 1940 occurs before the individual's birthdate 15 JUL 1960\nANNOMALY: US02: INDI/FAM @I2@: Marriage date: 14 FEB 1940 occurs before the individual's birthdate 23 SEP 1960\n"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
         
     #US02 tests (Marriage after birth)
@@ -390,7 +393,7 @@ class gedcom_tests(unittest.TestCase):
         1 CHIL @I1@
         1 CHIL @I4@
         1 MARR
-        2 DATE 14 FEB 1900
+        2 DATE 14 FEB 1980
         1 _CURRENT Y
         1 _PRIMARY Y
         0 TRLR'''
