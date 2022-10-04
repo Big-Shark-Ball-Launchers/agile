@@ -257,6 +257,7 @@ class gedcom_tests(unittest.TestCase):
         1 _PRIMARY Y
         0 TRLR'''
         expectedOutput = "ANNOMALY: US02: INDI/FAM @I3@: Marriage date: 14 FEB 1980 occurs before the individual's birthdate 15 JUL 2000","ANNOMALY: US02: INDI/FAM @I2@: Marriage date: 14 FEB 1980 occurs before the individual's birthdate 23 SEP 1960"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
         
     #US02 tests (Marriage after birth)
     def testUS02_4(self):
@@ -325,7 +326,7 @@ class gedcom_tests(unittest.TestCase):
         1 _PRIMARY Y
         0 TRLR'''
         expectedOutput = "US02"
-        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
     #US02 tests (Marriage after birth)
     def testUS02_5(self):
@@ -394,7 +395,7 @@ class gedcom_tests(unittest.TestCase):
         1 _PRIMARY Y
         0 TRLR'''
         expectedOutput = "US02"
-        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
     #US03 tests (Birth before death)
     def testUS03_1(self):
@@ -463,7 +464,7 @@ class gedcom_tests(unittest.TestCase):
         1 _PRIMARY Y
         0 TRLR'''
         expectedOutput = "US03"
-        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
     #US03 tests (Birth before death)
     def testUS03_2(self):
@@ -531,7 +532,7 @@ class gedcom_tests(unittest.TestCase):
         1 _CURRENT Y
         1 _PRIMARY Y
         0 TRLR'''
-        expectedOutput = "US03"
+        expectedOutput = "ERROR: US03: INDI/FAM @I3@: Death date: 31 DEC 1955 occurs before the individual's birthdate 15 JUL 1960"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
     #US03 tests (Birth before death)
@@ -601,7 +602,7 @@ class gedcom_tests(unittest.TestCase):
         1 _PRIMARY Y
         0 TRLR'''
         expectedOutput = "US03"
-        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
         #US03 tests (Birth before death)
     def testUS03_4(self):
@@ -670,7 +671,7 @@ class gedcom_tests(unittest.TestCase):
         1 _PRIMARY Y
         0 TRLR'''
         expectedOutput = "US03"
-        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
         #US03 tests (Birth before death)
     def testUS03_5(self):
@@ -739,7 +740,7 @@ class gedcom_tests(unittest.TestCase):
         1 _PRIMARY Y
         0 TRLR'''
         expectedOutput = "US03"
-        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
     
 
