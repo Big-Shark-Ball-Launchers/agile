@@ -237,7 +237,7 @@ def main():
             husb = findIndi(f["HUSB"], indi)
             wife = findIndi(f["WIFE"], indi)
             if (husb and wife and divDate != "NA" and ((husb["DEAT DATE"] != "NA" and divDate > gedStringToDatetime(husb["DEAT DATE"])) or (wife["DEAT DATE"] != "NA" and divDate > gedStringToDatetime(wife["DEAT DATE"])))):
-                displayAnomaly('US06', id=f["FAM"])
+                displayAnomaly('US06', id=f["FAM"], dDate = f["DIV DATE"])
 
 if __name__ == "__main__":
     main()
