@@ -500,6 +500,230 @@ class gedcom_tests(unittest.TestCase):
         expectedOutput = "ERROR: US05: FAM @F1@: Marriage date 14 JUN 2002 occurs after death of one or both spouses"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
+    # US06 Tests (divorce before death)
+    def testUS06_1(self):
+        # both members are alive. No error should occur.
+        testFile = '''
+        0 HEAD
+        0 @I2@ INDI
+        1 NAME Jennifer /Smith/
+        2 GIVN Jennifer
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 23 SEP 1960
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1960
+        1 FAMS @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 1980
+        1 DIV
+        2 DATE 18 MAY 2006
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 TRLR'''
+        expectedOutput = "US06"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    def testUS06_2(self):
+        # Divorce after husband's death
+        testFile = '''
+        0 HEAD
+        0 @I2@ INDI
+        1 NAME Jennifer /Smith/
+        2 GIVN Jennifer
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 23 SEP 1960
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1960
+        1 DEAT Y
+        2 DATE 31 DEC 2013
+        1 FAMS @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 1980
+        1 DIV
+        2 DATE 8 MAR 2016
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 TRLR'''
+        expectedOutput = "ERROR: US06: FAM @F1@: Divorce date 8 MAR 2016 occurs before death of one or both spouses"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    def testUS06_3(self):
+        # divorce after wife's death
+        testFile = '''
+        0 HEAD
+        0 @I2@ INDI
+        1 NAME Jennifer /Smith/
+        2 GIVN Jennifer
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 23 SEP 1960
+        1 DEAT Y
+        2 DATE 26 AUG 2016
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1960
+        1 FAMS @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 1980
+        1 DIV
+        2 DATE 27 JUN 2019
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 TRLR'''
+        expectedOutput = "ERROR: US06: FAM @F1@: Divorce date 27 JUN 2019 occurs before death of one or both spouses"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    def testUS06_4(self):
+        # divorce after both deaths
+        testFile = '''
+                0 HEAD
+        0 @I2@ INDI
+        1 NAME Jennifer /Smith/
+        2 GIVN Jennifer
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 23 SEP 1960
+        1 DEAT Y
+        2 DATE 26 AUG 2016
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1960
+        1 DEAT Y
+        2 DATE 31 DEC 2013
+        1 FAMS @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 1980
+        1 DIV
+        2 DATE 8 MAR 2019
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 TRLR'''
+        expectedOutput = "ERROR: US06: FAM @F1@: Divorce date 8 MAR 2019 occurs before death of one or both spouses"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    def testUS06_5(self):
+        # divorce same day as husband's death. no error should occur.
+        testFile = '''
+        0 HEAD
+        0 @I2@ INDI
+        1 NAME Jennifer /Smith/
+        2 GIVN Jennifer
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 23 SEP 1960
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1960
+        1 DEAT Y
+        2 DATE 31 DEC 2013
+        1 FAMS @F1@
+        0 @I4@ INDI
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 1980
+        1 DIV
+        2 DATE 31 DEC 2013
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 TRLR'''
+        expectedOutput = "US06"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    def testUS06_6(self):
+        # both spouses are dead, but divorce date is before death date. No error should occur.
+        testFile = '''
+        0 HEAD
+        0 @I2@ INDI
+        1 NAME Jennifer /Smith/
+        2 GIVN Jennifer
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 23 SEP 1960
+        1 DEAT Y
+        2 DATE 26 AUG 2016
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1960
+        1 DEAT Y
+        2 DATE 31 DEC 2013
+        1 FAMS @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 1980
+        1 DIV
+        2 DATE 18 NOV 2001
+        0 TRLR'''
+        expectedOutput = "US06"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
 
 if __name__ == '__main__':
     unittest.main()
