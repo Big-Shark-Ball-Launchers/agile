@@ -1,6 +1,6 @@
 stories = {
     "US01": "ERROR: {story}: INDI/FAM {id}: Date {dateType} {date} occurs after current date {currentDate}",
-    "US02": "ANNOMALY: {story}: INDI/FAM {id}: Marriage date: {mDate} occurs before the individual's birthdate {bDate}",
+    "US02": "ERROR: {story}: INDI/FAM {id}: Marriage date: {mDate} occurs before the individual's birthdate {bDate}",
     "US03": "ERROR: {story}: INDI/FAM {id}: Death date: {dDate} occurs before the individual's birthdate {bDate}",
     "US04": "ERROR: {story}: FAM {id}: Divorce date {dDate} occurs before marriage date {mDate}",
     "US05": "ERROR: {story}: FAM {id}: Marriage date {mDate} occurs after death of one or both spouses",

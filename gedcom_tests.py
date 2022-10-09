@@ -293,7 +293,7 @@ class gedcom_tests(unittest.TestCase):
         1 _CURRENT Y
         1 _PRIMARY Y
         0 TRLR'''
-        expectedOutput = "ANNOMALY: US02: INDI/FAM @I3@: Marriage date: 14 FEB 1980 occurs before the individual's birthdate 15 JUL 2000"
+        expectedOutput = "ERROR: US02: INDI/FAM @I3@: Marriage date: 14 FEB 1980 occurs before the individual's birthdate 15 JUL 2000"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
     #US02 tests (Marriage after birth)
@@ -362,7 +362,7 @@ class gedcom_tests(unittest.TestCase):
         1 _CURRENT Y
         1 _PRIMARY Y
         0 TRLR'''
-        expectedOutput = "ANNOMALY: US02: INDI/FAM @I2@: Marriage date: 14 FEB 1950 occurs before the individual's birthdate 23 SEP 1960"
+        expectedOutput = "ERROR: US02: INDI/FAM @I2@: Marriage date: 14 FEB 1950 occurs before the individual's birthdate 23 SEP 1960"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
     #US02 tests (Marriage after birth)
@@ -431,7 +431,7 @@ class gedcom_tests(unittest.TestCase):
         1 _CURRENT Y
         1 _PRIMARY Y
         0 TRLR'''
-        expectedOutput = "\nANNOMALY: US02: INDI/FAM @I3@: Marriage date: 14 FEB 1940 occurs before the individual's birthdate 15 JUL 1960\nANNOMALY: US02: INDI/FAM @I2@: Marriage date: 14 FEB 1940 occurs before the individual's birthdate 23 SEP 1960\n"
+        expectedOutput = "\nERROR: US02: INDI/FAM @I3@: Marriage date: 14 FEB 1940 occurs before the individual's birthdate 15 JUL 1960\nERROR: US02: INDI/FAM @I2@: Marriage date: 14 FEB 1940 occurs before the individual's birthdate 23 SEP 1960\n"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
         
     #US02 tests (Marriage after birth)
