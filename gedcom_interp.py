@@ -221,6 +221,12 @@ def main():
                 displayAnomaly(
                     "US03", id=i["INDI"], dDate=i["DEAT DATE"], bDate=i["BIRT DATE"])
 
+            # US07
+            if (i["AGE"] > 150):
+                displayAnomaly(
+                    "US07", id=i["INDI"], age=i["AGE"]
+                )
+
         for f in fam:
 
             # US01
