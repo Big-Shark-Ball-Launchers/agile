@@ -2251,7 +2251,7 @@ class gedcom_tests(unittest.TestCase):
         expectedOutput = "ANOMALY: US12: INDI @I3@: Birthdate 13 FEB 2010 occurs more than 60 years after mother's birthday: 13 FEB 1950 or more than 80 years after father's birthday: 13 FEB 1980"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
     
-    def testUS12_5(self):
+    def testUS12_6(self):
         #Mom barely young enough
         testFile = '''
         0 @I1@ INDI
