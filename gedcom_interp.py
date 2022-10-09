@@ -260,7 +260,7 @@ def main():
                 count = 0
                 # list of ranges of marraiges for this individual
                 mr = [marriageRange(findFam(f, fam), indi) for f in i["FAMS"]]
-                print(mr)
+                
                 if (datetimeRangeOverlap(mr)):
                     displayAnomaly("US11", id=i["INDI"], fams=i["FAMS"])
 
