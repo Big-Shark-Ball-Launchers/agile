@@ -179,9 +179,13 @@ def datetimeWithinRange(d, r):
 def datetimeRangeOverlap(rl):
     '''returns true if any of the ranges in rl overlap'''
     for i in range(len(rl)):
-        for j in range(i+1, len(rl)):
-            if (datetimeWithinRange(rl[i][0], rl[j]) or datetimeWithinRange(rl[i][1], rl[j])):
-                return True
+        for j in range(len(rl)):
+            # as long as we are not looking at the start of the same range
+            # check if the start of the range is within the other range
+            # if this is ever the case, the ranges overlap
+            if (i != j):
+                if (datetimeWithinRange(rl[j][0], rl[i])):
+                    return True
     return False
 
 def displayAnomaly(storyKey, **kwargs):
@@ -260,7 +264,7 @@ def main():
                 count = 0
                 # list of ranges of marraiges for this individual
                 mr = [marriageRange(findFam(f, fam), indi) for f in i["FAMS"]]
-                
+                print(mr)
                 if (datetimeRangeOverlap(mr)):
                     displayAnomaly("US11", id=i["INDI"], fams=i["FAMS"])
 
