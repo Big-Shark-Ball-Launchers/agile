@@ -1809,6 +1809,211 @@ class gedcom_tests(unittest.TestCase):
         expectedOutput = "US08"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
+    # US11
+    def testUS11_1(self):
+        # Normal simple family, no errors expected
+        testFile = '''
+        0 @I1@ INDI
+        1 NAME Dick
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMS @F1@
 
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 1978
+        1 FAMS @F1@
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 2003
+        0 TRLR
+        '''
+        expectedOutput = "US11"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    def testUS11_2(self):
+        # Simple family with bigamy, error expected
+        testFile = '''
+        0 @I1@ INDI
+        1 NAME Dick
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMS @F1@
+        1 FAMS @F2@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 1978
+        1 FAMS @F1@
+
+        0 @I3@ INDI
+        1 NAME Cathy
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 1977
+        1 FAMS @F2@
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 2003
+
+        0 @F2@ FAM
+        1 HUSB @I1@
+        1 WIFE @I3@
+        1 MARR
+        2 DATE 14 FEB 2005
+
+        0 TRLR
+        '''
+        expectedOutput = "ANOMALY: US11: INDI @I1@ is an active spouse in muliple families. FAMS: ['@F1@', '@F2@']"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+    
+    def testUS11_3(self):
+        # Simple family with divorce, no errors expected
+        testFile = '''
+        0 @I1@ INDI
+        1 NAME Dick
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMS @F1@
+        1 FAMS @F2@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 1978
+        1 FAMS @F1@
+
+        0 @I3@ INDI
+        1 NAME Cathy
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 1977
+        1 FAMS @F2@
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 2003
+        1 DIV
+        2 DATE 14 FEB 2004
+
+        0 @F2@ FAM
+        1 HUSB @I1@
+        1 WIFE @I3@
+        1 MARR
+        2 DATE 14 FEB 2005
+
+        0 TRLR
+        '''
+        expectedOutput = "US11"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    def testUS11_4(self):
+        # Marriage within another marraige (with divorce), error expected
+        testFile = '''
+        0 @I1@ INDI
+        1 NAME Dick
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMS @F1@
+        1 FAMS @F2@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 1978
+        1 FAMS @F1@
+
+        0 @I3@ INDI
+        1 NAME Cathy
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 1977
+        1 FAMS @F2@
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 2003
+        1 DIV
+        2 DATE 14 FEB 2010
+
+        0 @F2@ FAM
+        1 HUSB @I1@
+        1 WIFE @I3@
+        1 MARR
+        2 DATE 14 FEB 2005
+        1 DIV
+        2 DATE 14 FEB 2007
+
+        0 TRLR
+        '''
+        expectedOutput = "ANOMALY: US11: INDI @I1@ is an active spouse in muliple families. FAMS: ['@F1@', '@F2@']"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    def testUS11_5(self):
+        # Marriage within another marraige (with death), error expected
+        testFile = '''
+        0 @I1@ INDI
+        1 NAME Dick
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMS @F1@
+        1 FAMS @F2@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 1978
+        1 FAMS @F1@
+        1 DEAT Y
+        2 DATE 14 FEB 2010
+
+        0 @I3@ INDI
+        1 NAME Cathy
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 1977
+        1 FAMS @F2@
+        1 DEAT Y
+        2 DATE 14 FEB 2007
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 2003
+
+        0 @F2@ FAM
+        1 HUSB @I1@
+        1 WIFE @I3@
+        1 MARR
+        2 DATE 14 FEB 2005
+
+        0 TRLR
+        '''
+        expectedOutput = "ANOMALY: US11: INDI @I1@ is an active spouse in muliple families. FAMS: ['@F1@', '@F2@']"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+        
 if __name__ == '__main__':
     unittest.main()
