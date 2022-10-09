@@ -9,7 +9,7 @@ stories = {
     "US08": "",
     "US09": "",
     "US10": "",
-    "US11": "",
+    "US11": "ANOMALY: {story}: INDI {id} is an active spouse in muliple families. FAMS: {fams}",
     "US12": "",
     "US13": "",
     "US14": "",

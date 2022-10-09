@@ -34,7 +34,7 @@ def addElement(entry, elem, level):
     if (level[2] == "DATE" and (level[1] == "BIRT" or level[1] == "DEAT" or level[1] == "MARR" or level[1] == "DIV")):
         key = level[1] + " " + level[2]
         value = elem[2]
-    elif (elem[1] == "BIRT" or elem[1] == "MARR" or elem[1] == "DIV" or elem[1] == "DEAT"):
+    elif (elem[1] == "BIRT" or elem[1] == "MARR" or elem[1] == "DIV"):
         return
     elif (elem[1] == "CHIL" or elem[1] == "FAMS" or elem[1] == "FAMC"):
         if not elem[1] in entry:
@@ -149,6 +149,40 @@ def findFam(fId, list):
         if (f["FAM"] == fId):
             return f
 
+def marriageRange(f, indi):
+    '''Returns the range of dates between the start and end of a marriage.
+    If the marraige never started, both values will be None.
+    If the marraige never ended, the second value will be today.
+    Marraige can end in death or divorce.'''
+    if (f["MARR DATE"] == "NA"):
+        start = None
+    else:
+        start = gedStringToDatetime(f["MARR DATE"])
+    if f["DIV DATE"] != "NA":
+        end = gedStringToDatetime(f["DIV DATE"])
+    elif findIndi(f["HUSB"], indi)["DEAT"] == "Y":
+        end = gedStringToDatetime(findIndi(f["HUSB"], indi)["DEAT DATE"])
+    elif findIndi(f["WIFE"], indi)["DEAT"] == "Y":
+        end = gedStringToDatetime(findIndi(f["WIFE"], indi)["DEAT DATE"])
+    else:
+        end = datetime.datetime.now()
+    return (start, end)
+
+def datetimeWithinRange(d, r):
+    '''returns true if d is within the range r'''
+    if (r[0] == None):
+        return False
+    if (r[1] == None):
+        return d >= r[0]
+    return d >= r[0] and d <= r[1]
+
+def datetimeRangeOverlap(rl):
+    '''returns true if any of the ranges in rl overlap'''
+    for i in range(len(rl)):
+        for j in range(i+1, len(rl)):
+            if (datetimeWithinRange(rl[i][0], rl[j]) or datetimeWithinRange(rl[i][1], rl[j])):
+                return True
+    return False
 
 def displayAnomaly(storyKey, **kwargs):
     '''prints a formatted error/anomaly message'''
@@ -220,6 +254,15 @@ def main():
             if (i["AGE"] < 0):
                 displayAnomaly(
                     "US03", id=i["INDI"], dDate=i["DEAT DATE"], bDate=i["BIRT DATE"])
+
+            # US11 (no bigamy)
+            if (len(i["FAMS"]) > 1):
+                count = 0
+                # list of ranges of marraiges for this individual
+                mr = [marriageRange(findFam(f, fam), indi) for f in i["FAMS"]]
+                print(mr)
+                if (datetimeRangeOverlap(mr)):
+                    displayAnomaly("US11", id=i["INDI"], fams=i["FAMS"])
 
         for f in fam:
 
