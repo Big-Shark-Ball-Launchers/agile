@@ -34,7 +34,7 @@ class gedcom_tests(unittest.TestCase):
 
     # Example test. Use as a template. Should always pass.
     def testexample(self):
-        testFile = '''0 NOTE https://github.com/Big-Shark-Ball-Launchers/agile
+        testFile = '''
         0 HEAD
         0 @I1@ INDI
         1 NAME Dick /Smith/
@@ -46,6 +46,34 @@ class gedcom_tests(unittest.TestCase):
         1 RESI
         2 ADDR carnage_flaky0o@icloud.com
         1 FAMC @F1@
+        0 @I2@ INDI
+        1 NAME Jennifer /Smith/
+        2 GIVN Jennifer
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 23 SEP 1960
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1960
+        1 DEAT Y
+        2 DATE 31 DEC 2013
+        1 FAMS @F1@
+        0 @I4@ INDI
+        1 NAME Jane /Smith/
+        2 GIVN Jane
+        2 SURN Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 2 JUN 1983
+        1 FAMC @F1@
         0 @F1@ FAM
         1 HUSB @I3@
         1 WIFE @I2@
@@ -55,7 +83,8 @@ class gedcom_tests(unittest.TestCase):
         2 DATE 14 FEB 1980
         1 _CURRENT Y
         1 _PRIMARY Y
-        0 TRLR'''
+        0 TRLR
+        '''
         expectedOutput = 'MARR'
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
@@ -127,7 +156,6 @@ class gedcom_tests(unittest.TestCase):
         1 BIRT
         2 DATE 13 FEB 2023
         0 @F1@ FAM
-        1 HUSB @I3@
         0 TRLR'''
         currDateString = datetimeToString(datetime.datetime.now())
         expectedOutput = "ERROR: US01: INDI/FAM @I1@: Date BIRT 13 FEB 2023 occurs after current date " + currDateString
@@ -931,11 +959,16 @@ class gedcom_tests(unittest.TestCase):
         1 BIRT
         2 DATE 13 FEB 1981
         1 FAMC @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMC @F1@
         0 @F1@ FAM
-        1 HUSB @I3@
+        1 HUSB @I1@
         1 WIFE @I2@
-        1 CHIL @I1@
-        1 CHIL @I4@
         1 MARR
         2 DATE 14 FEB 1980
         1 DIV
@@ -956,11 +989,17 @@ class gedcom_tests(unittest.TestCase):
         1 BIRT
         2 DATE 13 FEB 1981
         1 FAMC @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMC @F1@
+
         0 @F1@ FAM
-        1 HUSB @I3@
+        1 HUSB @I1@
         1 WIFE @I2@
-        1 CHIL @I1@
-        1 CHIL @I4@
         1 MARR
         2 DATE 14 FEB 1980
         1 DIV
@@ -981,11 +1020,16 @@ class gedcom_tests(unittest.TestCase):
         1 BIRT
         2 DATE 13 FEB 1981
         1 FAMC @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMC @F1@
         0 @F1@ FAM
-        1 HUSB @I3@
+        1 HUSB @I1@
         1 WIFE @I2@
-        1 CHIL @I1@
-        1 CHIL @I4@
         1 MARR
         2 DATE 14 FEB 1980
         1 DIV
@@ -1006,11 +1050,17 @@ class gedcom_tests(unittest.TestCase):
         1 BIRT
         2 DATE 13 FEB 1981
         1 FAMC @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMC @F1@
         0 @F1@ FAM
-        1 HUSB @I3@
+        1 HUSB @I1@
         1 WIFE @I2@
-        1 CHIL @I1@
-        1 CHIL @I4@
+        
         1 MARR
         2 DATE 14 FEB 1980
         0 TRLR'''
@@ -1029,11 +1079,17 @@ class gedcom_tests(unittest.TestCase):
         1 BIRT
         2 DATE 13 FEB 1981
         1 FAMC @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMC @F1@
+
         0 @F1@ FAM
-        1 HUSB @I3@
+        1 HUSB @I1@
         1 WIFE @I2@
-        1 CHIL @I1@
-        1 CHIL @I4@
         1 MARR
         2 DATE 14 JUN 2300
         1 DIV
@@ -1054,7 +1110,7 @@ class gedcom_tests(unittest.TestCase):
         2 DATE 13 FEB 1981
         1 FAMS @F1@
 
-        0 @I1@ INDI
+        0 @I2@ INDI
         1 NAME Mary /Smith/
         1 SEX F
         1 BIRT
@@ -1083,7 +1139,7 @@ class gedcom_tests(unittest.TestCase):
         2 DATE 13 MAR 2000
         1 FAMS @F1@
 
-        0 @I1@ INDI
+        0 @I2@ INDI
         1 NAME Mary /Smith/
         1 SEX F
         1 BIRT
@@ -2014,6 +2070,222 @@ class gedcom_tests(unittest.TestCase):
         '''
         expectedOutput = "ANOMALY: US11: INDI @I1@ is an active spouse in muliple families. FAMS: ['@F1@', '@F2@']"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
-        
+    
+    def testUS12_1(self):
+        # Normal family, no errors expected
+        testFile = '''
+        0 @I1@ INDI
+        1 NAME` Dick
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1980
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 BIRT
+        2 DATE 14 FEB 1978
+        1 FAMS @F1@
+
+        0 @I3@ INDI
+        1 NAME Cathy
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 2010
+        1 FAMC @F1@
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 2005
+        1 CHIL @I3@
+
+        0 TRLR
+        '''
+        expectedOutput = "US12"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    def testUS12_2(self):
+        #Old Dad
+        testFile = '''
+        0 @I1@ INDI
+        1 NAME` Dick
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1910
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 BIRT
+        2 DATE 14 FEB 1978
+        1 FAMS @F1@
+
+        0 @I3@ INDI
+        1 NAME Cathy
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 2010
+        1 FAMC @F1@
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 2005
+        1 CHIL @I3@
+
+        0 TRLR
+        '''
+        expectedOutput = "ANOMALY: US12: INDI @I3@: Birthdate 13 FEB 2010 occurs more than 60 years after mother's birthday: 14 FEB 1978 or more than 80 years after father's birthday: 13 FEB 1910"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    def testUS12_3(self):
+        #Old Mom
+        testFile = '''
+        0 @I1@ INDI
+        1 NAME` Dick
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1980
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 BIRT
+        2 DATE 14 FEB 1940
+        1 FAMS @F1@
+
+        0 @I3@ INDI
+        1 NAME Cathy
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 2010
+        1 FAMC @F1@
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 2005
+        1 CHIL @I3@
+
+        0 TRLR
+        '''
+        expectedOutput = "ANOMALY: US12: INDI @I3@: Birthdate 13 FEB 2010 occurs more than 60 years after mother's birthday: 14 FEB 1940 or more than 80 years after father's birthday: 13 FEB 1980"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+    
+    def testUS12_4(self):
+        #Both old
+        testFile = '''
+        0 @I1@ INDI
+        1 NAME` Dick
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1910
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 BIRT
+        2 DATE 14 FEB 1940
+        1 FAMS @F1@
+
+        0 @I3@ INDI
+        1 NAME Cathy
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 2010
+        1 FAMC @F1@
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 2005
+        1 CHIL @I3@
+
+        0 TRLR
+        '''
+        expectedOutput = "ANOMALY: US12: INDI @I3@: Birthdate 13 FEB 2010 occurs more than 60 years after mother's birthday: 14 FEB 1940 or more than 80 years after father's birthday: 13 FEB 1910"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    def testUS12_5(self):
+        #Mom barely too old
+        testFile = '''
+        0 @I1@ INDI
+        1 NAME` Dick
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1980
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 1950
+        1 FAMS @F1@
+
+        0 @I3@ INDI
+        1 NAME Cathy
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 2010
+        1 FAMC @F1@
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 2005
+        1 CHIL @I3@
+
+        0 TRLR
+        '''
+        expectedOutput = "ANOMALY: US12: INDI @I3@: Birthdate 13 FEB 2010 occurs more than 60 years after mother's birthday: 13 FEB 1950 or more than 80 years after father's birthday: 13 FEB 1980"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+    
+    def testUS12_5(self):
+        #Mom barely young enough
+        testFile = '''
+        0 @I1@ INDI
+        1 NAME` Dick
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1980
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 BIRT
+        2 DATE 14 FEB 1950
+        1 FAMS @F1@
+
+        0 @I3@ INDI
+        1 NAME Cathy
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 2010
+        1 FAMC @F1@
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 2005
+        1 CHIL @I3@
+
+        0 TRLR
+        '''
+        expectedOutput = "US12"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
 if __name__ == '__main__':
     unittest.main()
