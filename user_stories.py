@@ -5,7 +5,7 @@ stories = {
     "US04": "ERROR: {story}: FAM {id}: Divorce date {dDate} occurs before marriage date {mDate}",
     "US05": "ERROR: {story}: FAM {id}: Marriage date {mDate} occurs after death of one or both spouses",
     "US06": "ERROR: {story}: FAM {id}: Divorce date {dDate} occurs before death of one or both spouses",
-    "US07": "",
+    "US07": "ANOMALY: {story}: INDI {id}: Age over 150 years old: {age}",
     "US08": "",
     "US09": "",
     "US10": "",
