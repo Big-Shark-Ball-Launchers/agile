@@ -221,6 +221,10 @@ def main():
             if (i["AGE"] < 0):
                 displayAnomaly(
                     "US03", id=i["INDI"], dDate=i["DEAT DATE"], bDate=i["BIRT DATE"])
+                    
+            # US07
+            if (i["AGE"] > 150):
+                displayAnomaly("US07", id=i["INDI"], age=i["AGE"])
 
             # US08
             anomalyFound = False
@@ -237,7 +241,6 @@ def main():
                     anomalyFound = True
                 if (anomalyFound):
                     displayAnomaly("US08", id=i["INDI"], bDate=bDateStr, mDate=mDateStr, dDate=dDateStr, famID = family["FAM"])
-            
 
         for f in fam:
 

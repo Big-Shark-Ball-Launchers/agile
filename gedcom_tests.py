@@ -293,7 +293,7 @@ class gedcom_tests(unittest.TestCase):
         1 _CURRENT Y
         1 _PRIMARY Y
         0 TRLR'''
-        expectedOutput = "ANNOMALY: US02: INDI/FAM @I3@: Marriage date: 14 FEB 1980 occurs before the individual's birthdate 15 JUL 2000"
+        expectedOutput = "ERROR: US02: INDI/FAM @I3@: Marriage date: 14 FEB 1980 occurs before the individual's birthdate 15 JUL 2000"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
     #US02 tests (Marriage after birth)
@@ -362,7 +362,7 @@ class gedcom_tests(unittest.TestCase):
         1 _CURRENT Y
         1 _PRIMARY Y
         0 TRLR'''
-        expectedOutput = "ANNOMALY: US02: INDI/FAM @I2@: Marriage date: 14 FEB 1950 occurs before the individual's birthdate 23 SEP 1960"
+        expectedOutput = "ERROR: US02: INDI/FAM @I2@: Marriage date: 14 FEB 1950 occurs before the individual's birthdate 23 SEP 1960"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
     #US02 tests (Marriage after birth)
@@ -431,7 +431,7 @@ class gedcom_tests(unittest.TestCase):
         1 _CURRENT Y
         1 _PRIMARY Y
         0 TRLR'''
-        expectedOutput = "\nANNOMALY: US02: INDI/FAM @I3@: Marriage date: 14 FEB 1940 occurs before the individual's birthdate 15 JUL 1960\nANNOMALY: US02: INDI/FAM @I2@: Marriage date: 14 FEB 1940 occurs before the individual's birthdate 23 SEP 1960\n"
+        expectedOutput = "\nERROR: US02: INDI/FAM @I3@: Marriage date: 14 FEB 1940 occurs before the individual's birthdate 15 JUL 1960\nERROR: US02: INDI/FAM @I2@: Marriage date: 14 FEB 1940 occurs before the individual's birthdate 23 SEP 1960\n"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
         
     #US02 tests (Marriage after birth)
@@ -1415,6 +1415,111 @@ class gedcom_tests(unittest.TestCase):
         0 TRLR'''
         expectedOutput = "US06"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    def testUS07_1(self):
+        # individual is older than 150
+        testFile = '''
+        0 HEAD
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1800
+        1 DEAT Y
+        2 DATE 31 DEC 2022
+        1 FAMS @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        0 TRLR'''
+        expectedOutput = "ANOMALY: US07: INDI @I3@: Age over 150 years old: 222"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    def testUS07_2(self):
+        # individual is exactly 150
+        testFile = '''
+        0 HEAD
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1872
+        1 DEAT Y
+        2 DATE 31 DEC 2022
+        1 FAMS @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        0 TRLR'''
+        expectedOutput = "US07"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    def testUS07_3(self):
+        # individual younger than 150
+        testFile = '''
+        0 HEAD
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1900
+        1 DEAT Y
+        2 DATE 31 DEC 2022
+        1 FAMS @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        0 TRLR'''
+        expectedOutput = "US07"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    def testUS07_4(self):
+        # individual is MUCH older than 150
+        testFile = '''
+        0 HEAD
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1000
+        1 DEAT Y
+        2 DATE 31 DEC 2022
+        1 FAMS @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        0 TRLR'''
+        expectedOutput = "ANOMALY: US07: INDI @I3@: Age over 150 years old: 1022"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    def testUS07_5(self):
+        # individual died at 151
+        testFile = '''
+        0 HEAD
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1871
+        1 DEAT Y
+        2 DATE 31 DEC 2022
+        1 FAMS @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        0 TRLR'''
+        expectedOutput = "ANOMALY: US07: INDI @I3@: Age over 150 years old: 151"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
 
 if __name__ == '__main__':
