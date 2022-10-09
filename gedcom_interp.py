@@ -300,9 +300,6 @@ def main():
                     if(calculateAgeAtTime(bDate, marDate) < 14):
                         displayAnomaly("US10", id=i["INDI"], fam=fam_["FAM"], date=marDate)
 
-
-
-
         for f in fam:
 
             # US01
@@ -344,7 +341,19 @@ def main():
             wife = findIndi(f["WIFE"], indi)
             if (husb and wife and divDate != "NA" and ((husb["DEAT DATE"] != "NA" and divDate > gedStringToDatetime(husb["DEAT DATE"])) or (wife["DEAT DATE"] != "NA" and divDate > gedStringToDatetime(wife["DEAT DATE"])))):
                 displayAnomaly('US06', id=f["FAM"], dDate=f["DIV DATE"])
-
+            
+            # US12 Parents not too old
+            mbirthstr = findIndi(f["WIFE"], indi)["BIRT DATE"]
+            fbirthstr = findIndi(f["HUSB"], indi)["BIRT DATE"]
+            for c in f["CHIL"]:
+                found = False
+                cbirthstr = findIndi(c, indi)["BIRT DATE"]
+                if (mbirthstr != "NA" and cbirthstr != "NA" and (calculateAgeAtTime(mbirthstr, cbirthstr) >= 60)):
+                    found = True
+                if (fbirthstr != "NA" and cbirthstr != "NA" and (calculateAgeAtTime(fbirthstr, cbirthstr) >= 80)):
+                    found = True
+                if (found):
+                    displayAnomaly("US12", id=c, bDate = cbirthstr, mbDate=mbirthstr, fbDate=fbirthstr)
 
 if __name__ == "__main__":
     main()
