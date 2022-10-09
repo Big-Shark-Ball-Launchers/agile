@@ -4,6 +4,7 @@
 
 import sys
 import datetime
+from dateutil.relativedelta import relativedelta
 from user_stories import stories
 
 
@@ -36,7 +37,7 @@ def addElement(entry, elem, level):
         value = elem[2]
     elif (elem[1] == "BIRT" or elem[1] == "MARR" or elem[1] == "DIV" or elem[1] == "DEAT"):
         return
-    elif (elem[1] == "CHIL" or elem[1] == "FAMS" or elem[1] == "FAMC"):
+    elif (elem[1] == "CHIL" or elem[1] == "FAMS"):
         if not elem[1] in entry:
             key = elem[1]
             value = [elem[2]]
@@ -119,7 +120,7 @@ def defaultIndi():
         "AGE": 0,
         "DEAT": "N",
         "DEAT DATE": "NA",
-        "FAMC": [],
+        "FAMC": "NA",
         "FAMS": []
     }
 
@@ -159,7 +160,7 @@ def displayAnomaly(storyKey, **kwargs):
 
 def main():
     if (len(sys.argv) <= 1):
-        filename = 'full_family.ged'  # default file path
+        filename = 'My-Family-25-Sep-2022-221241779.ged'  # default file path
     else:
         filename = sys.argv[1]
 
@@ -220,6 +221,23 @@ def main():
             if (i["AGE"] < 0):
                 displayAnomaly(
                     "US03", id=i["INDI"], dDate=i["DEAT DATE"], bDate=i["BIRT DATE"])
+
+            # US08
+            anomalyFound = False
+            family = findFam(i["FAMC"], fam)
+            if (family != None):
+                mDateStr = family["MARR DATE"]
+                dDateStr = family["DIV DATE"]
+                bDateStr = i["BIRT DATE"]
+                if (mDateStr == "NA"): # born when parents were never married
+                    anomalyFound = True
+                elif (gedStringToDatetime(bDateStr) < gedStringToDatetime(mDateStr)): # born before marriage of parents
+                    anomalyFound = True
+                if (dDateStr != "NA" and gedStringToDatetime(bDateStr) > (gedStringToDatetime(dDateStr) + relativedelta(months=+9))): # born after 9 months of divorce of parents
+                    anomalyFound = True
+                if (anomalyFound):
+                    displayAnomaly("US08", id=i["INDI"], bDate=bDateStr, mDate=mDateStr, dDate=dDateStr, famID = family["FAM"])
+            
 
         for f in fam:
 
