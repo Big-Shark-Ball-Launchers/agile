@@ -198,7 +198,7 @@ def displayAnomaly(storyKey, **kwargs):
 
 def main():
     if (len(sys.argv) <= 1):
-        filename = 'My-Family-25-Sep-2022-221241779.ged'  # default file path
+        filename = 'full_family.ged'  # default file path
     else:
         filename = sys.argv[1]
 
@@ -285,7 +285,6 @@ def main():
                 count = 0
                 # list of ranges of marraiges for this individual
                 mr = [marriageRange(findFam(f, fam), indi) for f in i["FAMS"]]
-                print(mr)
                 if (datetimeRangeOverlap(mr)):
                     displayAnomaly("US11", id=i["INDI"], fams=i["FAMS"])
 
