@@ -91,6 +91,9 @@ def calculateAge(indi):
     return timedeltaToYears(end - gedStringToDatetime(indi["BIRT DATE"]))
     # return indi
 
+def calculateAgeAtTime(date1, date2):
+    return timedeltaToYears(gedStringToDatetime(date2) - gedStringToDatetime(date1))
+
 
 def dictListToPrettyTable(d):
     '''converts a list of dictionarys to PrettyTable'''
@@ -220,6 +223,18 @@ def main():
             if (i["AGE"] < 0):
                 displayAnomaly(
                     "US03", id=i["INDI"], dDate=i["DEAT DATE"], bDate=i["BIRT DATE"])
+
+            # US10
+            if(i["FAMS"]):
+                for f in i["FAMS"]:
+                    fam_ = findFam(f,fam)
+                    bDate = i["BIRT DATE"]
+                    marDate = fam_["MARR DATE"]
+                    if(calculateAgeAtTime(bDate, marDate) < 14):
+                        displayAnomaly("US10", id=i["INDI"], fam=fam_["FAM"], date=marDate)
+
+
+
 
         for f in fam:
 

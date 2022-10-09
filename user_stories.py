@@ -8,7 +8,7 @@ stories = {
     "US07": "",
     "US08": "",
     "US09": "",
-    "US10": "",
+    "US10": "ANOMALY: {story}: INDI {id}: FAM {fam}: Marriage date: {date} occurs before age of 14",
     "US11": "",
     "US12": "",
     "US13": "",
