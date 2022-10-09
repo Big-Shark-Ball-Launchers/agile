@@ -211,12 +211,17 @@ def main():
     level = []
     indiFlag = False
     famFlag = False
+    curr = defaultIndi()
+    sawTRLR = False
     with open(filename, 'r') as f:
         for line in f:
             # print(f'--> {line}', end='')
             l = formatLine(line)
             valid = 'Y' if isValidTag(l[1]) else 'N'
             if isValidTag(l[1]):
+                
+                if (l[1] == "TRLR"):
+                    break
 
                 if (l[0] == 0):
                     level = [l[1], None, None]
@@ -241,8 +246,14 @@ def main():
                     addElement(curr, l, level)
 
             # print(f'<-- {l[0]}|{l[1]}|{valid}|{l[2]}')
+        if (indiFlag):
+            indi.append(curr)
+        else:
+            fam.append(curr)
+
         indi = [makeIndiAssumptions(i) for i in indi]
         fam = [makeFamAssumptions(f, indi) for f in fam]
+        print(fam)
         print(dictListToPrettyTable(sorted(indi, key=lambda x: x["INDI"])))
         print(dictListToPrettyTable(sorted(fam, key=lambda x: x["FAM"])))
 
@@ -300,9 +311,6 @@ def main():
                     if(calculateAgeAtTime(bDate, marDate) < 14):
                         displayAnomaly("US10", id=i["INDI"], fam=fam_["FAM"], date=marDate)
 
-
-
-
         for f in fam:
 
             # US01
@@ -344,7 +352,24 @@ def main():
             wife = findIndi(f["WIFE"], indi)
             if (husb and wife and divDate != "NA" and ((husb["DEAT DATE"] != "NA" and divDate > gedStringToDatetime(husb["DEAT DATE"])) or (wife["DEAT DATE"] != "NA" and divDate > gedStringToDatetime(wife["DEAT DATE"])))):
                 displayAnomaly('US06', id=f["FAM"], dDate=f["DIV DATE"])
-
+            
+            # US12 Parents not too old
+            h_exists = f["HUSB"] != "NA"
+            w_exists = f["WIFE"] != "NA"
+            if (h_exists):
+                fbirthstr = findIndi(f["HUSB"], indi)["BIRT DATE"]
+            if (w_exists):
+                mbirthstr = findIndi(f["WIFE"], indi)["BIRT DATE"]
+                
+            for c in f["CHIL"]:
+                found = False
+                cbirthstr = findIndi(c, indi)["BIRT DATE"]
+                if (w_exists and mbirthstr != "NA" and cbirthstr != "NA" and (calculateAgeAtTime(mbirthstr, cbirthstr) >= 60)):
+                    found = True
+                if (h_exists and fbirthstr != "NA" and cbirthstr != "NA" and (calculateAgeAtTime(fbirthstr, cbirthstr) >= 80)):
+                    found = True
+                if (found):
+                    displayAnomaly("US12", id=c, bDate = cbirthstr, mbDate=mbirthstr, fbDate=fbirthstr)
 
 if __name__ == "__main__":
     main()
