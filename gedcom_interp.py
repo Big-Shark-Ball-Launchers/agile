@@ -260,7 +260,7 @@ def main():
         # Loop through each individual and family to check for errors/anomalies
         for i in indi:
 
-            # US01
+            # US01 - Dates before current date
             currentDate = datetime.datetime.now()
             if (i["BIRT DATE"] != "NA" and gedStringToDatetime(i["BIRT DATE"]) > currentDate):
                 displayAnomaly("US01", id=i["INDI"], date=i["BIRT DATE"],
@@ -269,16 +269,16 @@ def main():
                 displayAnomaly("US01", id=i["INDI"], date=i["DEAT DATE"],
                                dateType="DEAT", currentDate=datetimeToString(currentDate))
 
-            # US03
+            # US03 - Birth before death
             if (i["AGE"] < 0):
                 displayAnomaly(
                     "US03", id=i["INDI"], dDate=i["DEAT DATE"], bDate=i["BIRT DATE"])
                     
-            # US07
+            # US07 - Less than 150 years old
             if (i["AGE"] > 150):
                 displayAnomaly("US07", id=i["INDI"], age=i["AGE"])
 
-            # US08
+            # US08 - Birth before marriage of parents
             anomalyFound = False
             family = findFam(i["FAMC"], fam)
             if (family != None):
@@ -307,7 +307,7 @@ def main():
                 if ((wife_death != "NA" and calculateAgeAtTime(birth_date, wife_death) < 0) or (husb_death != "NA" and calculateAgeAtTime(birth_date, husb_effective_death)) < 0):
                     displayAnomaly("US09", id=i["INDI"], dDeath=husband["DEAT DATE"], mDeath=wife["DEAT DATE"], bDate=i["BIRT DATE"])
 
-            # US10
+            # US10 - Marriage after 14
             if(i["FAMS"]):
                 for f in i["FAMS"]:
                     fam_ = findFam(f,fam)
@@ -316,7 +316,7 @@ def main():
                     if(calculateAgeAtTime(bDate, marDate) < 14):
                         displayAnomaly("US10", id=i["INDI"], fam=fam_["FAM"], date=marDate)
 
-            # US11 (no bigamy)
+            # US11 - No bigamy
             if (len(i["FAMS"]) > 1):
                 count = 0
                 # list of ranges of marraiges for this individual
@@ -324,11 +324,45 @@ def main():
                 if (datetimeRangeOverlap(mr)):
                     displayAnomaly("US11", id=i["INDI"], fams=i["FAMS"])
 
+            # US13 - Siblings spacing
+
+
+            # US14 - Multiple births <= 5
+
+
+            # US15 - Fewer than 15 siblings
+
+
+            # US16 - Male last names
+
+
+            # US17 - No marriages to descendants
+
+
+            # US18 - Siblings should not marry
+
+
+            # US19 - First cousins should not marry
+           
+
+            # US20 - Aunts and uncles
+
+
+            # US21 - Correct gender for role
             
+
+            # US22 - Unique IDs
+
+
+            # US23 - Unique name and birth date
+
+
+            # US24 - Unique families by spouses
+        
 
         for f in fam:
 
-            # US01
+            # US01 - Dates before current date
             if (f["MARR DATE"] != "NA" and gedStringToDatetime(f["MARR DATE"]) > currentDate):
                 displayAnomaly("US01", id=f["FAM"], date=f["MARR DATE"],
                                dateType="MARR", currentDate=datetimeToString(currentDate))
@@ -336,7 +370,7 @@ def main():
                 displayAnomaly("US01", id=f["FAM"], date=f["DIV DATE"],
                                dateType="DIV", currentDate=datetimeToString(currentDate))
 
-            # US02
+            # US02 - Birth before marriage
             husb = f["HUSB"]
             wife = f["WIFE"]
             husbIndi = findIndi(husb, indi)
@@ -348,27 +382,27 @@ def main():
                 displayAnomaly(
                     "US02", id=wifeIndi["INDI"], mDate=f["MARR DATE"], bDate=wifeIndi["BIRT DATE"])
 
-            # US04
+            # US04 - Marriage before divorce
             if (f["DIV DATE"] != "NA"):
                 if (timedeltaToYears(gedStringToDatetime(f["DIV DATE"]) - gedStringToDatetime(f["MARR DATE"])) < 0):
                     displayAnomaly(
                         "US04", id=f["FAM"], mDate=f["MARR DATE"], dDate=f["DIV DATE"])
 
-            # US05 Marriage before death
+            # US05 - Marriage before death
             marDate = gedStringToDatetime(f["MARR DATE"])
             husb = findIndi(f["HUSB"], indi)
             wife = findIndi(f["WIFE"], indi)
             if (husb and wife and marDate != "NA" and ((husb["DEAT DATE"] != "NA" and marDate > gedStringToDatetime(husb["DEAT DATE"])) or (wife["DEAT DATE"] != "NA" and marDate > gedStringToDatetime(wife["DEAT DATE"])))):
                 displayAnomaly('US05', id=f["FAM"], mDate=f["MARR DATE"])
 
-            # US06 Divorce before death
+            # US06 - Divorce before death
             divDate = gedStringToDatetime(f["DIV DATE"])
             husb = findIndi(f["HUSB"], indi)
             wife = findIndi(f["WIFE"], indi)
             if (husb and wife and divDate != "NA" and ((husb["DEAT DATE"] != "NA" and divDate > gedStringToDatetime(husb["DEAT DATE"])) or (wife["DEAT DATE"] != "NA" and divDate > gedStringToDatetime(wife["DEAT DATE"])))):
                 displayAnomaly('US06', id=f["FAM"], dDate=f["DIV DATE"])
             
-            # US12 Parents not too old
+            # US12 - Parents not too old
             h_exists = f["HUSB"] != "NA"
             w_exists = f["WIFE"] != "NA"
             if (h_exists):
@@ -385,6 +419,31 @@ def main():
                     found = True
                 if (found):
                     displayAnomaly("US12", id=c, bDate = cbirthstr, mbDate=mbirthstr, fbDate=fbirthstr)
+
+            # US13 - Siblings spacing
+
+            # US14 - Multiple births <= 5
+
+            # US15 - Fewer than 15 siblings
+
+            # US16 - Male last names
+
+            # US17 - No marriages to descendants
+
+            # US18 - Siblings should not marry
+
+            # US19 - First cousins should not marry
+
+            # US20 - Aunts and uncles
+
+            # US21 - Correct gender for role
+
+            # US22 - Unique IDs
+
+            # US23 - Unique name and birth date
+
+            # US24 - Unique families by spouses
+
 
 if __name__ == "__main__":
     main()
