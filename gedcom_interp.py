@@ -294,6 +294,21 @@ def main():
                 if (anomalyFound):
                     displayAnomaly("US08", id=i["INDI"], bDate=bDateStr, mDate=mDateStr, dDate=dDateStr, famID = family["FAM"])
 
+            # US09 - Birth before death of parents
+            if (i["FAMC"] != "NA"):
+                family = findFam(i["FAMC"], fam)
+                husband = findIndi(family["HUSB"], indi)
+                wife = findIndi(family["WIFE"], indi)
+                husb_death = husband["DEAT DATE"]
+                wife_death = wife["DEAT DATE"]
+                if (husb_death != "NA"):
+                    husb_effective_death = datetimeToString(gedStringToDatetime(husb_death) + relativedelta(months=+9))
+                birth_date = i["BIRT DATE"]
+                if ((wife_death != "NA" and calculateAgeAtTime(birth_date, wife_death) < 0) or (husb_death != "NA" and calculateAgeAtTime(birth_date, husb_effective_death)) < 0):
+                    displayAnomaly("US09", id=i["INDI"], dDeath=husband["DEAT DATE"], mDeath=wife["DEAT DATE"], bDate=i["BIRT DATE"])
+
+
+
             # US11 (no bigamy)
             if (len(i["FAMS"]) > 1):
                 count = 0
