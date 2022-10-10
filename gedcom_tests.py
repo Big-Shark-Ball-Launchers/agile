@@ -1865,6 +1865,286 @@ class gedcom_tests(unittest.TestCase):
         expectedOutput = "US08"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
+    # US09
+    def testUS09_1(self):
+        # child born before death of both parents - no error should occur
+        testFile = '''
+        0 HEAD
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        2 GIVN Dick
+        2 SURN Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 12 FEB 1981
+        1 RESI
+        2 ADDR carnage_flaky0o@icloud.com
+        1 FAMC @F1@
+        0 @I2@ INDI
+        1 NAME Jennifer /Smith/
+        2 GIVN Jennifer
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 23 SEP 1960
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1960
+        1 DEAT Y
+        2 DATE 31 DEC 2013
+        1 FAMS @F1@
+        0 @I4@ INDI
+        1 NAME Jane /Smith/
+        2 GIVN Jane
+        2 SURN Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 2 OCT 1996
+        1 FAMC @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 CHIL @I1@
+        1 CHIL @I4@
+        1 MARR
+        2 DATE 14 FEB 1980
+        0 TRLR'''
+        expectedOutput = "US09"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    def testUS09_2(self):
+        # born after death of mother - error should occur
+        testFile = '''
+                         0 HEAD
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        2 GIVN Dick
+        2 SURN Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 12 FEB 1991
+        1 RESI
+        2 ADDR carnage_flaky0o@icloud.com
+        1 FAMC @F1@
+        0 @I2@ INDI
+        1 NAME Jennifer /Smith/
+        2 GIVN Jennifer
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 23 SEP 1960
+        1 DEAT Y
+        2 DATE 4 SEP 1987
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1960
+        1 DEAT Y
+        2 DATE 31 DEC 2013
+        1 FAMS @F1@
+        0 @I4@ INDI
+        1 NAME Jane /Smith/
+        2 GIVN Jane
+        2 SURN Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 2 OCT 1996
+        1 FAMC @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 CHIL @I1@
+        1 CHIL @I4@
+        1 MARR
+        2 DATE 14 FEB 1980
+        1 DIV
+        2 DATE 13 JUL 1996
+        0 TRLR'''
+        expectedOutput1 = "ANOMALY: US09: INDI @I1@: Birth date 12 FEB 1991 occurs after mother's death 4 SEP 1987 or more than 9 months after father's death 31 DEC 2013"
+        self.run_gedcom_test(testFile, expectedOutput1, self.assertIn)
+        expectedOutput2 = "ANOMALY: US09: INDI @I4@: Birth date 2 OCT 1996 occurs after mother's death 4 SEP 1987 or more than 9 months after father's death 31 DEC 2013"
+        self.run_gedcom_test(testFile, expectedOutput2, self.assertIn)
+
+    def testUS09_3(self):
+        # Born after father has been dead for 9 months - error should occur
+        testFile = '''
+        0 HEAD
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        2 GIVN Dick
+        2 SURN Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 12 FEB 1991
+        1 RESI
+        2 ADDR carnage_flaky0o@icloud.com
+        1 FAMC @F1@
+        0 @I2@ INDI
+        1 NAME Jennifer /Smith/
+        2 GIVN Jennifer
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 23 SEP 1960
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1960
+        1 DEAT Y
+        2 DATE 31 DEC 1987
+        1 FAMS @F1@
+        0 @I4@ INDI
+        1 NAME Jane /Smith/
+        2 GIVN Jane
+        2 SURN Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 2 OCT 1996
+        1 FAMC @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 CHIL @I1@
+        1 CHIL @I4@
+        1 MARR
+        2 DATE 14 FEB 1980
+        1 DIV
+        2 DATE 13 JUL 1996
+        0 TRLR'''
+        expectedOutput1 = "ANOMALY: US09: INDI @I1@: Birth date 12 FEB 1991 occurs after mother's death NA or more than 9 months after father's death 31 DEC 1987"
+        self.run_gedcom_test(testFile, expectedOutput1, self.assertIn)
+        expectedOutput2 = "ANOMALY: US09: INDI @I4@: Birth date 2 OCT 1996 occurs after mother's death NA or more than 9 months after father's death 31 DEC 1987"
+        self.run_gedcom_test(testFile, expectedOutput2, self.assertIn)
+
+    def testUS09_4(self):
+        # born after both parents are dead
+        testFile = '''
+        0 HEAD
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        2 GIVN Dick
+        2 SURN Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 12 FEB 1981
+        1 RESI
+        2 ADDR carnage_flaky0o@icloud.com
+        1 FAMC @F1@
+        0 @I2@ INDI
+        1 NAME Jennifer /Smith/
+        2 GIVN Jennifer
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 23 SEP 1960
+        1 DEAT Y
+        2 DATE 4 SEP 1995
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1960
+        1 DEAT Y
+        2 DATE 31 DEC 1997
+        1 FAMS @F1@
+        0 @I4@ INDI
+        1 NAME Jane /Smith/
+        2 GIVN Jane
+        2 SURN Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 2 OCT 2000
+        1 FAMC @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 CHIL @I1@
+        1 CHIL @I4@
+        1 MARR
+        2 DATE 14 FEB 1980
+        0 TRLR'''
+        expectedOutput = "ANOMALY: US09: INDI @I4@: Birth date 2 OCT 2000 occurs after mother's death 4 SEP 1995 or more than 9 months after father's death 31 DEC 1997"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    def testUS09_5(self):
+        # born within 9 months of father's death - no error should occur
+        testFile = '''
+        0 HEAD
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        2 GIVN Dick
+        2 SURN Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 12 FEB 1981
+        1 RESI
+        2 ADDR carnage_flaky0o@icloud.com
+        1 FAMC @F1@
+        0 @I2@ INDI
+        1 NAME Jennifer /Smith/
+        2 GIVN Jennifer
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 23 SEP 1960
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1960
+        1 DEAT Y
+        2 DATE 31 DEC 1996
+        1 FAMS @F1@
+        0 @I4@ INDI
+        1 NAME Jane /Smith/
+        2 GIVN Jane
+        2 SURN Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 5 APR 1997
+        1 FAMC @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 CHIL @I1@
+        1 CHIL @I4@
+        1 MARR
+        2 DATE 14 FEB 1980
+        0 TRLR'''
+        expectedOutput = "US09"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+
+
     # US11
     def testUS11_1(self):
         # Normal simple family, no errors expected

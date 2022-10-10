@@ -302,7 +302,7 @@ def main():
                 husb_death = husband["DEAT DATE"]
                 wife_death = wife["DEAT DATE"]
                 if (husb_death != "NA"):
-                    husb_effective_death = datetimeToString(gedStringToDatetime(husb_death) - relativedelta(months=+9))
+                    husb_effective_death = datetimeToString(gedStringToDatetime(husb_death) + relativedelta(months=+9))
                 birth_date = i["BIRT DATE"]
                 if ((wife_death != "NA" and calculateAgeAtTime(birth_date, wife_death) < 0) or (husb_death != "NA" and calculateAgeAtTime(birth_date, husb_effective_death)) < 0):
                     displayAnomaly("US09", id=i["INDI"], dDeath=husband["DEAT DATE"], mDeath=wife["DEAT DATE"], bDate=i["BIRT DATE"])
