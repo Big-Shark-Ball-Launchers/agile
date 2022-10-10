@@ -1809,6 +1809,191 @@ class gedcom_tests(unittest.TestCase):
         expectedOutput = "US08"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
+    def testUS10_1(self):
+        # marriage before 14
+        testFile = '''
+        0 HEAD
+        0 @I2@ INDI
+        1 NAME Jennifer /Smith/
+        2 GIVN Jennifer
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 23 SEP 1978
+        1 DEAT Y
+        2 DATE 26 AUG 2016
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1960
+        1 DEAT Y
+        2 DATE 31 DEC 2013
+        1 FAMS @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 1980
+        1 DIV
+        2 DATE 18 NOV 2001
+        0 TRLR'''
+        expectedOutput = "ANOMALY: US10: INDI @I2@: Marriage date: 14 FEB 1980 occurs before age of 14"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    def testUS10_2(self):
+        # marriage after 14 (no error)
+        testFile = '''
+        0 HEAD
+        0 @I2@ INDI
+        1 NAME Jennifer /Smith/
+        2 GIVN Jennifer
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 23 SEP 1940
+        1 DEAT Y
+        2 DATE 26 AUG 2016
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1960
+        1 DEAT Y
+        2 DATE 31 DEC 2013
+        1 FAMS @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 1980
+        1 DIV
+        2 DATE 18 NOV 2001
+        0 TRLR'''
+        expectedOutput = "US10"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    def testUS10_3(self):
+        # marriage at 14
+        testFile = '''
+        0 HEAD
+        0 @I2@ INDI
+        1 NAME Jennifer /Smith/
+        2 GIVN Jennifer
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 23 SEP 1966
+        1 DEAT Y
+        2 DATE 26 AUG 2016
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1960
+        1 DEAT Y
+        2 DATE 31 DEC 2013
+        1 FAMS @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 1980
+        1 DIV
+        2 DATE 18 NOV 2001
+        0 TRLR'''
+        expectedOutput = "ANOMALY: US10: INDI @I2@: Marriage date: 14 FEB 1980 occurs before age of 14"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+    
+    def testUS10_4(self):
+        # both under 14
+        testFile = '''
+        0 HEAD
+        0 @I2@ INDI
+        1 NAME Jennifer /Smith/
+        2 GIVN Jennifer
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 23 SEP 1970
+        1 DEAT Y
+        2 DATE 26 AUG 2016
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1970
+        1 DEAT Y
+        2 DATE 31 DEC 2013
+        1 FAMS @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 1980
+        1 DIV
+        2 DATE 18 NOV 2001
+        0 TRLR'''
+        expectedOutput = "ANOMALY: US10: INDI @I2@: Marriage date: 14 FEB 1980 occurs before age of 14"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    def testUS10_5(self):
+        # both exactly 14
+        testFile = '''
+        0 HEAD
+        0 @I2@ INDI
+        1 NAME Jennifer /Smith/
+        2 GIVN Jennifer
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX F
+        1 BIRT
+        2 DATE 23 SEP 1965
+        1 DEAT Y
+        2 DATE 26 AUG 2016
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joe /Smith/
+        2 GIVN Joe
+        2 SURN Smith
+        2 _MARNM Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 15 JUL 1965
+        1 DEAT Y
+        2 DATE 31 DEC 2013
+        1 FAMS @F1@
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 1980
+        1 DIV
+        2 DATE 18 NOV 2001
+        0 TRLR'''
+        expectedOutput = "US10"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
     # US11
     def testUS11_1(self):
         # Normal simple family, no errors expected
