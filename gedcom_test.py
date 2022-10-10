@@ -255,7 +255,7 @@ class gedcom_tests(unittest.TestCase):
         expectedOutput = "ERROR: US01: INDI/FAM @F1@: Date DIV 20 APR 2024 occurs after current date " + currDateString
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
- # US02 tests (Marriage after birth)
+ # US02 tests (Birth before marriage)
     def testUS02_1(self):
         # Born after marriage
         testFile = '''
@@ -1098,7 +1098,7 @@ class gedcom_tests(unittest.TestCase):
         expectedOutput = "ERROR: US04: FAM @F1@: Divorce date 21 JAN 2200 occurs before marriage date 14 JUN 2300"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
-    # US05 Tests (marriage before death)
+    # US05 Tests (Marriage before death)
     def testUS05_1(self):
         # both members are alive. No error should occur.
         testFile = '''
@@ -1248,7 +1248,7 @@ class gedcom_tests(unittest.TestCase):
         expectedOutput = "ERROR: US05: FAM @F1@: Marriage date 14 JUN 2002 occurs after death of one or both spouses"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
-    # US06 Tests (divorce before death)
+    # US06 Tests (Divorce before death)
     def testUS06_1(self):
         # both members are alive. No error should occur.
         testFile = '''
@@ -1472,6 +1472,7 @@ class gedcom_tests(unittest.TestCase):
         expectedOutput = "US06"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
+    # US07 tests (Less than 150 years old)
     def testUS07_1(self):
         # individual is older than 150
         testFile = '''
@@ -1865,7 +1866,7 @@ class gedcom_tests(unittest.TestCase):
         expectedOutput = "US08"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
-    # US09
+    # US09 Tests (Birth before death of parents)
     def testUS09_1(self):
         # child born before death of both parents - no error should occur
         testFile = '''
@@ -2143,6 +2144,7 @@ class gedcom_tests(unittest.TestCase):
         expectedOutput = "US09"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
+    # US10 Tests (Marriage after 14)
     def testUS10_1(self):
         # marriage before 14
         testFile = '''
@@ -2328,7 +2330,7 @@ class gedcom_tests(unittest.TestCase):
         expectedOutput = "US10"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
-    # US11
+    # US11 Tests (No Bigamy)
     def testUS11_1(self):
         # Normal simple family, no errors expected
         testFile = '''
@@ -2534,6 +2536,7 @@ class gedcom_tests(unittest.TestCase):
         expectedOutput = "ANOMALY: US11: INDI @I1@ is an active spouse in muliple families. FAMS: ['@F1@', '@F2@']"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
     
+    # US12 Tests (Parents not too old)
     def testUS12_1(self):
         # Normal family, no errors expected
         testFile = '''
@@ -2749,6 +2752,56 @@ class gedcom_tests(unittest.TestCase):
         '''
         expectedOutput = "US12"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    # US13 Tests (Siblings spacing)
+    def testUS13_1(self):
+        pass
+
+    # US14 Tests (Multiple births <= 5)
+    def testUS14_1(self):
+        pass
+
+    # US15 Tests (Fewer than 15 siblings)
+    def testUS15_1(self):
+        pass
+
+    # US16 Tests (Male last names)
+    def testUS16_1(self):
+        pass
+
+    # US17 Tests (No marriages to descendants)
+    def testUS17_1(self):
+        pass
+
+    # US18 Tests (Siblings should not marry)
+    def testUS18_1(self):
+        pass
+
+    # US19 Tests (First cousins should not marry)
+    def testUS19_1(self):
+        pass
+
+    # US20 Tests (Aunts and uncles)
+    def testUS20_1(self):
+        pass
+
+    # US21 Tests (Correct gender for role)
+    def testUS21_1(self):
+        pass
+
+    # US22 Tests (Unique IDs)
+    def testUS22_1(self):
+        pass
+
+    # US23 Tests (Unique name and birth date)
+    def testUS23_1(self):
+        pass
+
+    # US24 Tests (Unique families by spouses)
+    def testUS24_1(self):
+        pass
+        
+        
 
 if __name__ == '__main__':
     unittest.main()
