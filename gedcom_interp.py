@@ -307,7 +307,14 @@ def main():
                 if ((wife_death != "NA" and calculateAgeAtTime(birth_date, wife_death) < 0) or (husb_death != "NA" and calculateAgeAtTime(birth_date, husb_effective_death)) < 0):
                     displayAnomaly("US09", id=i["INDI"], dDeath=husband["DEAT DATE"], mDeath=wife["DEAT DATE"], bDate=i["BIRT DATE"])
 
-
+            # US10
+            if(i["FAMS"]):
+                for f in i["FAMS"]:
+                    fam_ = findFam(f,fam)
+                    bDate = i["BIRT DATE"]
+                    marDate = fam_["MARR DATE"]
+                    if(calculateAgeAtTime(bDate, marDate) < 14):
+                        displayAnomaly("US10", id=i["INDI"], fam=fam_["FAM"], date=marDate)
 
             # US11 (no bigamy)
             if (len(i["FAMS"]) > 1):
@@ -317,14 +324,7 @@ def main():
                 if (datetimeRangeOverlap(mr)):
                     displayAnomaly("US11", id=i["INDI"], fams=i["FAMS"])
 
-            # US10
-            if(i["FAMS"]):
-                for f in i["FAMS"]:
-                    fam_ = findFam(f,fam)
-                    bDate = i["BIRT DATE"]
-                    marDate = fam_["MARR DATE"]
-                    if(calculateAgeAtTime(bDate, marDate) < 14):
-                        displayAnomaly("US10", id=i["INDI"], fam=fam_["FAM"], date=marDate)
+            
 
         for f in fam:
 
