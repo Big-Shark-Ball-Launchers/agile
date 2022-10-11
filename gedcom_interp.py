@@ -205,8 +205,8 @@ def main():
     else:
         filename = sys.argv[1]
 
-    indi = []
-    fam = []
+    indiList = []
+    famList = []
     # keeps track of the tag of levels
     level = []
     indiFlag = False
@@ -233,9 +233,9 @@ def main():
                 if (indiFlag or famFlag) and l[0] == 0:
                     # if we reach the end of an individual or family, add it to the list
                     if (indiFlag):
-                        indi.append(curr)
+                        indiList.append(curr)
                     else:
-                        fam.append(curr)
+                        famList.append(curr)
                 if ((l[1] == 'INDI' or l[1] == 'FAM') and l[0] == 0):
                     curr = defaultIndi() if l[1] == 'INDI' else defaultFam()
                     addElement(curr, l, level)
@@ -247,18 +247,18 @@ def main():
 
             # print(f'<-- {l[0]}|{l[1]}|{valid}|{l[2]}')
         if (indiFlag):
-            indi.append(curr)
+            indiList.append(curr)
         else:
-            fam.append(curr)
+            famList.append(curr)
 
-        indi = [makeIndiAssumptions(i) for i in indi]
-        fam = [makeFamAssumptions(f, indi) for f in fam]
-        print(fam)
-        print(dictListToPrettyTable(sorted(indi, key=lambda x: x["INDI"])))
-        print(dictListToPrettyTable(sorted(fam, key=lambda x: x["FAM"])))
+        indiList = [makeIndiAssumptions(i) for i in indiList]
+        famList = [makeFamAssumptions(f, indiList) for f in famList]
+        print(famList)
+        print(dictListToPrettyTable(sorted(indiList, key=lambda x: x["INDI"])))
+        print(dictListToPrettyTable(sorted(famList, key=lambda x: x["FAM"])))
 
         # Loop through each individual and family to check for errors/anomalies
-        for i in indi:
+        for i in indiList:
 
             # US01 - Dates before current date
             currentDate = datetime.datetime.now()
@@ -280,7 +280,7 @@ def main():
 
             # US08 - Birth before marriage of parents
             anomalyFound = False
-            family = findFam(i["FAMC"], fam)
+            family = findFam(i["FAMC"], famList)
             if (family != None):
                 mDateStr = family["MARR DATE"]
                 dDateStr = family["DIV DATE"]
@@ -296,9 +296,9 @@ def main():
 
             # US09 - Birth before death of parents
             if (i["FAMC"] != "NA"):
-                family = findFam(i["FAMC"], fam)
-                husband = findIndi(family["HUSB"], indi)
-                wife = findIndi(family["WIFE"], indi)
+                family = findFam(i["FAMC"], famList)
+                husband = findIndi(family["HUSB"], indiList)
+                wife = findIndi(family["WIFE"], indiList)
                 husb_death = husband["DEAT DATE"]
                 wife_death = wife["DEAT DATE"]
                 if (husb_death != "NA"):
@@ -310,7 +310,7 @@ def main():
             # US10 - Marriage after 14
             if(i["FAMS"]):
                 for f in i["FAMS"]:
-                    fam_ = findFam(f,fam)
+                    fam_ = findFam(f,famList)
                     bDate = i["BIRT DATE"]
                     marDate = fam_["MARR DATE"]
                     if(calculateAgeAtTime(bDate, marDate) < 14):
@@ -320,7 +320,7 @@ def main():
             if (len(i["FAMS"]) > 1):
                 count = 0
                 # list of ranges of marraiges for this individual
-                mr = [marriageRange(findFam(f, fam), indi) for f in i["FAMS"]]
+                mr = [marriageRange(findFam(f, famList), indiList) for f in i["FAMS"]]
                 if (datetimeRangeOverlap(mr)):
                     displayAnomaly("US11", id=i["INDI"], fams=i["FAMS"])
 
@@ -360,7 +360,7 @@ def main():
             # US24 - Unique families by spouses
         
 
-        for f in fam:
+        for f in famList:
 
             # US01 - Dates before current date
             if (f["MARR DATE"] != "NA" and gedStringToDatetime(f["MARR DATE"]) > currentDate):
@@ -373,8 +373,8 @@ def main():
             # US02 - Birth before marriage
             husb = f["HUSB"]
             wife = f["WIFE"]
-            husbIndi = findIndi(husb, indi)
-            wifeIndi = findIndi(wife, indi)
+            husbIndi = findIndi(husb, indiList)
+            wifeIndi = findIndi(wife, indiList)
             if (husbIndi and timedeltaToYears(gedStringToDatetime(f["MARR DATE"]) - gedStringToDatetime(husbIndi["BIRT DATE"])) < 0):
                 displayAnomaly(
                     "US02", id=husbIndi["INDI"], mDate=f["MARR DATE"], bDate=husbIndi["BIRT DATE"])
@@ -390,15 +390,15 @@ def main():
 
             # US05 - Marriage before death
             marDate = gedStringToDatetime(f["MARR DATE"])
-            husb = findIndi(f["HUSB"], indi)
-            wife = findIndi(f["WIFE"], indi)
+            husb = findIndi(f["HUSB"], indiList)
+            wife = findIndi(f["WIFE"], indiList)
             if (husb and wife and marDate != "NA" and ((husb["DEAT DATE"] != "NA" and marDate > gedStringToDatetime(husb["DEAT DATE"])) or (wife["DEAT DATE"] != "NA" and marDate > gedStringToDatetime(wife["DEAT DATE"])))):
                 displayAnomaly('US05', id=f["FAM"], mDate=f["MARR DATE"])
 
             # US06 - Divorce before death
             divDate = gedStringToDatetime(f["DIV DATE"])
-            husb = findIndi(f["HUSB"], indi)
-            wife = findIndi(f["WIFE"], indi)
+            husb = findIndi(f["HUSB"], indiList)
+            wife = findIndi(f["WIFE"], indiList)
             if (husb and wife and divDate != "NA" and ((husb["DEAT DATE"] != "NA" and divDate > gedStringToDatetime(husb["DEAT DATE"])) or (wife["DEAT DATE"] != "NA" and divDate > gedStringToDatetime(wife["DEAT DATE"])))):
                 displayAnomaly('US06', id=f["FAM"], dDate=f["DIV DATE"])
             
@@ -406,13 +406,13 @@ def main():
             h_exists = f["HUSB"] != "NA"
             w_exists = f["WIFE"] != "NA"
             if (h_exists):
-                fbirthstr = findIndi(f["HUSB"], indi)["BIRT DATE"]
+                fbirthstr = findIndi(f["HUSB"], indiList)["BIRT DATE"]
             if (w_exists):
-                mbirthstr = findIndi(f["WIFE"], indi)["BIRT DATE"]
+                mbirthstr = findIndi(f["WIFE"], indiList)["BIRT DATE"]
                 
             for c in f["CHIL"]:
                 found = False
-                cbirthstr = findIndi(c, indi)["BIRT DATE"]
+                cbirthstr = findIndi(c, indiList)["BIRT DATE"]
                 if (w_exists and mbirthstr != "NA" and cbirthstr != "NA" and (calculateAgeAtTime(mbirthstr, cbirthstr) >= 60)):
                     found = True
                 if (h_exists and fbirthstr != "NA" and cbirthstr != "NA" and (calculateAgeAtTime(fbirthstr, cbirthstr) >= 80)):
