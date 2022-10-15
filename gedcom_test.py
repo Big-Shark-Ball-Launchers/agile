@@ -1,39 +1,36 @@
+import datetime
+import gedcom_interp as gi
 import io
-import unittest
-import unittest.mock
 import os
-
 import sys
 import tempfile
+import unittest
+import unittest.mock
 
-import gedcom_interp as gi
-
-import datetime
 from gedcom_interp import datetimeToString
 
-
-class gedcom_tests(unittest.TestCase):
-
-    # Function to help with testing.
-    # Automatically creates a temporary file with the given contents,
-    # passes the file to the main program, and runs the passeed assertion
-    # with the expected output.
-    def run_gedcom_test(self, gedcom_file, expected_output, f):
-        '''gedcom_file is a string containing the gedcom file to be tested.
+# Function to help with testing.
+# Automatically creates a temporary file with the given contents,
+# passes the file to the main program, and runs the passeed assertion
+# with the expected output.
+def run_test(self, gedcom_file, expected_output, f):
+    '''gedcom_file is a string containing the gedcom file to be tested.
             expected_output is a string containing the expected output.
             f is the assertion to be used (e.g. self.assertIn, self.assertNotIn, etc.)'''
-        with tempfile.NamedTemporaryFile(delete=False) as tmp:
-            with unittest.mock.patch.object(sys, 'argv', ['prog', tmp.name]):
-                with unittest.mock.patch('sys.stdout', new=io.StringIO()) as fake_out:
-                    tmp.write(gedcom_file.encode('utf-8'))
-                    tmp.seek(0)
-                    gi.main()
-                    f(expected_output, fake_out.getvalue())
-                    tmp.close()
-                    os.unlink(tmp.name)
+    with tempfile.NamedTemporaryFile(delete=False) as tmp:
+        with unittest.mock.patch.object(sys, 'argv', ['prog', tmp.name]):
+            with unittest.mock.patch('sys.stdout', new=io.StringIO()) as fake_out:
+                tmp.write(gedcom_file.encode('utf-8'))
+                tmp.seek(0)
+                gi.main()
+                f(expected_output, fake_out.getvalue())
+                tmp.close()
+                os.unlink(tmp.name)
 
-    # Example test. Use as a template. Should always pass.
-    def testexample(self):
+class test_example(unittest.TestCase):
+    run_gedcom_test = run_test
+    def test_example(self):
+        # Example test. Use as a template. Should always pass.
         testFile = '''
         0 HEAD
         0 @I1@ INDI
@@ -87,6 +84,9 @@ class gedcom_tests(unittest.TestCase):
         '''
         expectedOutput = 'MARR'
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+class US01_tests(unittest.TestCase):
+    run_gedcom_test = run_test
 
     # US01 tests (Dates before current date)
     def testUS01_1(self):
@@ -255,7 +255,9 @@ class gedcom_tests(unittest.TestCase):
         expectedOutput = "ERROR: US01: INDI/FAM @F1@: Date DIV 20 APR 2024 occurs after current date " + currDateString
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
- # US02 tests (Birth before marriage)
+class US02_tests(unittest.TestCase):
+    run_gedcom_test = run_test
+    # US02 tests (Birth before marriage)
     def testUS02_1(self):
         # Born after marriage
         testFile = '''
@@ -600,6 +602,8 @@ class gedcom_tests(unittest.TestCase):
         expectedOutput = "US02"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
+class US03_tests(unittest.TestCase):
+    run_gedcom_test = run_test
     # US03 tests (Birth before death)
     def testUS03_1(self):
         # No error
@@ -945,8 +949,9 @@ class gedcom_tests(unittest.TestCase):
         expectedOutput = "US03"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
+class US04_tests(unittest.TestCase):
+    run_gedcom_test = run_test
     # US04 tests (Marriage before divorce)
-
     def testUS04_1(self):
         # Normal situation where error should occur
         testFile = '''
@@ -1098,6 +1103,8 @@ class gedcom_tests(unittest.TestCase):
         expectedOutput = "ERROR: US04: FAM @F1@: Divorce date 21 JAN 2200 occurs before marriage date 14 JUN 2300"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
+class US05_tests(unittest.TestCase):
+    run_gedcom_test = run_test
     # US05 Tests (Marriage before death)
     def testUS05_1(self):
         # both members are alive. No error should occur.
@@ -1248,6 +1255,8 @@ class gedcom_tests(unittest.TestCase):
         expectedOutput = "ERROR: US05: FAM @F1@: Marriage date 14 JUN 2002 occurs after death of one or both spouses"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
+class US06_tests(unittest.TestCase):
+    run_gedcom_test = run_test
     # US06 Tests (Divorce before death)
     def testUS06_1(self):
         # both members are alive. No error should occur.
@@ -1472,6 +1481,8 @@ class gedcom_tests(unittest.TestCase):
         expectedOutput = "US06"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
+class US07_tests(unittest.TestCase):
+    run_gedcom_test = run_test
     # US07 tests (Less than 150 years old)
     def testUS07_1(self):
         # individual is older than 150
@@ -1578,6 +1589,8 @@ class gedcom_tests(unittest.TestCase):
         expectedOutput = "ANOMALY: US07: INDI @I3@: Age over 150 years old: 151"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
+class US08_tests(unittest.TestCase):
+    run_gedcom_test = run_test
         # US08 Tests (Birth before marriage of parents or after 9 months after their divorce)
     def testUS08_1(self):
         # Birth after marriage - no error should occur
@@ -1866,6 +1879,8 @@ class gedcom_tests(unittest.TestCase):
         expectedOutput = "US08"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
+class US09_tests(unittest.TestCase):
+    run_gedcom_test = run_test
     # US09 Tests (Birth before death of parents)
     def testUS09_1(self):
         # child born before death of both parents - no error should occur
@@ -2144,6 +2159,8 @@ class gedcom_tests(unittest.TestCase):
         expectedOutput = "US09"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
+class US10_tests(unittest.TestCase):
+    run_gedcom_test = run_test
     # US10 Tests (Marriage after 14)
     def testUS10_1(self):
         # marriage before 14
@@ -2330,6 +2347,8 @@ class gedcom_tests(unittest.TestCase):
         expectedOutput = "US10"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
+class US11_tests(unittest.TestCase):
+    run_gedcom_test = run_test
     # US11 Tests (No Bigamy)
     def testUS11_1(self):
         # Normal simple family, no errors expected
@@ -2536,6 +2555,8 @@ class gedcom_tests(unittest.TestCase):
         expectedOutput = "ANOMALY: US11: INDI @I1@ is an active spouse in muliple families. FAMS: ['@F1@', '@F2@']"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
     
+class US12_tests(unittest.TestCase):
+    run_gedcom_test = run_test
     # US12 Tests (Parents not too old)
     def testUS12_1(self):
         # Normal family, no errors expected
@@ -2753,55 +2774,77 @@ class gedcom_tests(unittest.TestCase):
         expectedOutput = "US12"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
+class US13_tests(unittest.TestCase):
+    run_gedcom_test = run_test
     # US13 Tests (Siblings spacing)
     def testUS13_1(self):
         pass
 
+class US14_tests(unittest.TestCase):
+    run_gedcom_test = run_test
     # US14 Tests (Multiple births <= 5)
     def testUS14_1(self):
         pass
 
+class US15_tests(unittest.TestCase):
+    run_gedcom_test = run_test
     # US15 Tests (Fewer than 15 siblings)
     def testUS15_1(self):
         pass
 
+class US16_tests(unittest.TestCase):
+    run_gedcom_test = run_test
     # US16 Tests (Male last names)
     def testUS16_1(self):
         pass
 
+class US17_tests(unittest.TestCase):
+    run_gedcom_test = run_test
     # US17 Tests (No marriages to descendants)
     def testUS17_1(self):
         pass
 
+class US18_tests(unittest.TestCase):
+    run_gedcom_test = run_test
     # US18 Tests (Siblings should not marry)
     def testUS18_1(self):
         pass
 
+class US19_tests(unittest.TestCase):
+    run_gedcom_test = run_test
     # US19 Tests (First cousins should not marry)
     def testUS19_1(self):
         pass
 
+class US20_tests(unittest.TestCase):
+    run_gedcom_test = run_test
     # US20 Tests (Aunts and uncles)
     def testUS20_1(self):
         pass
 
+class US21_tests(unittest.TestCase):
+    run_gedcom_test = run_test
     # US21 Tests (Correct gender for role)
     def testUS21_1(self):
         pass
 
+class US22_tests(unittest.TestCase):
+    run_gedcom_test = run_test
     # US22 Tests (Unique IDs)
     def testUS22_1(self):
         pass
 
+class US23_tests(unittest.TestCase):
+    run_gedcom_test = run_test
     # US23 Tests (Unique name and birth date)
     def testUS23_1(self):
         pass
 
+class US24_tests(unittest.TestCase):
+    run_gedcom_test = run_test
     # US24 Tests (Unique families by spouses)
     def testUS24_1(self):
         pass
         
-        
-
 if __name__ == '__main__':
     unittest.main()
