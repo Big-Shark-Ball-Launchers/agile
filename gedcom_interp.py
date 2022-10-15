@@ -230,9 +230,9 @@ def processFile(filename):
                 if (indiFlag or famFlag) and l[0] == 0:
                     # if we reach the end of an individual or family, add it to the list
                     if (indiFlag):
-                        indiList.append(curr)
+                        indi.append(curr)
                     else:
-                        famList.append(curr)
+                        fam.append(curr)
                 if ((l[1] == 'INDI' or l[1] == 'FAM') and l[0] == 0):
                     curr = defaultIndi() if l[1] == 'INDI' else defaultFam()
                     addElement(curr, l, level)
@@ -243,9 +243,9 @@ def processFile(filename):
                     addElement(curr, l, level)
 
         if (indiFlag):
-            indiList.append(curr)
+            indi.append(curr)
         else:
-            famList.append(curr)
+            fam.append(curr)
 
         indi = [makeIndiAssumptions(i) for i in indi]
         fam = [makeFamAssumptions(f, indi) for f in fam]
