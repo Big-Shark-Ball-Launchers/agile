@@ -1,22 +1,18 @@
+import datetime
+import gedcom_interp as gi
 import io
-import unittest
-import unittest.mock
 import os
-
 import sys
 import tempfile
+import unittest
+import unittest.mock
 
-import gedcom_interp as gi
-
-import datetime
 from gedcom_interp import datetimeToString
 
 # Function to help with testing.
 # Automatically creates a temporary file with the given contents,
 # passes the file to the main program, and runs the passeed assertion
 # with the expected output.
-
-
 def run_test(self, gedcom_file, expected_output, f):
     '''gedcom_file is a string containing the gedcom file to be tested.
             expected_output is a string containing the expected output.
