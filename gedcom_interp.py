@@ -199,9 +199,11 @@ def displayAnomaly(storyKey, **kwargs):
     formattedAnaomalyString = anomalyString.format(**kwargs, story=storyKey)
     print(formattedAnaomalyString)
 
+
 def processFile(filename):
     indi = []
     fam = []
+
     # keeps track of the tag of levels
     level = []
     indiFlag = False
@@ -228,9 +230,9 @@ def processFile(filename):
                 if (indiFlag or famFlag) and l[0] == 0:
                     # if we reach the end of an individual or family, add it to the list
                     if (indiFlag):
-                        indi.append(curr)
+                        indiList.append(curr)
                     else:
-                        fam.append(curr)
+                        famList.append(curr)
                 if ((l[1] == 'INDI' or l[1] == 'FAM') and l[0] == 0):
                     curr = defaultIndi() if l[1] == 'INDI' else defaultFam()
                     addElement(curr, l, level)
@@ -241,9 +243,9 @@ def processFile(filename):
                     addElement(curr, l, level)
 
         if (indiFlag):
-            indi.append(curr)
+            indiList.append(curr)
         else:
-            fam.append(curr)
+            famList.append(curr)
 
         indi = [makeIndiAssumptions(i) for i in indi]
         fam = [makeFamAssumptions(f, indi) for f in fam]
