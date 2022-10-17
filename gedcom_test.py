@@ -2630,7 +2630,7 @@ class US12_tests(unittest.TestCase):
 
         0 TRLR
         '''
-        expectedOutput = "ANOMALY: US12: INDI @I3@: Birthdate 13 FEB 2010 occurs more than 60 years after mother's birthday: 14 FEB 1978 or more than 80 years after father's birthday: 13 FEB 1910"
+        expectedOutput = "ANOMALY: US12: INDI @I3@: Birthdate 13 FEB 2010 occurs more than 80 years after father's birthday: 13 FEB 1910"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
     def testUS12_3(self):
@@ -2666,7 +2666,7 @@ class US12_tests(unittest.TestCase):
 
         0 TRLR
         '''
-        expectedOutput = "ANOMALY: US12: INDI @I3@: Birthdate 13 FEB 2010 occurs more than 60 years after mother's birthday: 14 FEB 1940 or more than 80 years after father's birthday: 13 FEB 1980"
+        expectedOutput = "ANOMALY: US12: INDI @I3@: Birthdate 13 FEB 2010 occurs more than 60 years after mother's birthday: 14 FEB 1940"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
     
     def testUS12_4(self):
@@ -2702,7 +2702,9 @@ class US12_tests(unittest.TestCase):
 
         0 TRLR
         '''
-        expectedOutput = "ANOMALY: US12: INDI @I3@: Birthdate 13 FEB 2010 occurs more than 60 years after mother's birthday: 14 FEB 1940 or more than 80 years after father's birthday: 13 FEB 1910"
+        expectedOutput = "ANOMALY: US12: INDI @I3@: Birthdate 13 FEB 2010 occurs more than 60 years after mother's birthday: 14 FEB 1940"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+        expectedOutput = "ANOMALY: US12: INDI @I3@: Birthdate 13 FEB 2010 occurs more than 80 years after father's birthday: 13 FEB 1910"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
     def testUS12_5(self):
@@ -2738,7 +2740,7 @@ class US12_tests(unittest.TestCase):
 
         0 TRLR
         '''
-        expectedOutput = "ANOMALY: US12: INDI @I3@: Birthdate 13 FEB 2010 occurs more than 60 years after mother's birthday: 13 FEB 1950 or more than 80 years after father's birthday: 13 FEB 1980"
+        expectedOutput = "ANOMALY: US12: INDI @I3@: Birthdate 13 FEB 2010 occurs more than 60 years after mother's birthday: 13 FEB 1950"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
     
     def testUS12_6(self):

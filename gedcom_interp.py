@@ -416,12 +416,9 @@ def checkFamAnomalies(indi, fam):
             found = False
             cbirthstr = findIndi(c, indi)["BIRT DATE"]
             if (w_exists and mbirthstr != "NA" and cbirthstr != "NA" and (calculateAgeAtTime(mbirthstr, cbirthstr) >= 60)):
-                found = True
+                displayAnomaly("US12", id=c, bDate = cbirthstr, parentBirthdate=mbirthstr, ageLimit=60, parentString="mother")
             if (h_exists and fbirthstr != "NA" and cbirthstr != "NA" and (calculateAgeAtTime(fbirthstr, cbirthstr) >= 80)):
-                found = True
-            if (found):
-                displayAnomaly("US12", id=c, bDate = cbirthstr, mbDate=mbirthstr, fbDate=fbirthstr)
-
+                displayAnomaly("US12", id=c, bDate = cbirthstr, parentBirthdate=fbirthstr, ageLimit=80, parentString="father")
         # US13 - Siblings spacing
 
         # US14 - Multiple births <= 5

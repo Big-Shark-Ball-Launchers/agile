@@ -10,7 +10,7 @@ stories = {
     "US09": "ANOMALY: {story}: INDI {id}: Birth date {bDate} occurs after mother's death {mDeath} or more than 9 months after father's death {dDeath}",
     "US10": "ANOMALY: {story}: INDI {id}: Marriage date: {date} occurs before age of 14",
     "US11": "ANOMALY: {story}: INDI {id} is an active spouse in muliple families. FAMS: {fams}",
-    "US12": "ANOMALY: {story}: INDI {id}: Birthdate {bDate} occurs more than 60 years after mother's birthday: {mbDate} or more than 80 years after father's birthday: {fbDate}",
+    "US12": "ANOMALY: {story}: INDI {id}: Birthdate {bDate} occurs more than {ageLimit} years after {parentString}'s birthday: {parentBirthdate}",
     "US13": "",
     "US14": "",
     "US15": "",
