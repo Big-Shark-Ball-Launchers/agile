@@ -414,9 +414,11 @@ def checkFamAnomalies(indi, fam):
             
         for c in f["CHIL"]:
             cbirthstr = findIndi(c, indi)["BIRT DATE"]
-            if (w_exists and mbirthstr != "NA" and cbirthstr != "NA" and (calculateAgeAtTime(mbirthstr, cbirthstr) >= 60)):
+            mConditions = w_exists and mbirthstr != "NA" and cbirthstr != "NA"
+            fConditions = h_exists and fbirthstr != "NA" and cbirthstr != "NA"
+            if (mConditions and (calculateAgeAtTime(mbirthstr, cbirthstr) >= 60)):
                 displayAnomaly("US12", id=c, bDate = cbirthstr, parentBirthdate=mbirthstr, ageLimit=60, parentString="mother")
-            if (h_exists and fbirthstr != "NA" and cbirthstr != "NA" and (calculateAgeAtTime(fbirthstr, cbirthstr) >= 80)):
+            if (fConditions and (calculateAgeAtTime(fbirthstr, cbirthstr) >= 80)):
                 displayAnomaly("US12", id=c, bDate = cbirthstr, parentBirthdate=fbirthstr, ageLimit=80, parentString="father")
         # US13 - Siblings spacing
 
