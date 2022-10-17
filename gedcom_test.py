@@ -1192,8 +1192,11 @@ class US05_tests(unittest.TestCase):
         1 MARR
         2 DATE 14 JUN 2002
         0 TRLR'''
-        expectedOutput = "ERROR: US05: FAM @F1@: Marriage date 14 JUN 2002 occurs after death of one or both spouses"
+        expectedOutput = "ERROR: US05: FAM @F1@: Marriage date 14 JUN 2002 occurs after death of INDI @I1@"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+        expectedOutput = "ERROR: US05: FAM @F1@: Marriage date 14 JUN 2002 occurs after death of INDI @I2@"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+        
 
     def testUS05_4(self):
         # both members dead. Only one is erroneous. Error should occur.
@@ -1223,7 +1226,7 @@ class US05_tests(unittest.TestCase):
         1 MARR
         2 DATE 14 JUN 2002
         0 TRLR'''
-        expectedOutput = "ERROR: US05: FAM @F1@: Marriage date 14 JUN 2002 occurs after death of one or both spouses"
+        expectedOutput = "ERROR: US05: FAM @F1@: Marriage date 14 JUN 2002 occurs after death of INDI @I2@"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
     def testUS05_5(self):
@@ -1252,7 +1255,7 @@ class US05_tests(unittest.TestCase):
         1 MARR
         2 DATE 14 JUN 2002
         0 TRLR'''
-        expectedOutput = "ERROR: US05: FAM @F1@: Marriage date 14 JUN 2002 occurs after death of one or both spouses"
+        expectedOutput = "ERROR: US05: FAM @F1@: Marriage date 14 JUN 2002 occurs after death of INDI @I1@"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
 class US06_tests(unittest.TestCase):
@@ -2627,7 +2630,7 @@ class US12_tests(unittest.TestCase):
 
         0 TRLR
         '''
-        expectedOutput = "ANOMALY: US12: INDI @I3@: Birthdate 13 FEB 2010 occurs more than 60 years after mother's birthday: 14 FEB 1978 or more than 80 years after father's birthday: 13 FEB 1910"
+        expectedOutput = "ANOMALY: US12: INDI @I3@: Birthdate 13 FEB 2010 occurs more than 80 years after father's birthday: 13 FEB 1910"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
     def testUS12_3(self):
@@ -2663,7 +2666,7 @@ class US12_tests(unittest.TestCase):
 
         0 TRLR
         '''
-        expectedOutput = "ANOMALY: US12: INDI @I3@: Birthdate 13 FEB 2010 occurs more than 60 years after mother's birthday: 14 FEB 1940 or more than 80 years after father's birthday: 13 FEB 1980"
+        expectedOutput = "ANOMALY: US12: INDI @I3@: Birthdate 13 FEB 2010 occurs more than 60 years after mother's birthday: 14 FEB 1940"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
     
     def testUS12_4(self):
@@ -2699,7 +2702,9 @@ class US12_tests(unittest.TestCase):
 
         0 TRLR
         '''
-        expectedOutput = "ANOMALY: US12: INDI @I3@: Birthdate 13 FEB 2010 occurs more than 60 years after mother's birthday: 14 FEB 1940 or more than 80 years after father's birthday: 13 FEB 1910"
+        expectedOutput = "ANOMALY: US12: INDI @I3@: Birthdate 13 FEB 2010 occurs more than 60 years after mother's birthday: 14 FEB 1940"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+        expectedOutput = "ANOMALY: US12: INDI @I3@: Birthdate 13 FEB 2010 occurs more than 80 years after father's birthday: 13 FEB 1910"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
     def testUS12_5(self):
@@ -2735,7 +2740,7 @@ class US12_tests(unittest.TestCase):
 
         0 TRLR
         '''
-        expectedOutput = "ANOMALY: US12: INDI @I3@: Birthdate 13 FEB 2010 occurs more than 60 years after mother's birthday: 13 FEB 1950 or more than 80 years after father's birthday: 13 FEB 1980"
+        expectedOutput = "ANOMALY: US12: INDI @I3@: Birthdate 13 FEB 2010 occurs more than 60 years after mother's birthday: 13 FEB 1950"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
     
     def testUS12_6(self):
