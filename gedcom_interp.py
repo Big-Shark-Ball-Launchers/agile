@@ -144,12 +144,14 @@ def defaultFam():
 
 
 def findIndi(iId, list):
+    '''returns an individual given a family'''
     for i in list:
         if (i["INDI"] == iId):
             return i
 
 
 def findFam(fId, list):
+    '''returns a family given an individual'''
     for f in list:
         if (f["FAM"] == fId):
             return f
