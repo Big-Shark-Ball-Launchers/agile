@@ -217,7 +217,6 @@ def processFile(filename):
     indiFlag = False
     famFlag = False
     curr = defaultIndi()
-    sawTRLR = False
     with open(filename, 'r') as f:
         for line in f:
             # print(f'--> {line}', end='')
