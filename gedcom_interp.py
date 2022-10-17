@@ -315,10 +315,9 @@ def checkIndiAnomalies(indi, fam):
 
         # US11 - No bigamy
         if (len(i["FAMS"]) > 1):
-            count = 0
             # list of ranges of marraiges for this individual
-            mr = [marriageRange(findFam(f, fam), indi) for f in i["FAMS"]]
-            if (datetimeRangeOverlap(mr)):
+            marraigeRangeList = [marriageRange(findFam(f, fam), indi) for f in i["FAMS"]]
+            if (datetimeRangeOverlap(marraigeRangeList)):
                 displayAnomaly("US11", id=i["INDI"], fams=i["FAMS"])
 
         # US13 - Siblings spacing
