@@ -413,7 +413,6 @@ def checkFamAnomalies(indi, fam):
             mbirthstr = findIndi(f["WIFE"], indi)["BIRT DATE"]
             
         for c in f["CHIL"]:
-            found = False
             cbirthstr = findIndi(c, indi)["BIRT DATE"]
             if (w_exists and mbirthstr != "NA" and cbirthstr != "NA" and (calculateAgeAtTime(mbirthstr, cbirthstr) >= 60)):
                 displayAnomaly("US12", id=c, bDate = cbirthstr, parentBirthdate=mbirthstr, ageLimit=60, parentString="mother")
