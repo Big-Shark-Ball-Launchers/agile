@@ -389,8 +389,13 @@ def checkFamAnomalies(indi, fam):
         marDate = gedStringToDatetime(f["MARR DATE"])
         husb = findIndi(f["HUSB"], indi)
         wife = findIndi(f["WIFE"], indi)
-        if (husb and wife and marDate != "NA" and ((husb["DEAT DATE"] != "NA" and marDate > gedStringToDatetime(husb["DEAT DATE"])) or (wife["DEAT DATE"] != "NA" and marDate > gedStringToDatetime(wife["DEAT DATE"])))):
-            displayAnomaly('US05', id=f["FAM"], mDate=f["MARR DATE"])
+         
+        if (husb and wife and marDate != "NA"):
+            if ((husb["DEAT DATE"] != "NA" and marDate > gedStringToDatetime(husb["DEAT DATE"]))):
+                displayAnomaly('US05', id=f["FAM"], mDate=f["MARR DATE"], indiId=husb["INDI"])
+            if ((wife["DEAT DATE"] != "NA" and marDate > gedStringToDatetime(wife["DEAT DATE"]))):
+                displayAnomaly('US05', id=f["FAM"], mDate=f["MARR DATE"], indiId=wife["INDI"])
+
 
         # US06 - Divorce before death
         divDate = gedStringToDatetime(f["DIV DATE"])
