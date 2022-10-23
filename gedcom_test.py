@@ -2783,7 +2783,507 @@ class US13_tests(unittest.TestCase):
     run_gedcom_test = run_test
     # US13 Tests (Siblings spacing)
     def testUS13_1(self):
-        pass
+        # Normal family (multiple siblings with spaced out birthdays) no errors should occur
+        testFile = '''
+        0 @I1@ INDI
+        1 NAME Dick
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1980
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 BIRT
+        2 DATE 14 FEB 1978
+        1 FAMS @F1@
+
+        0 @I3@ INDI
+        1 NAME Cathy
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 2010
+        1 FAMC @F1@
+
+        0 @I4@ INDI
+        1 NAME Jerry
+        1 SEX M
+        1 BIRT
+        2 DATE 18 JUN 2012
+        1 FAMC @F1@
+
+        0 @I5@ INDI
+        1 NAME John
+        1 SEX M
+        1 BIRT
+        2 DATE 1 OCT 2019
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 2005
+        1 CHIL @I3@
+        1 CHIL @I4@
+        1 CHIL @I5@
+
+        0 TRLR
+        '''
+
+        expectedOutput = "US13"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    def testUS13_2(self):
+        # Twins born on same day - no errors should occur
+        testFile = '''
+        0 @I1@ INDI
+        1 NAME Dick
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1980
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 BIRT
+        2 DATE 14 FEB 1978
+        1 FAMS @F1@
+
+        0 @I3@ INDI
+        1 NAME Cathy
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 2010
+        1 FAMC @F1@
+
+        0 @I4@ INDI
+        1 NAME Jerry
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 2010
+        1 FAMC @F1@
+
+        0 @I5@ INDI
+        1 NAME John
+        1 SEX M
+        1 BIRT
+        2 DATE 1 OCT 2019
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 2005
+        1 CHIL @I3@
+        1 CHIL @I4@
+        1 CHIL @I5@
+
+        0 TRLR
+        '''
+
+        expectedOutput = "US13"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    def testUS13_3(self):
+        # Twins born 1 day apart - no error should occur
+        testFile = '''
+                0 @I1@ INDI
+        1 NAME Dick
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1980
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 BIRT
+        2 DATE 14 FEB 1978
+        1 FAMS @F1@
+
+        0 @I3@ INDI
+        1 NAME Cathy
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 2010
+        1 FAMC @F1@
+
+        0 @I4@ INDI
+        1 NAME Jerry
+        1 SEX M
+        1 BIRT
+        2 DATE 14 FEB 2010
+        1 FAMC @F1@
+
+        0 @I5@ INDI
+        1 NAME John
+        1 SEX M
+        1 BIRT
+        2 DATE 1 OCT 2019
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 2005
+        1 CHIL @I3@
+        1 CHIL @I4@
+        1 CHIL @I5@
+
+        0 TRLR
+        '''
+
+        expectedOutput = "US13"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+    
+    def testUS13_4(self):
+        # Same as test 3, but order of sibling births is switched
+        testFile = '''
+                0 @I1@ INDI
+        1 NAME Dick
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1980
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 BIRT
+        2 DATE 14 FEB 1978
+        1 FAMS @F1@
+
+        0 @I3@ INDI
+        1 NAME Cathy
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 2010
+        1 FAMC @F1@
+
+        0 @I4@ INDI
+        1 NAME Jerry
+        1 SEX M
+        1 BIRT
+        2 DATE 12 FEB 2010
+        1 FAMC @F1@
+
+        0 @I5@ INDI
+        1 NAME John
+        1 SEX M
+        1 BIRT
+        2 DATE 1 OCT 2019
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 2005
+        1 CHIL @I3@
+        1 CHIL @I4@
+        1 CHIL @I5@
+
+        0 TRLR
+        '''
+
+        expectedOutput = "US13"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+    
+    def testUS13_5(self):
+        # Children born 2 days apart - error should occur
+        testFile = '''
+        0 @I1@ INDI
+        1 NAME Dick
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1980
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 BIRT
+        2 DATE 14 FEB 1978
+        1 FAMS @F1@
+
+        0 @I3@ INDI
+        1 NAME Cathy
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 2010
+        1 FAMC @F1@
+
+        0 @I4@ INDI
+        1 NAME Jerry
+        1 SEX M
+        1 BIRT
+        2 DATE 15 FEB 2010
+        1 FAMC @F1@
+
+        0 @I5@ INDI
+        1 NAME John
+        1 SEX M
+        1 BIRT
+        2 DATE 1 OCT 2019
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 2005
+        1 CHIL @I3@
+        1 CHIL @I4@
+        1 CHIL @I5@
+
+        0 TRLR
+        '''
+
+        expectedOutput = "ANOMALY: US13: INDI @I3@: Birthdate 13 FEB 2010 occurs within 2 days to 8 months of sibling @I4@: 15 FEB 2010"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+        # expectedOutput = "ANOMALY: US13: INDI @I4@: Birthdate 15 FEB 2010 occurs within 2 days to 8 months of sibling @I3@: 13 FEB 2010"
+        # self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    def testUS13_6(self):
+        # Same as test 5, but order of sibling births is switched
+        testFile = '''
+        0 @I1@ INDI
+        1 NAME Dick
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1980
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 BIRT
+        2 DATE 14 FEB 1978
+        1 FAMS @F1@
+
+        0 @I3@ INDI
+        1 NAME Cathy
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 2010
+        1 FAMC @F1@
+
+        0 @I4@ INDI
+        1 NAME Jerry
+        1 SEX M
+        1 BIRT
+        2 DATE 11 FEB 2010
+        1 FAMC @F1@
+
+        0 @I5@ INDI
+        1 NAME John
+        1 SEX M
+        1 BIRT
+        2 DATE 1 OCT 2019
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 2005
+        1 CHIL @I3@
+        1 CHIL @I4@
+        1 CHIL @I5@
+
+        0 TRLR
+        '''
+
+        expectedOutput = "ANOMALY: US13: INDI @I4@: Birthdate 11 FEB 2010 occurs within 2 days to 8 months of sibling @I3@: 13 FEB 2010"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    def testUS13_7(self):
+        # Children born 8 months apart - no error should occur
+        testFile = '''
+        0 @I1@ INDI
+        1 NAME Dick
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1980
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 BIRT
+        2 DATE 14 FEB 1978
+        1 FAMS @F1@
+
+        0 @I3@ INDI
+        1 NAME Cathy
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 2010
+        1 FAMC @F1@
+
+        0 @I4@ INDI
+        1 NAME Jerry
+        1 SEX M
+        1 BIRT
+        2 DATE 14 OCT 2010
+        1 FAMC @F1@
+
+        0 @I5@ INDI
+        1 NAME John
+        1 SEX M
+        1 BIRT
+        2 DATE 1 OCT 2019
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 2005
+        1 CHIL @I3@
+        1 CHIL @I4@
+        1 CHIL @I5@
+
+        0 TRLR
+        '''
+
+        expectedOutput = "US13"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    def testUS13_8(self):
+        #  Children born within 8 months of each other - error should occur
+        testFile = '''
+                0 @I1@ INDI
+        1 NAME Dick
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1980
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 BIRT
+        2 DATE 14 FEB 1978
+        1 FAMS @F1@
+
+        0 @I3@ INDI
+        1 NAME Cathy
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 2010
+        1 FAMC @F1@
+
+        0 @I4@ INDI
+        1 NAME Jerry
+        1 SEX M
+        1 BIRT
+        2 DATE 22 JUL 2010
+        1 FAMC @F1@
+
+        0 @I5@ INDI
+        1 NAME John
+        1 SEX M
+        1 BIRT
+        2 DATE 1 OCT 2019
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 2005
+        1 CHIL @I3@
+        1 CHIL @I4@
+        1 CHIL @I5@
+
+        0 TRLR
+        '''
+
+        expectedOutput = "ANOMALY: US13: INDI @I3@: Birthdate 13 FEB 2010 occurs within 2 days to 8 months of sibling @I4@: 22 JUL 2010"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    def testUS13_9(self):
+        # Multiple siblings born within 8 months of each other - errors should occur
+        testFile = '''
+        0 @I1@ INDI
+        1 NAME Dick
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1980
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 BIRT
+        2 DATE 14 FEB 1978
+        1 FAMS @F1@
+
+        0 @I3@ INDI
+        1 NAME Cathy
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 2010
+        1 FAMC @F1@
+
+        0 @I4@ INDI
+        1 NAME Jerry
+        1 SEX M
+        1 BIRT
+        2 DATE 12 FEB 2010
+        1 FAMC @F1@
+
+        0 @I5@ INDI
+        1 NAME John
+        1 SEX M
+        1 BIRT
+        2 DATE 1 MAY 2010
+        1 FAMC @F1@
+
+        0 @I6@ INDI
+        1 NAME Polly
+        1 SEX F
+        1 BIRT
+        2 DATE 12 OCT 2010
+        1 FAMC @F1@
+
+        0 @I7@ INDI
+        1 NAME Elizabeth
+        1 SEX F
+        1 BIRT
+        2 DATE 8 JAN 2011
+        1 FAMC @F1@
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 2005
+        1 CHIL @I3@
+        1 CHIL @I4@
+        1 CHIL @I5@
+        1 CHIL @I6@
+        1 CHIL @I7@
+
+        0 TRLR
+        '''
+
+        expectedOutput = "ANOMALY: US13: INDI @I3@: Birthdate 13 FEB 2010 occurs within 2 days to 8 months of sibling @I5@: 1 MAY 2010"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+        expectedOutput = "ANOMALY: US13: INDI @I3@: Birthdate 13 FEB 2010 occurs within 2 days to 8 months of sibling @I6@: 12 OCT 2010"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+        expectedOutput = "ANOMALY: US13: INDI @I4@: Birthdate 12 FEB 2010 occurs within 2 days to 8 months of sibling @I5@: 1 MAY 2010"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+        expectedOutput = "ANOMALY: US13: INDI @I4@: Birthdate 12 FEB 2010 occurs within 2 days to 8 months of sibling @I6@: 12 OCT 2010"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+        expectedOutput = "ANOMALY: US13: INDI @I5@: Birthdate 1 MAY 2010 occurs within 2 days to 8 months of sibling @I6@: 12 OCT 2010"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+        expectedOutput = "ANOMALY: US13: INDI @I6@: Birthdate 12 OCT 2010 occurs within 2 days to 8 months of sibling @I7@: 8 JAN 2011"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
 class US14_tests(unittest.TestCase):
     run_gedcom_test = run_test

@@ -332,8 +332,6 @@ def checkIndiAnomalies(indiList, famList):
             if (datetimeRangeOverlap(marraigeRangeList)):
                 displayAnomaly("US11", id=i["INDI"], fams=i["FAMS"])
 
-        # US13 - Siblings spacing
-
         # US14 - Multiple births <= 5
 
         # US15 - Fewer than 15 siblings
@@ -424,7 +422,20 @@ def checkFamAnomalies(indiList, famList):
             if (fConditions and (calculateAgeAtTime(fbirthstr, cbirthstr) >= 80)):
                 displayAnomaly("US12", id=c, bDate=cbirthstr,
                                parentBirthdate=fbirthstr, ageLimit=80, parentString="father")
+
         # US13 - Siblings spacing
+        for c1 in f["CHIL"]:
+            c1birthstr = findIndi(c1, indiList)["BIRT DATE"]
+            c1birth = gedStringToDatetime(c1birthstr)
+            for c2 in f["CHIL"]:
+                if (c1 != c2):
+                    c2birthstr = findIndi(c2, indiList)["BIRT DATE"]
+                    c2birth = gedStringToDatetime(c2birthstr)
+                    if (c1birthstr != "NA" and c2birthstr != "NA"):
+                        range1 = (c1birth + relativedelta(days=2), c1birth + relativedelta(months=8))
+                        # range2 = (c1birth - relativedelta(months=8), c1birth + relativedelta(months=8))
+                        if (datetimeWithinRange(c2birth, range1)):
+                            displayAnomaly("US13", id=c1, sibID=c2, bDate=c1birthstr, siblingBirthdate=c2birthstr)
 
         # US14 - Multiple births <= 5
 
