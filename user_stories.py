@@ -15,7 +15,7 @@ stories = {
     "US14": "",
     "US15": "",
     "US16": "",
-    "US17": "",
+    "US17": "ANOMALY: {story}: INDI {id}: Individual has married their decendent {decendentId} in FAM {famId}",
     "US18": "",
     "US19": "",
     "US20": "",
