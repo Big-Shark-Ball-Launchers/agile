@@ -13,7 +13,7 @@ stories = {
     "US12": "ANOMALY: {story}: INDI {id}: Birthdate {bDate} occurs more than {ageLimit} years after {parentString}'s birthday: {parentBirthdate}",
     "US13": "",
     "US14": "",
-    "US15": "",
+    "US15": "ANOMALY: {story}: FAM {id}: Family contains 15 or more siblings",
     "US16": "",
     "US17": "",
     "US18": "",
