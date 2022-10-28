@@ -429,7 +429,11 @@ def checkFamAnomalies(indiList, famList):
         # US14 - Multiple births <= 5
 
         # US15 - Fewer than 15 siblings
-
+        siblingCounter = 0
+        for c in f["CHIL"]:
+            siblingCounter = siblingCounter + 1
+        if siblingCounter >= 15:
+            displayAnomaly("US15", id=f["FAM"])
         # US16 - Male last names
 
         # US17 - No marriages to descendants
