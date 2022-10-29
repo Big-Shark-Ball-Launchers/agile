@@ -14,7 +14,7 @@ stories = {
     "US13": "",
     "US14": "",
     "US15": "ANOMALY: {story}: FAM {id}: Family contains 15 or more siblings",
-    "US16": "",
+    "US16": "ANOMALY: {story}: FAM {id}: Individual {indiId} has a different last name from his family {famName}",
     "US17": "",
     "US18": "",
     "US19": "",

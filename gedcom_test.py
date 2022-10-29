@@ -2565,7 +2565,7 @@ class US12_tests(unittest.TestCase):
         # Normal family, no errors expected
         testFile = '''
         0 @I1@ INDI
-        1 NAME` Dick
+        1 NAME Dick
         1 SEX M
         1 BIRT
         2 DATE 13 FEB 1980
@@ -2601,7 +2601,7 @@ class US12_tests(unittest.TestCase):
         #Old Dad
         testFile = '''
         0 @I1@ INDI
-        1 NAME` Dick
+        1 NAME Dick
         1 SEX M
         1 BIRT
         2 DATE 13 FEB 1910
@@ -2637,7 +2637,7 @@ class US12_tests(unittest.TestCase):
         #Old Mom
         testFile = '''
         0 @I1@ INDI
-        1 NAME` Dick
+        1 NAME Dick
         1 SEX M
         1 BIRT
         2 DATE 13 FEB 1980
@@ -2673,7 +2673,7 @@ class US12_tests(unittest.TestCase):
         #Both old
         testFile = '''
         0 @I1@ INDI
-        1 NAME` Dick
+        1 NAME Dick
         1 SEX M
         1 BIRT
         2 DATE 13 FEB 1910
@@ -2711,7 +2711,7 @@ class US12_tests(unittest.TestCase):
         #Mom barely too old
         testFile = '''
         0 @I1@ INDI
-        1 NAME` Dick
+        1 NAME Dick
         1 SEX M
         1 BIRT
         2 DATE 13 FEB 1980
@@ -3277,7 +3277,247 @@ class US16_tests(unittest.TestCase):
     run_gedcom_test = run_test
     # US16 Tests (Male last names)
     def testUS16_1(self):
-        pass
+        #no problem
+        testFile = '''
+        0 HEAD
+        1 SOUR Family Echo
+        2 WWW http://www.familyecho.com/
+        1 FILE Family 2
+        1 DATE 27 OCT 2022
+        1 DEST ANSTFILE
+        1 GEDC
+        2 VERS 5.5.1
+        2 FORM LINEAGE-LINKED
+        1 SUBM @I3@
+        2 NAME jeweler-giggle-0f@icloud.com
+        1 SUBN
+        1 CHAR UTF-8
+        0 @I1@ INDI
+        1 NAME
+        1 SEX M
+        1 FAMS @F1@
+        0 @I2@ INDI
+        1 NAME
+        1 SEX F
+        1 FAMS @F1@
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 TRLR
+        '''
+        expectedOutput = "US16"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    def testUS16_2(self):
+        #son different last name
+        testFile = '''
+        0 HEAD
+        1 SOUR Family Echo
+        2 WWW http://www.familyecho.com/
+        1 FILE Family 4
+        1 DATE 29 OCT 2022
+        1 DEST ANSTFILE
+        1 GEDC
+        2 VERS 5.5.1
+        2 FORM LINEAGE-LINKED
+        1 SUBM @I3@
+        2 NAME jeweler-giggle-0f@icloud.com
+        1 SUBN
+        1 CHAR UTF-8
+        0 @I1@ INDI
+        1 NAME Joe /Bill/
+        2 GIVN Joe
+        2 SURN Bill
+        2 _MARNM Bill
+        1 SEX M
+        1 FAMS @F1@
+        0 @I2@ INDI
+        1 NAME Marie /Bill/
+        2 GIVN Marie
+        2 SURN Bill
+        2 _MARNM Bill
+        1 SEX F
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joey /Ball/
+        2 GIVN Joey
+        2 SURN Ball
+        2 _MARNM Ball
+        1 SEX M
+        1 FAMC @F1@
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 CHIL @I3@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 TRLR
+        '''
+        expectedOutput = "ANOMALY: US16: FAM @F1@: Individual Joey /Ball/ has a different last name from his family /Bill/"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    def testUS16_3(self):
+        #daughter different last name
+        testFile = '''
+        0 HEAD
+        1 SOUR Family Echo
+        2 WWW http://www.familyecho.com/
+        1 FILE Family 4
+        1 DATE 29 OCT 2022
+        1 DEST ANSTFILE
+        1 GEDC
+        2 VERS 5.5.1
+        2 FORM LINEAGE-LINKED
+        1 SUBM @I3@
+        2 NAME jeweler-giggle-0f@icloud.com
+        1 SUBN
+        1 CHAR UTF-8
+        0 @I1@ INDI
+        1 NAME Joe /Bill/
+        2 GIVN Joe
+        2 SURN Bill
+        2 _MARNM Bill
+        1 SEX M
+        1 FAMS @F1@
+        0 @I2@ INDI
+        1 NAME Marie /Bill/
+        2 GIVN Marie
+        2 SURN Bill
+        2 _MARNM Bill
+        1 SEX F
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joey /Ball/
+        2 GIVN Joey
+        2 SURN Ball
+        2 _MARNM Ball
+        1 SEX F
+        1 FAMC @F1@
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 CHIL @I3@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 TRLR
+        '''
+        expectedOutput = "US16"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    def testUS16_4(self):
+        #son different last name and daughter different last name
+        testFile = '''
+        0 HEAD
+        1 SOUR Family Echo
+        2 WWW http://www.familyecho.com/
+        1 FILE Family 4
+        1 DATE 29 OCT 2022
+        1 DEST ANSTFILE
+        1 GEDC
+        2 VERS 5.5.1
+        2 FORM LINEAGE-LINKED
+        1 SUBM @I3@
+        2 NAME jeweler-giggle-0f@icloud.com
+        1 SUBN
+        1 CHAR UTF-8
+        0 @I1@ INDI
+        1 NAME Joe /Bill/
+        2 GIVN Joe
+        2 SURN Bill
+        2 _MARNM Bill
+        1 SEX M
+        1 FAMS @F1@
+        0 @I2@ INDI
+        1 NAME Marie /Bill/
+        2 GIVN Marie
+        2 SURN Bill
+        2 _MARNM Bill
+        1 SEX F
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joey /Ball/
+        2 GIVN Joey
+        2 SURN Ball
+        2 _MARNM Ball
+        1 SEX M
+        1 FAMC @F1@
+        0 @I4@ INDI
+        1 NAME Jill /Ball/
+        2 GIVN Jill
+        2 SURN Ball
+        2 _MARNM Ball
+        1 SEX F
+        1 FAMC @F1@
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 CHIL @I3@
+        1 CHIL @I4@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 TRLR
+        '''
+        expectedOutput = "ANOMALY: US16: FAM @F1@: Individual Joey /Ball/ has a different last name from his family /Bill/"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    def testUS16_5(self):
+        #two daughters diff last name
+        testFile = '''
+        0 HEAD
+        1 SOUR Family Echo
+        2 WWW http://www.familyecho.com/
+        1 FILE Family 4
+        1 DATE 29 OCT 2022
+        1 DEST ANSTFILE
+        1 GEDC
+        2 VERS 5.5.1
+        2 FORM LINEAGE-LINKED
+        1 SUBM @I3@
+        2 NAME jeweler-giggle-0f@icloud.com
+        1 SUBN
+        1 CHAR UTF-8
+        0 @I1@ INDI
+        1 NAME Joe /Bill/
+        2 GIVN Joe
+        2 SURN Bill
+        2 _MARNM Bill
+        1 SEX M
+        1 FAMS @F1@
+        0 @I2@ INDI
+        1 NAME Marie /Bill/
+        2 GIVN Marie
+        2 SURN Bill
+        2 _MARNM Bill
+        1 SEX F
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Joey /Ball/
+        2 GIVN Joey
+        2 SURN Ball
+        2 _MARNM Ball
+        1 SEX F
+        1 FAMC @F1@
+        0 @I4@ INDI
+        1 NAME Jill /Ball/
+        2 GIVN Jill
+        2 SURN Ball
+        2 _MARNM Ball
+        1 SEX F
+        1 FAMC @F1@
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 CHIL @I3@
+        1 CHIL @I4@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 TRLR
+        '''
+        expectedOutput = "US16"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
 class US17_tests(unittest.TestCase):
     run_gedcom_test = run_test

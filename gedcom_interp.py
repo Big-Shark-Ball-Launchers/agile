@@ -435,6 +435,21 @@ def checkFamAnomalies(indiList, famList):
         if siblingCounter >= 15:
             displayAnomaly("US15", id=f["FAM"])
         # US16 - Male last names
+        if f["HUSB NAME"] and f["CHIL"]:
+            parentName = f["HUSB NAME"]
+            check = 0
+            for s in parentName:
+                if s == '/':
+                    check = check + 1
+                if check > 0:    
+                    parentLastName = parentName.split()[1]
+                    for c in f["CHIL"]:
+                        child = findIndi(c,indiList)
+                        childGender = child["SEX"]
+                        childName = child["NAME"]
+                        childLastName = childName.split()[1]
+                        if childGender is "M" and childLastName != parentLastName:
+                            displayAnomaly("US16", id=f["FAM"], indiId=childName, famName=parentLastName)
 
         # US17 - No marriages to descendants
 
