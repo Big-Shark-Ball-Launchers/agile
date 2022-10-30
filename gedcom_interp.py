@@ -200,7 +200,18 @@ def datetimeRangeOverlap(rl):
                     return True
     return False
 
-
+def getDecendents(i, indiList, famList):
+    '''returns a list of decendents of an individual'''
+    indi = findIndi(i, indiList)
+    decendents = []
+    if (indi["FAMS"] != ""):
+        for f in indi["FAMS"]:
+            fam = findFam(f, famList)
+            for c in fam["CHIL"]:
+                decendents.append(c)
+                decendents += getDecendents(c, indiList, famList)
+    return decendents
+    
 def displayAnomaly(storyKey, **kwargs):
     '''prints a formatted error/anomaly message'''
     anomalyString = stories[storyKey]
@@ -340,8 +351,6 @@ def checkIndiAnomalies(indiList, famList):
 
         # US16 - Male last names
 
-        # US17 - No marriages to descendants
-
         # US18 - Siblings should not marry
 
         # US19 - First cousins should not marry
@@ -452,7 +461,18 @@ def checkFamAnomalies(indiList, famList):
                             displayAnomaly("US16", id=f["FAM"], indiId=childName, famName=parentLastName)
 
         # US17 - No marriages to descendants
-
+        h_exists = f["HUSB"] != "NA"
+        w_exists = f["WIFE"] != "NA"
+        if (h_exists and w_exists):
+            husb = findIndi(f["HUSB"], indiList)
+            wife = findIndi(f["WIFE"], indiList)
+            husbDecendents = getDecendents(f["HUSB"], indiList, famList)
+            wifeDecendents = getDecendents(f["WIFE"], indiList, famList)
+            if (f["WIFE"] in husbDecendents):
+                displayAnomaly("US17", id=f["HUSB"], famId=f["FAM"], decendentId=f["WIFE"])
+            if (f["HUSB"] in wifeDecendents):
+                displayAnomaly("US17", id=f["WIFE"], famId=f["FAM"], decendentId=f["HUSB"])
+            
         # US18 - Siblings should not marry
 
         # US19 - First cousins should not marry
