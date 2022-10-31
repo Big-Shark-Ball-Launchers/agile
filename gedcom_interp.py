@@ -458,17 +458,6 @@ def checkFamAnomalies(indiList, famList):
                 bornDelta = abs(c1birth - c2birth)
                 if (bornDelta.days == 0):
                     nuplets += [c1, c2]
-        # for c1 in f["CHIL"]:
-        #     c1birthstr = findIndi(c1, indiList)["BIRT DATE"]
-        #     c1birth = gedStringToDatetime(c1birthstr)
-        #     for c2 in f["CHIL"]:
-        #         if (c1 != c2):
-        #             c2birthstr = findIndi(c2, indiList)["BIRT DATE"]
-        #             c2birth = gedStringToDatetime(c2birthstr)
-        #             if (c1birthstr != "NA" and c2birthstr != "NA"):
-        #                 bornDelta = c1birth - c2birth
-        #                 if (bornDelta.days <= 2 and bornDelta.days >= 0):
-        #                     nuplets += [c1, c2]
                         
         nuplets = sorted(list(set(nuplets)))
         if len(nuplets) > 5:
