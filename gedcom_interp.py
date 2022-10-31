@@ -344,14 +344,6 @@ def checkIndiAnomalies(indiList, famList):
             if (datetimeRangeOverlap(marraigeRangeList)):
                 displayAnomaly("US11", id=i["INDI"], fams=i["FAMS"])
 
-        # US14 - Multiple births <= 5
-
-        # US15 - Fewer than 15 siblings
-
-        # US16 - Male last names
-
-        # US18 - Siblings should not marry
-
         # US19 - First cousins should not marry
 
         # US20 - Aunts and uncles
@@ -469,6 +461,7 @@ def checkFamAnomalies(indiList, famList):
             siblingCounter = siblingCounter + 1
         if siblingCounter >= 15:
             displayAnomaly("US15", id=f["FAM"])
+            
         # US16 - Male last names
         if f["HUSB NAME"] and f["CHIL"]:
             parentName = f["HUSB NAME"]
@@ -500,9 +493,6 @@ def checkFamAnomalies(indiList, famList):
                 displayAnomaly("US17", id=f["WIFE"], famId=f["FAM"], decendentId=f["HUSB"])
             
         # US18 - Siblings should not marry
-
-        #pairs = [comb for comb in combinations(f["CHIL"], 2)]
-
         for c1, c2 in pairs:
             c1indi = findIndi(c1, indiList)
             c2indi = findIndi(c2, indiList)
