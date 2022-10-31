@@ -3289,7 +3289,401 @@ class US14_tests(unittest.TestCase):
     run_gedcom_test = run_test
     # US14 Tests (Multiple births <= 5)
     def testUS14_1(self):
-        pass
+        # 6 children born on same day. Error should occur
+        testFile = '''
+        0 HEAD
+
+        0 @I1@ INDI
+        1 NAME husband
+        1 SEX M
+        1 FAMS @F1@
+        1 BIRT
+        2 DATE 8 JAN 1991
+
+        0 @I2@ INDI
+        1 NAME wife
+        1 SEX F
+        1 FAMS @F1@
+        1 BIRT
+        2 DATE 8 JAN 1990
+        
+        0 @I3@ INDI
+        1 NAME child1
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 8 JAN 2011
+
+        0 @I4@ INDI
+        1 NAME child2
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 8 JAN 2011
+
+        0 @I5@ INDI
+        1 NAME child3
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 8 JAN 2011
+
+        0 @I6@ INDI
+        1 NAME child4
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 8 JAN 2011
+
+        0 @I7@ INDI
+        1 NAME child5
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 8 JAN 2011
+
+        0 @I8@ INDI
+        1 NAME child6
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 8 JAN 2011
+        
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 CHIL @I3@
+        1 CHIL @I4@
+        1 CHIL @I5@
+        1 CHIL @I6@
+        1 CHIL @I7@
+        1 CHIL @I8@
+
+        0 TRLR
+        '''
+        expectedOutput = "ANOMALY: US14: FAM @F1@: More than 5 children born at the same time: ['@I3@', '@I4@', '@I5@', '@I6@', '@I7@', '@I8@']"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+    
+    def testUS14_2(self):
+        # 5 children born on same day. No error should occur
+        testFile = '''
+        0 HEAD
+
+        0 @I1@ INDI
+        1 NAME husband
+        1 SEX M
+        1 FAMS @F1@
+        1 BIRT
+        2 DATE 8 JAN 1991
+
+        0 @I2@ INDI
+        1 NAME wife
+        1 SEX F
+        1 FAMS @F1@
+        1 BIRT
+        2 DATE 8 JAN 1990
+        
+        0 @I3@ INDI
+        1 NAME child1
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 8 JAN 2011
+
+        0 @I4@ INDI
+        1 NAME child2
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 8 JAN 2011
+
+        0 @I5@ INDI
+        1 NAME child3
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 8 JAN 2011
+
+        0 @I6@ INDI
+        1 NAME child4
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 8 JAN 2011
+
+        0 @I7@ INDI
+        1 NAME child5
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 8 JAN 2011
+
+        0 @I8@ INDI
+        1 NAME child6
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 8 JAN 2011
+        
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 CHIL @I3@
+        1 CHIL @I4@
+        1 CHIL @I5@
+        1 CHIL @I6@
+        1 CHIL @I7@
+
+        0 TRLR
+        '''
+        expectedOutput = "US14"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    def testUS14_3(self):
+        # 6 children born with 1 day difference. Error should occur.
+        testFile = '''
+        0 HEAD
+
+        0 @I1@ INDI
+        1 NAME husband
+        1 SEX M
+        1 FAMS @F1@
+        1 BIRT
+        2 DATE 8 JAN 1991
+
+        0 @I2@ INDI
+        1 NAME wife
+        1 SEX F
+        1 FAMS @F1@
+        1 BIRT
+        2 DATE 8 JAN 1990
+        
+        0 @I3@ INDI
+        1 NAME child1
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 8 JAN 2011
+
+        0 @I4@ INDI
+        1 NAME child2
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 9 JAN 2011
+
+        0 @I5@ INDI
+        1 NAME child3
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 8 JAN 2011
+
+        0 @I6@ INDI
+        1 NAME child4
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 9 JAN 2011
+
+        0 @I7@ INDI
+        1 NAME child5
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 8 JAN 2011
+
+        0 @I8@ INDI
+        1 NAME child6
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 9 JAN 2011
+        
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 CHIL @I3@
+        1 CHIL @I4@
+        1 CHIL @I5@
+        1 CHIL @I6@
+        1 CHIL @I7@
+        1 CHIL @I8@
+
+        0 TRLR
+        '''
+        expectedOutput = "ANOMALY: US14: FAM @F1@: More than 5 children born at the same time: ['@I3@', '@I4@', '@I5@', '@I6@', '@I7@', '@I8@']"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+    
+    def testUS14_4(self):
+        # 7 children. 4 born close to eachother. No error should occur.
+        testFile = '''
+        0 HEAD
+
+        0 @I1@ INDI
+        1 NAME husband
+        1 SEX M
+        1 FAMS @F1@
+        1 BIRT
+        2 DATE 8 JAN 1991
+
+        0 @I2@ INDI
+        1 NAME wife
+        1 SEX F
+        1 FAMS @F1@
+        1 BIRT
+        2 DATE 8 JAN 1990
+        
+        0 @I3@ INDI
+        1 NAME child1
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 8 JAN 2017
+
+        0 @I4@ INDI
+        1 NAME child2
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 8 JAN 2017
+
+        0 @I5@ INDI
+        1 NAME child3
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 8 JAN 2017
+
+        0 @I6@ INDI
+        1 NAME child4
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 8 JAN 2017
+
+        0 @I7@ INDI
+        1 NAME child5
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 8 JAN 2013
+
+        0 @I8@ INDI
+        1 NAME child6
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 8 JAN 2012
+
+        0 @I9@ INDI
+        1 NAME child6
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 8 JAN 2011
+        
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 CHIL @I3@
+        1 CHIL @I4@
+        1 CHIL @I5@
+        1 CHIL @I6@
+        1 CHIL @I7@
+        1 CHIL @I8@
+        1 CHIL @I9@
+        
+
+        0 TRLR
+        '''
+        expectedOutput = "US14"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    def testUS14_5(self):
+        # 7 children. 6 born close to eachother. Error should occur.
+        testFile = '''
+        0 HEAD
+
+        0 @I1@ INDI
+        1 NAME husband
+        1 SEX M
+        1 FAMS @F1@
+        1 BIRT
+        2 DATE 8 JAN 1991
+
+        0 @I2@ INDI
+        1 NAME wife
+        1 SEX F
+        1 FAMS @F1@
+        1 BIRT
+        2 DATE 8 JAN 1990
+        
+        0 @I3@ INDI
+        1 NAME child1
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 8 JAN 2017
+
+        0 @I4@ INDI
+        1 NAME child2
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 8 JAN 2017
+
+        0 @I5@ INDI
+        1 NAME child3
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 8 JAN 2017
+
+        0 @I6@ INDI
+        1 NAME child4
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 8 JAN 2017
+
+        0 @I7@ INDI
+        1 NAME child5
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 8 JAN 2017
+
+        0 @I8@ INDI
+        1 NAME child6
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 8 JAN 2017
+
+        0 @I9@ INDI
+        1 NAME child6
+        1 SEX F
+        1 FAMC @F1@
+        1 BIRT
+        2 DATE 8 JAN 2011
+        
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 CHIL @I3@
+        1 CHIL @I4@
+        1 CHIL @I5@
+        1 CHIL @I6@
+        1 CHIL @I7@
+        1 CHIL @I8@
+        1 CHIL @I9@
+        
+
+        0 TRLR
+        '''
+        expectedOutput = "ANOMALY: US14: FAM @F1@: More than 5 children born at the same time: ['@I3@', '@I4@', '@I5@', '@I6@', '@I7@', '@I8@']"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
 class US15_tests(unittest.TestCase):
     run_gedcom_test = run_test
