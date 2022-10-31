@@ -501,6 +501,16 @@ def checkFamAnomalies(indiList, famList):
             
         # US18 - Siblings should not marry
 
+        #pairs = [comb for comb in combinations(f["CHIL"], 2)]
+
+        for c1, c2 in pairs:
+            c1indi = findIndi(c1, indiList)
+            c2indi = findIndi(c2, indiList)
+            if c1indi["FAMS"] != "NA" and c2indi["FAMS"] != "NA":
+                for fam in c1indi["FAMS"]:
+                    if fam in c2indi["FAMS"]:
+                        displayAnomaly("US18", id=f["FAM"], sib1=c1, sib2=c2, famId=fam)
+
         # US19 - First cousins should not marry
 
         # US20 - Aunts and uncles

@@ -5310,7 +5310,265 @@ class US18_tests(unittest.TestCase):
     run_gedcom_test = run_test
     # US18 Tests (Siblings should not marry)
     def testUS18_1(self):
-        pass
+        # Siblings marrying, error should occur
+        testFile = '''
+        0 HEAD
+        
+        0 @I1@ INDI
+        1 NAME John
+        1 SEX M
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 FAMS @F1@
+
+        0 @I3@ INDI
+        1 NAME Mike
+        1 SEX M
+        1 FAMC @F1@
+        1 FAMS @F2@
+
+        0 @I4@ INDI
+        1 NAME Mandy
+        1 SEX F
+        1 FAMC @F1@
+        1 FAMS @F2@
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 CHIL @I3@
+        1 CHIL @I4@
+
+        0 @F2@ FAM
+        1 HUSB @I3@
+        1 WIFE @I4@
+        '''
+        expectedOutput = "ANOMALY: US18: FAM @F1@: Siblings @I3@ and @I4@ are married in FAM @F2@"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    def testUS18_2(self):
+        # Siblings not marrying, error should not occur
+        testFile = '''
+        0 HEAD
+        
+        0 @I1@ INDI
+        1 NAME John
+        1 SEX M
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 FAMS @F1@
+
+        0 @I3@ INDI
+        1 NAME Mike
+        1 SEX M
+        1 FAMC @F1@
+
+        0 @I4@ INDI
+        1 NAME Mandy
+        1 SEX F
+        1 FAMC @F1@
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 CHIL @I3@
+        1 CHIL @I4@
+        '''
+        expectedOutput = "US18"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    def testUS18_3(self):
+        # Siblings marrying, but not eachother, error should not occur
+        testFile = '''
+        0 HEAD
+        
+        0 @I1@ INDI
+        1 NAME John
+        1 SEX M
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 FAMS @F1@
+
+        0 @I3@ INDI
+        1 NAME Mike
+        1 SEX M
+        1 FAMC @F1@
+        1 FAMS @F2@
+
+        0 @I4@ INDI
+        1 NAME Mandy
+        1 SEX F
+        1 FAMC @F1@
+        1 FAMS @F3@
+
+        0 @I5@ INDI
+        1 NAME Mitchell
+        1 SEX M
+        1 FAMS @F2@
+
+        0 @I6@ INDI
+        1 NAME Michelle
+        1 SEX F
+        1 FAMS @F3@
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 CHIL @I3@
+        1 CHIL @I4@
+
+        0 @F2@ FAM
+        1 HUSB @I3@
+        1 WIFE @I5@
+
+        0 @F3@ FAM
+        1 HUSB @I4@
+        1 WIFE @I6@
+        
+        0 TRLR
+        '''
+        expectedOutput = "US18"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    def testUS18_4(self):
+        # Half-siblings marrying. Error should not occur.
+        # (maybe it should. Would need to be another user story)
+        testFile = '''
+        0 HEAD
+        
+        0 @I1@ INDI
+        1 NAME John
+        1 SEX M
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 FAMS @F1@
+
+        0 @I2_@ INDI
+        1 NAME Mary2
+        1 SEX F
+        1 FAMS @F1_@
+
+        0 @I3@ INDI
+        1 NAME Mike
+        1 SEX M
+        1 FAMC @F1@
+        1 FAMS @F2@
+
+        0 @I4@ INDI
+        1 NAME Mandy
+        1 SEX F
+        1 FAMC @F1_@
+        1 FAMS @F2@
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 CHIL @I3@
+        1 DIV
+        2 DATE 1 JAN 2000
+        1 MARR
+        2 DATE 1 JAN 1990
+
+        0 @F1_@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2_@
+        1 CHIL @I4@
+        1 MARR
+        2 DATE 1 JAN 2003
+
+        0 @F2@ FAM
+        1 HUSB @I3@
+        1 WIFE @I4@
+        
+        0 TRLR
+        '''
+        expectedOutput = "US18"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+    
+    def testUS18_5(self):
+        # step-siblings marrying. Error should not occur.
+        # (maybe it should. Would need to be another user story)
+        testFile = '''
+        0 HEAD
+        
+        0 @I1@ INDI
+        1 NAME John
+        1 SEX M
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 FAMS @F1@
+        1 FAMS @F1__@
+
+        0 @I1_@ INDI
+        1 NAME John
+        1 SEX M
+        1 FAMS @F1_@
+        1 FAMS @F1__@
+
+        0 @I2_@ INDI
+        1 NAME Mary2
+        1 SEX F
+        1 FAMS @F1_@
+
+        0 @I3@ INDI
+        1 NAME Mike
+        1 SEX M
+        1 FAMC @F1@
+        1 FAMS @F2@
+
+        0 @I4@ INDI
+        1 NAME Mandy
+        1 SEX F
+        1 FAMC @F1_@
+        1 FAMS @F2@
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 CHIL @I3@
+        1 DIV
+        2 DATE 1 JAN 2000
+        1 MARR
+        2 DATE 1 JAN 1990
+
+        0 @F1_@ FAM
+        1 HUSB @I1_@
+        1 WIFE @I2_@
+        1 CHIL @I4@
+        1 MARR
+        2 DATE 1 JAN 2003
+        1 DIV
+        2 DATE 1 JAN 2004
+
+        0 @F1__@ FAM
+        1 HUSB @I1_@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 1 JAN 2006
+
+        0 @F2@ FAM
+        1 HUSB @I3@
+        1 WIFE @I4@
+        
+        0 TRLR
+        '''
+        expectedOutput = "US18"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
 class US19_tests(unittest.TestCase):
     run_gedcom_test = run_test
