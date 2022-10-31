@@ -12,7 +12,7 @@ stories = {
     "US11": "ANOMALY: {story}: INDI {id} is an active spouse in muliple families. FAMS: {fams}",
     "US12": "ANOMALY: {story}: INDI {id}: Birthdate {bDate} occurs more than {ageLimit} years after {parentString}'s birthday: {parentBirthdate}",
     "US13": "ANOMALY: {story}: INDI {id}: Birthdate {bDate} occurs within 2 days to 8 months of sibling {sibID}: {siblingBirthdate}",
-    "US14": "ANOMALY: {story}: FAM {id}: More than 5 children born at the same time: {nuplets}",
+    "US14": "",
     "US15": "ANOMALY: {story}: FAM {id}: Family contains 15 or more siblings",
     "US16": "ANOMALY: {story}: FAM {id}: Individual {indiId} has a different last name from his family {famName}",
     "US17": "ANOMALY: {story}: INDI {id}: Individual has married their decendent {decendentId} in FAM {famId}",

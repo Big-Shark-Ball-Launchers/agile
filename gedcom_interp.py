@@ -6,7 +6,6 @@ import sys
 import datetime
 from dateutil.relativedelta import relativedelta
 from user_stories import stories
-from itertools import combinations
 
 CURRENT_DATE = datetime.datetime.now()
 
@@ -447,32 +446,6 @@ def checkFamAnomalies(indiList, famList):
                             displayAnomaly("US13", id=c1, sibID=c2, bDate=c1birthstr, siblingBirthdate=c2birthstr)
 
         # US14 - Multiple births <= 5
-        nuplets = []
-        pairs = [comb for comb in combinations(f["CHIL"], 2)]
-        for c1, c2 in pairs:
-            c1birthstr = findIndi(c1, indiList)["BIRT DATE"]
-            c1birth = gedStringToDatetime(c1birthstr)
-            c2birthstr = findIndi(c2, indiList)["BIRT DATE"]
-            c2birth = gedStringToDatetime(c2birthstr)
-            if (c1birthstr != "NA" and c2birthstr != "NA"):
-                bornDelta = abs(c1birth - c2birth)
-                if (bornDelta.days == 0):
-                    nuplets += [c1, c2]
-        # for c1 in f["CHIL"]:
-        #     c1birthstr = findIndi(c1, indiList)["BIRT DATE"]
-        #     c1birth = gedStringToDatetime(c1birthstr)
-        #     for c2 in f["CHIL"]:
-        #         if (c1 != c2):
-        #             c2birthstr = findIndi(c2, indiList)["BIRT DATE"]
-        #             c2birth = gedStringToDatetime(c2birthstr)
-        #             if (c1birthstr != "NA" and c2birthstr != "NA"):
-        #                 bornDelta = c1birth - c2birth
-        #                 if (bornDelta.days <= 2 and bornDelta.days >= 0):
-        #                     nuplets += [c1, c2]
-                        
-        nuplets = sorted(list(set(nuplets)))
-        if len(nuplets) > 5:
-            displayAnomaly("US14", id=f["FAM"], nuplets=nuplets)
 
         # US15 - Fewer than 15 siblings
         siblingCounter = 0
@@ -494,7 +467,7 @@ def checkFamAnomalies(indiList, famList):
                         childGender = child["SEX"]
                         childName = child["NAME"]
                         childLastName = childName.split()[1]
-                        if childGender == "M" and childLastName != parentLastName:
+                        if childGender is "M" and childLastName != parentLastName:
                             displayAnomaly("US16", id=f["FAM"], indiId=childName, famName=parentLastName)
 
         # US17 - No marriages to descendants
