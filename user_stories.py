@@ -19,7 +19,7 @@ stories = {
     "US18": "ANOMALY: {story}: FAM {id}: Siblings {sib1} and {sib2} are married in FAM {famId}",
     "US19": "",
     "US20": "",
-    "US21": "",
+    "US21": "ANOMALY: {story}: INDI {id}: Unexpected gender {gender} for role {role}",
     "US22": "",
     "US23": "",
     "US24": ""

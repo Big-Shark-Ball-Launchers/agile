@@ -348,8 +348,6 @@ def checkIndiAnomalies(indiList, famList):
 
         # US20 - Aunts and uncles
 
-        # US21 - Correct gender for role
-
         # US22 - Unique IDs
 
         # US23 - Unique name and birth date
@@ -506,6 +504,21 @@ def checkFamAnomalies(indiList, famList):
         # US20 - Aunts and uncles
 
         # US21 - Correct gender for role
+        h_exists = f["HUSB"] != "NA"
+        w_exists = f["WIFE"] != "NA"
+        # Check that husband is male
+        if (h_exists):
+            husband = findIndi(f["HUSB"], indiList)
+            gender = husband["SEX"]
+            if (gender != "M"):
+                displayAnomaly("US21", id=f["HUSB"], gender=gender, role="HUSB")
+        # Check that wife is female
+        if (w_exists):
+            wife = findIndi(f["WIFE"], indiList)
+            gender = wife["SEX"]
+            if (gender != "F"):
+                displayAnomaly("US21", id=f["WIFE"],
+                               gender=gender, role="WIFE")
 
         # US22 - Unique IDs
 
