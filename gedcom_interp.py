@@ -270,8 +270,8 @@ def processFile(filename):
         famList = [makeFamAssumptions(f, indiList) for f in famList]
         return (indiList, famList)
 
-
 def checkIndiAnomalies(indiList, famList):
+    index = 0
     # Loop through each individual and family to check for errors/anomalies
     for i in indiList:
 
@@ -353,8 +353,14 @@ def checkIndiAnomalies(indiList, famList):
         # US22 - Unique IDs
 
         # US23 - Unique name and birth date
+        for x in range(index+1,len(indiList)-1):
+            j = indiList[x]
+            if(i["NAME"] == j["NAME"] and i["BIRT DATE"] == j["BIRT DATE"]):
+                displayAnomaly("US23", id=i["INDI"], id2=j["INDI"]) 
 
         # US24 - Unique families by spouses
+
+        index+=1
 
 
 def checkFamAnomalies(indiList, famList):
@@ -510,7 +516,7 @@ def checkFamAnomalies(indiList, famList):
         # US22 - Unique IDs
 
         # US23 - Unique name and birth date
-
+        
         # US24 - Unique families by spouses
 
 
