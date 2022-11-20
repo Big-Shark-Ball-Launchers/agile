@@ -364,6 +364,7 @@ def checkIndiAnomalies(indiList, famList):
 
 
 def checkFamAnomalies(indiList, famList):
+    indexf = 0
     for f in famList:
 
         # US01 - Dates before current date
@@ -440,8 +441,8 @@ def checkFamAnomalies(indiList, famList):
                     c2birthstr = findIndi(c2, indiList)["BIRT DATE"]
                     c2birth = gedStringToDatetime(c2birthstr)
                     if (c1birthstr != "NA" and c2birthstr != "NA"):
-                        range = (c1birth + relativedelta(days=2), c1birth + relativedelta(months=8))
-                        if (datetimeWithinRange(c2birth, range)):
+                        ranged = (c1birth + relativedelta(days=2), c1birth + relativedelta(months=8))
+                        if (datetimeWithinRange(c2birth, ranged)):
                             displayAnomaly("US13", id=c1, sibID=c2, bDate=c1birthstr, siblingBirthdate=c2birthstr)
 
         # US14 - Multiple births <= 5
@@ -518,6 +519,13 @@ def checkFamAnomalies(indiList, famList):
         # US23 - Unique name and birth date
         
         # US24 - Unique families by spouses
+        for y in range(indexf+1,len(famList)):
+            j = famList[y] 
+            if(f["HUSB NAME"] == j["HUSB NAME"] and f["WIFE NAME"] == j["WIFE NAME"] and f["MARR DATE"] == j["MARR DATE"]):
+                displayAnomaly("US24", id=f["FAM"], id2=j["FAM"]) 
+
+        indexf+=1
+
 
 
 def main():
