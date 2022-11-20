@@ -22,5 +22,5 @@ stories = {
     "US21": "",
     "US22": "",
     "US23": "ANOMALY: {story}: INDI {id}: Individuals {id} and {id2} have the same name and birthdate",
-    "US24": ""
+    "US24": "ANOMALY: {story}: FAM {id}: Families {id} and {id2} have the same spouses and marriage date",
 }
