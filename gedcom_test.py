@@ -6377,13 +6377,741 @@ class US23_tests(unittest.TestCase):
     run_gedcom_test = run_test
     # US23 Tests (Unique name and birth date)
     def testUS23_1(self):
-        pass
+        # Two identical people
+        testFile = '''
+        0 HEAD
+        1 SOUR Family Echo
+        2 WWW http://www.familyecho.com/
+        1 FILE Family 5
+        1 DATE 19 NOV 2022
+        1 DEST ANSTFILE
+        1 GEDC
+        2 VERS 5.5.1
+        2 FORM LINEAGE-LINKED
+        1 SUBM @I3@
+        2 NAME jeweler-giggle-0f@icloud.com
+        1 SUBN
+        1 CHAR UTF-8
+        0 @I1@ INDI
+        1 NAME
+        1 SEX M
+        1 FAMS @F1@
+        0 @I2@ INDI
+        1 NAME
+        1 SEX F
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Andrew /Pickle/
+        2 GIVN Andrew
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 BIRT
+        2 DATE 1 JAN 2000
+        1 FAMC @F1@
+        0 @I4@ INDI
+        1 NAME Andrew /Pickle/
+        2 GIVN Andrew
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 BIRT
+        2 DATE 1 JAN 2000
+        1 FAMC @F1@
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 CHIL @I3@
+        1 CHIL @I4@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 TRLR
+
+        '''
+        expectedOutput = "ANOMALY: US23: INDI @I1@: Individuals @I1@ and @I2@ have the same name and birthdate"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    def testUS23_2(self):
+        # Three identical people
+        testFile = '''
+        0 HEAD
+        1 SOUR Family Echo
+        2 WWW http://www.familyecho.com/
+        1 FILE Family 5
+        1 DATE 19 NOV 2022
+        1 DEST ANSTFILE
+        1 GEDC
+        2 VERS 5.5.1
+        2 FORM LINEAGE-LINKED
+        1 SUBM @I3@
+        2 NAME jeweler-giggle-0f@icloud.com
+        1 SUBN
+        1 CHAR UTF-8
+        0 @I1@ INDI
+        1 NAME
+        1 SEX M
+        1 FAMS @F1@
+        0 @I2@ INDI
+        1 NAME
+        1 SEX F
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Andrew /Pickle/
+        2 GIVN Andrew
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 BIRT
+        2 DATE 1 JAN 2000
+        1 FAMC @F1@
+        0 @I4@ INDI
+        1 NAME Andrew /Pickle/
+        2 GIVN Andrew
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 BIRT
+        2 DATE 1 JAN 2000
+        1 FAMC @F1@
+        0 @I5@ INDI
+        1 NAME Andrew /Pickle/
+        2 GIVN Andrew
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 BIRT
+        2 DATE 1 JAN 2000
+        1 FAMC @F1@
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 CHIL @I3@
+        1 CHIL @I4@
+        1 CHIL @I5@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 TRLR
+
+
+        '''
+        expectedOutput = "ANOMALY: US23: INDI @I1@: Individuals @I1@ and @I2@ have the same name and birthdate"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    def testUS23_3(self):
+        # Two identical people
+        testFile = '''
+        0 HEAD
+        1 SOUR Family Echo
+        2 WWW http://www.familyecho.com/
+        1 FILE Family 5
+        1 DATE 19 NOV 2022
+        1 DEST ANSTFILE
+        1 GEDC
+        2 VERS 5.5.1
+        2 FORM LINEAGE-LINKED
+        1 SUBM @I3@
+        2 NAME jeweler-giggle-0f@icloud.com
+        1 SUBN
+        1 CHAR UTF-8
+        0 @I1@ INDI
+        1 NAME
+        1 SEX M
+        1 FAMS @F1@
+        0 @I2@ INDI
+        1 NAME
+        1 SEX F
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME David /Pickle/
+        2 GIVN David
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 BIRT
+        2 DATE 1 JAN 2000
+        1 FAMC @F1@
+        0 @I4@ INDI
+        1 NAME Andrew /Pickle/
+        2 GIVN Andrew
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 BIRT
+        2 DATE 1 JAN 2000
+        1 FAMC @F1@
+        0 @I5@ INDI
+        1 NAME Andrew /Pickle/
+        2 GIVN Andrew
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 BIRT
+        2 DATE 1 JAN 2000
+        1 FAMC @F1@
+        0 @I6@ INDI
+        1 NAME David /Pickle/
+        2 GIVN David
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 BIRT
+        2 DATE 1 JAN 2000
+        1 FAMC @F1@
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 CHIL @I3@
+        1 CHIL @I4@
+        1 CHIL @I5@
+        1 CHIL @I6@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 TRLR
+
+        '''
+        expectedOutput = "ANOMALY: US23: INDI @I1@: Individuals @I1@ and @I2@ have the same name and birthdate"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    def testUS23_4(self):
+        # No problems
+        testFile = '''
+        0 HEAD
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        2 GIVN Dick
+        2 SURN Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMC @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMC @F1@
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 1980
+        1 DIV
+        2 DATE 20 JUN 1990
+        0 TRLR'''
+        expectedOutput = "US23"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    def testUS23_5(self):
+        # No problems
+        testFile = '''
+        0 HEAD
+        0 @I1@ INDI
+        1 NAME Andrew /Smith/
+        2 GIVN Andrew
+        2 SURN Smith
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMC @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMC @F1@
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 FEB 1980
+        1 DIV
+        2 DATE 20 JUN 1990
+        0 TRLR'''
+        expectedOutput = "US23"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
 class US24_tests(unittest.TestCase):
     run_gedcom_test = run_test
     # US24 Tests (Unique families by spouses)
     def testUS24_1(self):
-        pass
+        # Two identical marriages
+        testFile = '''
+        0 HEAD
+        1 SOUR Family Echo
+        2 WWW http://www.familyecho.com/
+        1 FILE Family 5
+        1 DATE 19 NOV 2022
+        1 DEST ANSTFILE
+        1 GEDC
+        2 VERS 5.5.1
+        2 FORM LINEAGE-LINKED
+        1 SUBM @I3@
+        2 NAME jeweler-giggle-0f@icloud.com
+        1 SUBN
+        1 CHAR UTF-8
+        0 @I1@ INDI
+        1 NAME Andrew Sr /Pickle/
+        2 GIVN Andrew Sr
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 SEX M
+        1 FAMS @F1@
+        1 FAMC @F2@
+        0 @I2@ INDI
+        1 NAME Andrea /Pickle/
+        2 GIVN Andrea
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 SEX F
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME David /Pickle/
+        2 GIVN David
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 BIRT
+        2 DATE 1 JAN 2000
+        1 FAMC @F1@
+        0 @I4@ INDI
+        1 NAME Andrew /Pickle/
+        2 GIVN Andrew
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 BIRT
+        2 DATE 1 JAN 2000
+        1 FAMC @F1@
+        0 @I5@ INDI
+        1 NAME
+        1 SEX M
+        1 FAMS @F2@
+        0 @I6@ INDI
+        1 NAME
+        1 SEX F
+        1 FAMS @F2@
+        0 @I7@ INDI
+        1 NAME Andrew Sr /Pickle/
+        2 GIVN Andrew Sr
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 FAMS @F3@
+        1 FAMC @F2@
+        0 @I8@ INDI
+        1 NAME Andrea /Pickle/
+        2 GIVN Andrea
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 SEX F
+        1 FAMS @F3@
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 CHIL @I3@
+        1 CHIL @I4@
+        1 MARR
+        2 DATE 1 JAN 1999
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 @F2@ FAM
+        1 HUSB @I5@
+        1 WIFE @I6@
+        1 CHIL @I1@
+        1 CHIL @I7@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 @F3@ FAM
+        1 HUSB @I7@
+        1 WIFE @I8@
+        1 MARR
+        2 DATE 1 JAN 1999
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 TRLR
+        '''
+        expectedOutput = "ANOMALY: US24: FAM @F1@: Families @F1@ and @F3@ have the same spouses and marriage date"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    def testUS24_2(self):
+        # Same husb diff wife
+        testFile = '''
+        0 HEAD
+        1 SOUR Family Echo
+        2 WWW http://www.familyecho.com/
+        1 FILE Family 5
+        1 DATE 19 NOV 2022
+        1 DEST ANSTFILE
+        1 GEDC
+        2 VERS 5.5.1
+        2 FORM LINEAGE-LINKED
+        1 SUBM @I3@
+        2 NAME jeweler-giggle-0f@icloud.com
+        1 SUBN
+        1 CHAR UTF-8
+        0 @I1@ INDI
+        1 NAME Andrew Sr /Pickle/
+        2 GIVN Andrew Sr
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 SEX M
+        1 FAMS @F1@
+        1 FAMC @F2@
+        0 @I2@ INDI
+        1 NAME Andrea /Pickle/
+        2 GIVN Andrea
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 SEX F
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME David /Pickle/
+        2 GIVN David
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 BIRT
+        2 DATE 1 JAN 2000
+        1 FAMC @F1@
+        0 @I4@ INDI
+        1 NAME Andrew /Pickle/
+        2 GIVN Andrew
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 BIRT
+        2 DATE 1 JAN 2000
+        1 FAMC @F1@
+        0 @I5@ INDI
+        1 NAME
+        1 SEX M
+        1 FAMS @F2@
+        0 @I6@ INDI
+        1 NAME
+        1 SEX F
+        1 FAMS @F2@
+        0 @I7@ INDI
+        1 NAME Andrew Sr /Pickle/
+        2 GIVN Andrew Sr
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 FAMS @F3@
+        1 FAMC @F2@
+        0 @I8@ INDI
+        1 NAME Andre /Pickle/
+        2 GIVN Andre
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 SEX F
+        1 FAMS @F3@
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 CHIL @I3@
+        1 CHIL @I4@
+        1 MARR
+        2 DATE 1 JAN 1999
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 @F2@ FAM
+        1 HUSB @I5@
+        1 WIFE @I6@
+        1 CHIL @I1@
+        1 CHIL @I7@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 @F3@ FAM
+        1 HUSB @I7@
+        1 WIFE @I8@
+        1 MARR
+        2 DATE 1 JAN 1999
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 TRLR
+
+        '''
+        expectedOutput = "US24"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    def testUS24_3(self):
+        # same wife diff husb
+        testFile = '''
+                0 HEAD
+        1 SOUR Family Echo
+        2 WWW http://www.familyecho.com/
+        1 FILE Family 5
+        1 DATE 19 NOV 2022
+        1 DEST ANSTFILE
+        1 GEDC
+        2 VERS 5.5.1
+        2 FORM LINEAGE-LINKED
+        1 SUBM @I3@
+        2 NAME jeweler-giggle-0f@icloud.com
+        1 SUBN
+        1 CHAR UTF-8
+        0 @I1@ INDI
+        1 NAME Andrew Sr /Pickle/
+        2 GIVN Andrew Sr
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 SEX M
+        1 FAMS @F1@
+        1 FAMC @F2@
+        0 @I2@ INDI
+        1 NAME Andrea /Pickle/
+        2 GIVN Andrea
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 SEX F
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME David /Pickle/
+        2 GIVN David
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 BIRT
+        2 DATE 1 JAN 2000
+        1 FAMC @F1@
+        0 @I4@ INDI
+        1 NAME Andrew /Pickle/
+        2 GIVN Andrew
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 BIRT
+        2 DATE 1 JAN 2000
+        1 FAMC @F1@
+        0 @I5@ INDI
+        1 NAME
+        1 SEX M
+        1 FAMS @F2@
+        0 @I6@ INDI
+        1 NAME
+        1 SEX F
+        1 FAMS @F2@
+        0 @I7@ INDI
+        1 NAME Andrew /Pickle/
+        2 GIVN Andrew
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 FAMS @F3@
+        1 FAMC @F2@
+        0 @I8@ INDI
+        1 NAME Andrea /Pickle/
+        2 GIVN Andrea
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 SEX F
+        1 FAMS @F3@
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 CHIL @I3@
+        1 CHIL @I4@
+        1 MARR
+        2 DATE 1 JAN 1999
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 @F2@ FAM
+        1 HUSB @I5@
+        1 WIFE @I6@
+        1 CHIL @I1@
+        1 CHIL @I7@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 @F3@ FAM
+        1 HUSB @I7@
+        1 WIFE @I8@
+        1 MARR
+        2 DATE 1 JAN 1999
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 TRLR
+        '''
+        expectedOutput = "US24"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    def testUS24_4(self):
+        # No common spouses
+        testFile = '''
+        0 HEAD
+        1 SOUR Family Echo
+        2 WWW http://www.familyecho.com/
+        1 FILE Family 5
+        1 DATE 19 NOV 2022
+        1 DEST ANSTFILE
+        1 GEDC
+        2 VERS 5.5.1
+        2 FORM LINEAGE-LINKED
+        1 SUBM @I3@
+        2 NAME jeweler-giggle-0f@icloud.com
+        1 SUBN
+        1 CHAR UTF-8
+        0 @I1@ INDI
+        1 NAME Andrew Sr /Pickle/
+        2 GIVN Andrew Sr
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 SEX M
+        1 FAMS @F1@
+        1 FAMC @F2@
+        0 @I2@ INDI
+        1 NAME Andrea /Pickle/
+        2 GIVN Andrea
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 SEX F
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME David /Pickle/
+        2 GIVN David
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 BIRT
+        2 DATE 1 JAN 2000
+        1 FAMC @F1@
+        0 @I4@ INDI
+        1 NAME Andrew /Pickle/
+        2 GIVN Andrew
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 BIRT
+        2 DATE 1 JAN 2000
+        1 FAMC @F1@
+        0 @I5@ INDI
+        1 NAME
+        1 SEX M
+        1 FAMS @F2@
+        0 @I6@ INDI
+        1 NAME
+        1 SEX F
+        1 FAMS @F2@
+        0 @I7@ INDI
+        1 NAME Andrew Jr /Pickle/
+        2 GIVN Andrew Jr
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 FAMS @F3@
+        1 FAMC @F2@
+        0 @I8@ INDI
+        1 NAME Andred /Pickle/
+        2 GIVN Andred
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 SEX F
+        1 FAMS @F3@
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 CHIL @I3@
+        1 CHIL @I4@
+        1 MARR
+        2 DATE 1 JAN 1999
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 @F2@ FAM
+        1 HUSB @I5@
+        1 WIFE @I6@
+        1 CHIL @I1@
+        1 CHIL @I7@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 @F3@ FAM
+        1 HUSB @I7@
+        1 WIFE @I8@
+        1 MARR
+        2 DATE 1 JAN 1999
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 TRLR
+
+        '''
+        expectedOutput = "US24"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    def testUS24_5(self):
+        # Different last names
+        testFile = '''
+                0 HEAD
+        1 SOUR Family Echo
+        2 WWW http://www.familyecho.com/
+        1 FILE Family 5
+        1 DATE 19 NOV 2022
+        1 DEST ANSTFILE
+        1 GEDC
+        2 VERS 5.5.1
+        2 FORM LINEAGE-LINKED
+        1 SUBM @I3@
+        2 NAME jeweler-giggle-0f@icloud.com
+        1 SUBN
+        1 CHAR UTF-8
+        0 @I1@ INDI
+        1 NAME Andrew Sr /Pickle/
+        2 GIVN Andrew Sr
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 SEX M
+        1 FAMS @F1@
+        1 FAMC @F2@
+        0 @I2@ INDI
+        1 NAME Andrea /Pickle/
+        2 GIVN Andrea
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 SEX F
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME David /Pickle/
+        2 GIVN David
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 BIRT
+        2 DATE 1 JAN 2000
+        1 FAMC @F1@
+        0 @I4@ INDI
+        1 NAME Andrew /Pickle/
+        2 GIVN Andrew
+        2 SURN Pickle
+        2 _MARNM Pickle
+        1 BIRT
+        2 DATE 1 JAN 2000
+        1 FAMC @F1@
+        0 @I5@ INDI
+        1 NAME
+        1 SEX M
+        1 FAMS @F2@
+        0 @I6@ INDI
+        1 NAME
+        1 SEX F
+        1 FAMS @F2@
+        0 @I7@ INDI
+        1 NAME Andrew Sr /Rick/
+        2 GIVN Andrew Sr
+        2 SURN Rick
+        2 _MARNM Rick
+        1 FAMS @F3@
+        1 FAMC @F2@
+        0 @I8@ INDI
+        1 NAME Andre /Rick/
+        2 GIVN Andre
+        2 SURN Rick
+        2 _MARNM Rick
+        1 SEX F
+        1 FAMS @F3@
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 CHIL @I3@
+        1 CHIL @I4@
+        1 MARR
+        2 DATE 1 JAN 1999
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 @F2@ FAM
+        1 HUSB @I5@
+        1 WIFE @I6@
+        1 CHIL @I1@
+        1 CHIL @I7@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 @F3@ FAM
+        1 HUSB @I7@
+        1 WIFE @I8@
+        1 MARR
+        2 DATE 1 JAN 1999
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 TRLR
+        '''
+        expectedOutput = "US24"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
         
 if __name__ == '__main__':
     unittest.main()

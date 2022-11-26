@@ -272,8 +272,8 @@ def processFile(filename):
         famList = [makeFamAssumptions(f, indiList) for f in famList]
         return (indiList, famList)
 
-
 def checkIndiAnomalies(indiList, famList):
+    index = 0
     # Loop through each individual and family to check for errors/anomalies
     for i in indiList:
 
@@ -353,10 +353,17 @@ def checkIndiAnomalies(indiList, famList):
         # US21 - Correct gender for role
 
         # US23 - Unique name and birth date
+        for x in range(index+1,len(indiList)-1):
+            j = indiList[x]
+            if(i["NAME"] == j["NAME"] and i["BIRT DATE"] == j["BIRT DATE"]):
+                displayAnomaly("US23", id=i["INDI"], id2=j["INDI"]) 
 
         # US24 - Unique families by spouses
 
+        index+=1
+
 def checkFamAnomalies(indiList, famList):
+    indexf = 0
     for f in famList:
 
         # US01 - Dates before current date
@@ -433,8 +440,8 @@ def checkFamAnomalies(indiList, famList):
                     c2birthstr = findIndi(c2, indiList)["BIRT DATE"]
                     c2birth = gedStringToDatetime(c2birthstr)
                     if (c1birthstr != "NA" and c2birthstr != "NA"):
-                        range = (c1birth + relativedelta(days=2), c1birth + relativedelta(months=8))
-                        if (datetimeWithinRange(c2birth, range)):
+                        ranged = (c1birth + relativedelta(days=2), c1birth + relativedelta(months=8))
+                        if (datetimeWithinRange(c2birth, ranged)):
                             displayAnomaly("US13", id=c1, sibID=c2, bDate=c1birthstr, siblingBirthdate=c2birthstr)
 
         # US14 - Multiple births <= 5
@@ -507,8 +514,15 @@ def checkFamAnomalies(indiList, famList):
         # US21 - Correct gender for role
 
         # US23 - Unique name and birth date
-
+        
         # US24 - Unique families by spouses
+        for y in range(indexf+1,len(famList)):
+            j = famList[y] 
+            if(f["HUSB NAME"] == j["HUSB NAME"] and f["WIFE NAME"] == j["WIFE NAME"] and f["MARR DATE"] == j["MARR DATE"]):
+                displayAnomaly("US24", id=f["FAM"], id2=j["FAM"]) 
+
+        indexf+=1
+
 
 
 
