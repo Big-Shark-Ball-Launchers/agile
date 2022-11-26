@@ -20,7 +20,7 @@ stories = {
     "US19": "",
     "US20": "",
     "US21": "",
-    "US22": "",
+    "US22": "ERROR: {story}: INDI/FAM {id}: ID {id} is not unique (multiple individuals/families share this ID) - further checks may be inaccurate",
     "US23": "",
     "US24": ""
 }
