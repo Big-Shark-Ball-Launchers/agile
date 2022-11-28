@@ -5574,11 +5574,205 @@ class US19_tests(unittest.TestCase):
     run_gedcom_test = run_test
     # US19 Tests (First cousins should not marry)
     def testUS19_1(self):
-        pass
+        # First cousins marrying, error should occur (simple)
+        testFile = '''
+        0 HEAD
+        
+        0 @I1@ INDI
+        1 NAME John(GF)
+        1 SEX M
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary(GM)
+        1 SEX F
+        1 FAMS @F1@
+
+        0 @I3@ INDI
+        1 NAME Mike(F1)
+        1 SEX M
+        1 FAMC @F1@
+        1 FAMS @F2@
+
+        0 @I4@ INDI
+        1 NAME Mandy(M1)
+        1 SEX F
+        1 FAMS @F2@
+
+        0 @I5@ INDI
+        1 NAME Mitchell(F2)
+        1 SEX M
+        2 FAMC @F1@
+        2 FAMS @F3@
+
+        0 @I6@ INDI
+        1 NAME Michelle(M2)
+        1 SEX F
+        1 FAMS @F3@
+
+        0 NOTE Above sets up family with grandparents and parents. Next we set up their children who are first cousins.
+
+        0 @I7@ INDI
+        1 NAME Paul(C1)
+        1 SEX M
+        1 FAMC @F2@
+        1 FAMS @F4@
+
+        0 @I8@ INDI
+        1 NAME Pauline(C2)
+        1 SEX F
+        1 FAMC @F3@
+        1 FAMS @F4@
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 CHIL @I3@
+        1 CHIL @I5@
+
+        0 @F2@ FAM
+        1 HUSB @I3@
+        1 WIFE @I4@
+        1 CHIL @I7@
+
+        0 @F3@ FAM
+        1 HUSB @I5@
+        1 WIFE @I6@
+        1 CHIL @I8@
+
+        0 @F4@ FAM
+        1 HUSB @I7@
+        1 WIFE @I8@
+
+        0 TRLR
+        '''
+        expectedOutput = "ANOMALY: US19: FAM @F4@: Wife @I8@ is married to their first cousin Husband @I7@"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+    def testUS19_2(self):
+        # First cousins NOT marrying, error should NOT occur (simple)
+        testFile = '''
+        0 HEAD
+        
+        0 @I1@ INDI
+        1 NAME John(GF)
+        1 SEX M
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary(GM)
+        1 SEX F
+        1 FAMS @F1@
+
+        0 @I3@ INDI
+        1 NAME Mike(F1)
+        1 SEX M
+        1 FAMC @F1@
+        1 FAMS @F2@
+
+        0 @I4@ INDI
+        1 NAME Mandy(M1)
+        1 SEX F
+        1 FAMS @F2@
+
+        0 @I5@ INDI
+        1 NAME Mitchell(F2)
+        1 SEX M
+        2 FAMC @F1@
+        2 FAMS @F3@
+
+        0 @I6@ INDI
+        1 NAME Michelle(M2)
+        1 SEX F
+        1 FAMS @F3@
+
+        0 NOTE Above sets up family with grandparents and parents. Next we set up their children who are first cousins.
+
+        0 @I7@ INDI
+        1 NAME Paul(C1)
+        1 SEX M
+        1 FAMC @F2@
+        
+
+        0 @I8@ INDI
+        1 NAME Pauline(C2)
+        1 SEX F
+        1 FAMC @F3@
+    
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 CHIL @I3@
+        1 CHIL @I5@
+
+        0 @F2@ FAM
+        1 HUSB @I3@
+        1 WIFE @I4@
+        1 CHIL @I7@
+
+        0 @F3@ FAM
+        1 HUSB @I5@
+        1 WIFE @I6@
+        1 CHIL @I8@
+
+        0 TRLR
+        '''
+        expectedOutput = "US19"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+    def testUS19_3(self):
+        # Marriage without grandparents, error should NOT occur (and should not crash)
+        testFile = '''
+        0 HEAD
+
+        0 @I3@ INDI
+        1 NAME Mike(F1)
+        1 SEX M
+        1 FAMS @F2@
+
+        0 @I4@ INDI
+        1 NAME Mandy(M1)
+        1 SEX F
+        1 FAMS @F2@
+
+        0 @I5@ INDI
+        1 NAME Mitchell(F2)
+        1 SEX M
+        2 FAMS @F3@
+
+        0 @I6@ INDI
+        1 NAME Michelle(M2)
+        1 SEX F
+        1 FAMS @F3@
+
+        0 NOTE Above sets up family with grandparents and parents. Next we set up their children who are first cousins.
+
+        0 @I7@ INDI
+        1 NAME Paul(C1)
+        1 SEX M
+        
+
+        0 @I8@ INDI
+        1 NAME Pauline(C2)
+        1 SEX F
+
+        0 @F2@ FAM
+        1 HUSB @I3@
+        1 WIFE @I4@
+        1 CHIL @I7@
+
+        0 @F3@ FAM
+        1 HUSB @I5@
+        1 WIFE @I6@
+        1 CHIL @I8@
+
+        0 TRLR
+        '''
+        expectedOutput = "US19"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
 class US20_tests(unittest.TestCase):
     run_gedcom_test = run_test
-    # US20 Tests (Aunts and uncles)
+    # US20 Tests (Aunts and uncles should not marry nieces and nephews)
     def testUS20_1(self):
         pass
 
