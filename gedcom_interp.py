@@ -212,7 +212,43 @@ def getDecendents(i, indiList, famList):
                 decendents.append(c)
                 decendents += getDecendents(c, indiList, famList)
     return decendents
+
+def getParents(i, indiList, famList):
+    '''returns a list of parents of an individual'''
+    indi = findIndi(i, indiList)
+    parents = []
+    if (indi["FAMC"] != ""):
+        fam = findFam(indi["FAMC"], famList)
+        if (fam != None):
+            parents.append(fam["HUSB"])
+            parents.append(fam["WIFE"])
+    return parents
+
+def areFirstCousins(i1, i2, indiList, famList):
+    #returns boolean if two individuals are first cousins
+    #first cousins share a grandparent
+    #get the parents of i1
+    parents1 = getParents(i1, indiList, famList)
+    #get the parents of i2
+    parents2 = getParents(i2, indiList, famList)
+    #get the parents of the parents of i1
+    grandParents1 = []
+    for p in parents1:
+        grandParents1 += getParents(p, indiList, famList)
+    #get the parents of the parents of i2
+    grandParents2 = []
+    for p in parents2:
+        grandParents2 += getParents(p, indiList, famList)
+
+    #check if any of the grandparents of i1 are the same as any of the grandparents of i2
+    for gp1 in grandParents1:
+        for gp2 in grandParents2:
+            if gp1 == gp2:
+                return True
+    return False
     
+
+
 def displayAnomaly(storyKey, **kwargs):
     '''prints a formatted error/anomaly message'''
     anomalyString = stories[storyKey]
@@ -346,6 +382,10 @@ def checkIndiAnomalies(indiList, famList):
 
         # US19 - First cousins should not marry
 
+        #strategy: identify aunt/uncles. From there, identify children of aunt/uncle (first cousins).
+        #If any of these children are married to the individual, then there is an error.
+        
+       
         # US20 - Aunts and uncles
 
         # US21 - Correct gender for role
@@ -509,6 +549,14 @@ def checkFamAnomalies(indiList, famList):
                         displayAnomaly("US18", id=f["FAM"], sib1=c1, sib2=c2, famId=fam)
 
         # US19 - First cousins should not marry
+
+        #for every marriage (fam), check if the husband and wife are first cousins
+        #if they are, then display the anomaly
+        wife = f["WIFE"]
+        husband = f["HUSB"]
+        if (wife != "NA" and husband != "NA"):
+            if (areFirstCousins(wife, husband, indiList, famList)):
+                displayAnomaly("US19", id=f["FAM"], wifeId=wife, husbandId=husband)
 
         # US20 - Aunts and uncles
 

@@ -17,7 +17,7 @@ stories = {
     "US16": "ANOMALY: {story}: FAM {id}: Individual {indiId} has a different last name from his family {famName}",
     "US17": "ANOMALY: {story}: INDI {id}: Individual has married their decendent {decendentId} in FAM {famId}",
     "US18": "ANOMALY: {story}: FAM {id}: Siblings {sib1} and {sib2} are married in FAM {famId}",
-    "US19": "",
+    "US19": "ANOMALY: {story}: FAM {id}: Wife {wifeId} is married to their first cousin Husband {husbandId}",
     "US20": "",
     "US21": "",
     "US22": "",
