@@ -247,7 +247,28 @@ def areFirstCousins(i1, i2, indiList, famList):
                 return True
     return False
     
+def hasNephewRelationship(i1, i2, indiList, famList):
+    #returns boolean if two individuals have a nephew relationship
+    #nephew relationship is when one individual is the sibling of the other individual's parent
+    #get the parents of i1
+    parents1 = getParents(i1, indiList, famList)
+    #get the parents of i2
+    parents2 = getParents(i2, indiList, famList)
+    #get the parents of the parents of i1
+    grandParents1 = []
+    for p in parents1:
+        grandParents1 += getParents(p, indiList, famList)
+    #get the parents of the parents of i2
+    grandParents2 = []
+    for p in parents2:
+        grandParents2 += getParents(p, indiList, famList)
 
+    #check if any of the grandparents of i1 are the same as any of the grandparents of i2
+    for gp1 in grandParents1:
+        for gp2 in grandParents2:
+            if gp1 == gp2:
+                return True
+    return False
 
 def displayAnomaly(storyKey, **kwargs):
     '''prints a formatted error/anomaly message'''
@@ -559,6 +580,14 @@ def checkFamAnomalies(indiList, famList):
                 displayAnomaly("US19", id=f["FAM"], wifeId=wife, husbandId=husband)
 
         # US20 - Aunts and uncles
+
+        #for every marriage (fam), check if husband and wife are aunt/uncle and niece/nephew
+        #if they are, then display the anomaly
+        wife = f["WIFE"]
+        husband = f["HUSB"]
+        if (wife != "NA" and husband != "NA"):
+            if (hasNephewRelationship(wife, husband, indiList, famList)):
+                displayAnomaly("US20", id=f["FAM"], wifeId=wife, husbandId=husband)
 
         # US21 - Correct gender for role
 
