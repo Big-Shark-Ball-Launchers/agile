@@ -612,7 +612,6 @@ def checkFamAnomalies(indiList, famList):
 def main():
     if (len(sys.argv) <= 1):
         filename = 'full_family.ged'  # default file path
-        filename = 'testing.ged'
     else:
         filename = sys.argv[1]
     indiList, fam = processFile(filename)

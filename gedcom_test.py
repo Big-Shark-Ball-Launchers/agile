@@ -5852,7 +5852,7 @@ class US20_tests(unittest.TestCase):
         expectedOutput = "US20"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
     def testUS20_2(self):
-        # I5 marry I10 (marry parent's sister)
+        # I5 marry I10 (marry parent's sister)  
         testFile = '''
         0 HEAD
 
