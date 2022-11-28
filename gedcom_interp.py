@@ -224,6 +224,18 @@ def getParents(i, indiList, famList):
             parents.append(fam["WIFE"])
     return parents
 
+def getSiblings(i, indiList, famList):
+    '''returns a list of siblings of an individual'''
+    indi = findIndi(i, indiList)
+    siblings = []
+    if (indi["FAMC"] != ""):
+        fam = findFam(indi["FAMC"], famList)
+        if (fam != None):
+            for c in fam["CHIL"]:
+                if (c != i):
+                    siblings.append(c)
+    return siblings
+
 def areFirstCousins(i1, i2, indiList, famList):
     #returns boolean if two individuals are first cousins
     #first cousins share a grandparent
@@ -254,19 +266,17 @@ def hasNephewRelationship(i1, i2, indiList, famList):
     parents1 = getParents(i1, indiList, famList)
     #get the parents of i2
     parents2 = getParents(i2, indiList, famList)
-    #get the parents of the parents of i1
-    grandParents1 = []
+    #get the siblings of the parents of i1
+    siblings1 = []
     for p in parents1:
-        grandParents1 += getParents(p, indiList, famList)
-    #get the parents of the parents of i2
-    grandParents2 = []
-    for p in parents2:
-        grandParents2 += getParents(p, indiList, famList)
+        siblings1 += getSiblings(p, indiList, famList)
+    #get the siblings of i2
+    siblings2 = getSiblings(i2, indiList, famList)
 
-    #check if any of the grandparents of i1 are the same as any of the grandparents of i2
-    for gp1 in grandParents1:
-        for gp2 in grandParents2:
-            if gp1 == gp2:
+    #check if any of the siblings of the parents of i1 are the same as any of the siblings of the parents of i2
+    for s1 in siblings1:
+        for s2 in siblings2:
+            if s1 == s2:
                 return True
     return False
 
@@ -588,6 +598,8 @@ def checkFamAnomalies(indiList, famList):
         if (wife != "NA" and husband != "NA"):
             if (hasNephewRelationship(wife, husband, indiList, famList)):
                 displayAnomaly("US20", id=f["FAM"], wifeId=wife, husbandId=husband)
+            if (hasNephewRelationship(husband, wife, indiList, famList)):
+                displayAnomaly("US20", id=f["FAM"], wifeId=wife, husbandId=husband)
 
         # US21 - Correct gender for role
 
@@ -608,6 +620,7 @@ def checkFamAnomalies(indiList, famList):
 def main():
     if (len(sys.argv) <= 1):
         filename = 'full_family.ged'  # default file path
+        filename = 'testing.ged'
     else:
         filename = sys.argv[1]
     indiList, fam = processFile(filename)
