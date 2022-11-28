@@ -411,14 +411,6 @@ def checkIndiAnomalies(indiList, famList):
             if (datetimeRangeOverlap(marraigeRangeList)):
                 displayAnomaly("US11", id=i["INDI"], fams=i["FAMS"])
 
-        # US19 - First cousins should not marry
-
-        #strategy: identify aunt/uncles. From there, identify children of aunt/uncle (first cousins).
-        #If any of these children are married to the individual, then there is an error.
-        
-       
-        # US20 - Aunts and uncles
-
         # US21 - Correct gender for role
 
         # US22 - Unique IDs
