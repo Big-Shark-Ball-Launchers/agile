@@ -5774,7 +5774,167 @@ class US20_tests(unittest.TestCase):
     run_gedcom_test = run_test
     # US20 Tests (Aunts and uncles should not marry nieces and nephews)
     def testUS20_1(self):
-        pass
+        # Normal family, no error (family consists of grandparents, parents, children)
+        testFile = '''
+        0 HEAD
+
+        0 @I1@ INDI
+        1 NAME Mike
+        1 SEX M
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 FAMS @F1@
+
+        0 @I3@ INDI
+        1 NAME Barry
+        1 SEX M
+        1 FAMC @F1@
+        1 FAMS @F2@
+
+        0 @I4@ INDI
+        1 NAME Beth
+        1 SEX F
+        1 FAMC @F1@
+        1 FAMS @F3@
+
+        0 @I5@ INDI
+        1 NAME Batthew
+        1 SEX M
+        1 FAMC @F1@
+
+        0 @I6@ INDI
+        1 NAME Carry
+        1 SEX F
+        1 FAMS @F2@
+
+        0 @I7@ INDI
+        1 NAME Ceth
+        1 SEX M
+        1 FAMS @F3@
+
+        0 @I8@ INDI
+        1 NAME Drew
+        1 SEX M
+        1 FAMC @F2@
+
+        0 @I9@ INDI
+        1 NAME Dorthy
+        1 SEX F
+        1 FAMC @F2@
+
+        0 @I10@ INDI
+        1 NAME Fred
+        1 SEX M
+        1 FAMC @F3@
+
+        0 @F1@ FAM
+        1 WIFE @I2@
+        1 HUSB @I1@
+        1 CHIL @I3@
+        1 CHIL @I4@
+        1 CHIL @I5@
+
+        0 @F2@ FAM
+        1 HUSB @I3@
+        1 WIFE @I6@
+        1 CHIL @I8@
+        1 CHIL @I9@
+
+        0 @F3@ FAM
+        1 HUSB @I7@
+        1 WIFE @I4@
+        1 CHIL @I10@
+
+        0 TRLR'''
+        expectedOutput = "US20"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+    def testUS20_2(self):
+        # I5 marry I10 (marry parent's sister)
+        testFile = '''
+        0 HEAD
+
+        0 @I1@ INDI
+        1 NAME Mike
+        1 SEX M
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary
+        1 SEX F
+        1 FAMS @F1@
+
+        0 @I3@ INDI
+        1 NAME Barry
+        1 SEX M
+        1 FAMC @F1@
+        1 FAMS @F2@
+
+        0 @I4@ INDI
+        1 NAME Beth
+        1 SEX F
+        1 FAMC @F1@
+        1 FAMS @F3@
+
+        0 @I5@ INDI
+        1 NAME Bri
+        1 SEX F
+        1 FAMC @F1@
+        1 FAMS @F4@
+
+        0 @I6@ INDI
+        1 NAME Carry
+        1 SEX F
+        1 FAMS @F2@
+
+        0 @I7@ INDI
+        1 NAME Ceth
+        1 SEX M
+        1 FAMS @F3@
+
+        0 @I8@ INDI
+        1 NAME Drew
+        1 SEX M
+        1 FAMC @F2@
+
+        0 @I9@ INDI
+        1 NAME Dorthy
+        1 SEX F
+        1 FAMC @F2@
+
+        0 @I10@ INDI
+        1 NAME Fred
+        1 SEX M
+        1 FAMC @F3@
+        1 FAMS @F4@
+
+        0 @F1@ FAM
+        1 WIFE @I2@
+        1 HUSB @I1@
+        1 CHIL @I3@
+        1 CHIL @I4@
+        1 CHIL @I5@
+
+        0 @F2@ FAM
+        1 HUSB @I3@
+        1 WIFE @I6@
+        1 CHIL @I8@
+        1 CHIL @I9@
+
+        0 @F3@ FAM
+        1 HUSB @I7@
+        1 WIFE @I4@
+        1 CHIL @I10@
+
+        0 @F4@ FAM
+        1 HUSB @I10@
+        1 WIFE @I5@
+
+        0 TRLR'''
+        expectedOutput = "ANOMALY: US20: FAM @F4@: Husband @I10@ has nibling relationship with Wife @I5@"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)    
 
 class US21_tests(unittest.TestCase):
     run_gedcom_test = run_test
