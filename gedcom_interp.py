@@ -209,10 +209,12 @@ def getDecendents(i, indiList, famList):
         for f in indi["FAMS"]:
             fam = findFam(f, famList)
             for c in fam["CHIL"]:
+                if (c == i): # If child is the same as the individual, skip since this means there is a duplicate ID
+                    continue
                 decendents.append(c)
                 decendents += getDecendents(c, indiList, famList)
     return decendents
-    
+
 def displayAnomaly(storyKey, **kwargs):
     '''prints a formatted error/anomaly message'''
     anomalyString = stories[storyKey]
@@ -350,8 +352,6 @@ def checkIndiAnomalies(indiList, famList):
 
         # US21 - Correct gender for role
 
-        # US22 - Unique IDs
-
         # US23 - Unique name and birth date
         for x in range(index+1,len(indiList)-1):
             j = indiList[x]
@@ -361,7 +361,6 @@ def checkIndiAnomalies(indiList, famList):
         # US24 - Unique families by spouses
 
         index+=1
-
 
 def checkFamAnomalies(indiList, famList):
     indexf = 0
@@ -514,8 +513,6 @@ def checkFamAnomalies(indiList, famList):
 
         # US21 - Correct gender for role
 
-        # US22 - Unique IDs
-
         # US23 - Unique name and birth date
         
         # US24 - Unique families by spouses
@@ -525,6 +522,8 @@ def checkFamAnomalies(indiList, famList):
                 displayAnomaly("US24", id=f["FAM"], id2=j["FAM"]) 
 
         indexf+=1
+
+
 
 
 
@@ -538,6 +537,30 @@ def main():
     # Print out the individuals and families
     print(dictListToPrettyTable(sorted(indiList, key=lambda x: x["INDI"])))
     print(dictListToPrettyTable(sorted(fam, key=lambda x: x["FAM"])))
+    # US22 - Unique Individual IDs
+    IndiIdList = []
+    dupIDs = []
+    for i in indiList:
+        if i["INDI"] in IndiIdList:
+            dupIDs.append(i["INDI"])
+            continue
+        IndiIdList.append(i["INDI"])
+
+    if len(dupIDs) > 0:
+        for ID in dupIDs:
+            displayAnomaly("US22", id=ID)
+    # US22 - Unique Family IDs
+    famIdList = []
+    dupIDs = []
+    for f in fam:
+        if f["FAM"] in famIdList:
+            dupIDs.append(f["FAM"])
+            continue
+        famIdList.append(f["FAM"])
+
+    if len(dupIDs) > 0:
+        for ID in dupIDs:
+            displayAnomaly("US22", id=ID)
     # Check for errors and anomalies for the individuals and families
     checkIndiAnomalies(indiList, fam)
     checkFamAnomalies(indiList, fam)
