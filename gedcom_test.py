@@ -5628,7 +5628,124 @@ class US21_tests(unittest.TestCase):
     # US21 Tests (Correct gender for role)
 
     def testUS21_1(self):
-        pass
+        # Husband is male and wife is female - no error should occur
+        testFile = '''
+        0 HEAD
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary /Smith/
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMS @F1@
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 JUN 2000
+        0 TRLR
+        '''
+
+        expectedOutput = "US21"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    def testUS21_2(self):
+        # Husband is female - error should occur
+        testFile = '''
+        0 HEAD
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary /Smith/
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMS @F1@
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 JUN 2000
+        0 TRLR
+        '''
+
+        expectedOutput = "ANOMALY: US21: INDI @I1@: Unexpected gender F for role HUSB"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    def testUS21_3(self):
+        # Wife is male - error should occur
+        testFile = '''
+        0 HEAD
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary /Smith/
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMS @F1@
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 JUN 2000
+        0 TRLR
+        '''
+
+        expectedOutput = "ANOMALY: US21: INDI @I2@: Unexpected gender M for role WIFE"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    def testUS21_4(self):
+        # Husband is female and wife is male - error should occur
+        testFile = '''
+        0 HEAD
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary /Smith/
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMS @F1@
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 JUN 2000
+        0 TRLR
+        '''
+
+        expectedOutput = "ANOMALY: US21: INDI @I1@: Unexpected gender F for role HUSB"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+        expectedOutput = "ANOMALY: US21: INDI @I2@: Unexpected gender M for role WIFE"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
 
 
 class US22_tests(unittest.TestCase):
