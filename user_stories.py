@@ -19,8 +19,8 @@ stories = {
     "US18": "ANOMALY: {story}: FAM {id}: Siblings {sib1} and {sib2} are married in FAM {famId}",
     "US19": "ANOMALY: {story}: FAM {id}: Wife {wifeId} is married to their first cousin Husband {husbandId}",
     "US20": "ANOMALY: {story}: FAM {id}: Husband {husbandId} has nibling relationship with Wife {wifeId}",
-    "US21": "",
-    "US22": "",
+    "US21": "ANOMALY: {story}: INDI {id}: Unexpected gender {gender} for role {role}",
+    "US22": "ERROR: {story}: INDI/FAM {id}: ID {id} is not unique (multiple individuals/families share this ID) - further checks may be inaccurate",
     "US23": "ANOMALY: {story}: INDI {id}: Individuals {id} and {id2} have the same name and birthdate",
     "US24": "ANOMALY: {story}: FAM {id}: Families {id} and {id2} have the same spouses and marriage date",
 }

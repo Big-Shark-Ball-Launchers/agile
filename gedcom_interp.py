@@ -209,6 +209,8 @@ def getDecendents(i, indiList, famList):
         for f in indi["FAMS"]:
             fam = findFam(f, famList)
             for c in fam["CHIL"]:
+                if (c == i): # If child is the same as the individual, skip since this means there is a duplicate ID
+                    continue
                 decendents.append(c)
                 decendents += getDecendents(c, indiList, famList)
     return decendents
@@ -411,10 +413,6 @@ def checkIndiAnomalies(indiList, famList):
             if (datetimeRangeOverlap(marraigeRangeList)):
                 displayAnomaly("US11", id=i["INDI"], fams=i["FAMS"])
 
-        # US21 - Correct gender for role
-
-        # US22 - Unique IDs
-
         # US23 - Unique name and birth date
         for x in range(index+1,len(indiList)-1):
             j = indiList[x]
@@ -424,7 +422,6 @@ def checkIndiAnomalies(indiList, famList):
         # US24 - Unique families by spouses
 
         index+=1
-
 
 def checkFamAnomalies(indiList, famList):
     indexf = 0
@@ -594,8 +591,21 @@ def checkFamAnomalies(indiList, famList):
                 displayAnomaly("US20", id=f["FAM"], wifeId=wife, husbandId=husband)
 
         # US21 - Correct gender for role
-
-        # US22 - Unique IDs
+        h_exists = f["HUSB"] != "NA"
+        w_exists = f["WIFE"] != "NA"
+        # Check that husband is male
+        if (h_exists):
+            husband = findIndi(f["HUSB"], indiList)
+            gender = husband["SEX"]
+            if (gender != "M"):
+                displayAnomaly("US21", id=f["HUSB"], gender=gender, role="HUSB")
+        # Check that wife is female
+        if (w_exists):
+            wife = findIndi(f["WIFE"], indiList)
+            gender = wife["SEX"]
+            if (gender != "F"):
+                displayAnomaly("US21", id=f["WIFE"],
+                               gender=gender, role="WIFE")
 
         # US23 - Unique name and birth date
         
@@ -609,6 +619,8 @@ def checkFamAnomalies(indiList, famList):
 
 
 
+
+
 def main():
     if (len(sys.argv) <= 1):
         filename = 'full_family.ged'  # default file path
@@ -619,6 +631,30 @@ def main():
     # Print out the individuals and families
     print(dictListToPrettyTable(sorted(indiList, key=lambda x: x["INDI"])))
     print(dictListToPrettyTable(sorted(fam, key=lambda x: x["FAM"])))
+    # US22 - Unique Individual IDs
+    IndiIdList = []
+    dupIDs = []
+    for i in indiList:
+        if i["INDI"] in IndiIdList:
+            dupIDs.append(i["INDI"])
+            continue
+        IndiIdList.append(i["INDI"])
+
+    if len(dupIDs) > 0:
+        for ID in dupIDs:
+            displayAnomaly("US22", id=ID)
+    # US22 - Unique Family IDs
+    famIdList = []
+    dupIDs = []
+    for f in fam:
+        if f["FAM"] in famIdList:
+            dupIDs.append(f["FAM"])
+            continue
+        famIdList.append(f["FAM"])
+
+    if len(dupIDs) > 0:
+        for ID in dupIDs:
+            displayAnomaly("US22", id=ID)
     # Check for errors and anomalies for the individuals and families
     checkIndiAnomalies(indiList, fam)
     checkFamAnomalies(indiList, fam)

@@ -13,6 +13,8 @@ from gedcom_interp import datetimeToString
 # Automatically creates a temporary file with the given contents,
 # passes the file to the main program, and runs the passeed assertion
 # with the expected output.
+
+
 def run_test(self, gedcom_file, expected_output, f):
     '''gedcom_file is a string containing the gedcom file to be tested.
             expected_output is a string containing the expected output.
@@ -27,8 +29,10 @@ def run_test(self, gedcom_file, expected_output, f):
                 tmp.close()
                 os.unlink(tmp.name)
 
+
 class test_example(unittest.TestCase):
     run_gedcom_test = run_test
+
     def test_example(self):
         # Example test. Use as a template. Should always pass.
         testFile = '''
@@ -84,6 +88,7 @@ class test_example(unittest.TestCase):
         '''
         expectedOutput = 'MARR'
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
 
 class US01_tests(unittest.TestCase):
     run_gedcom_test = run_test
@@ -255,9 +260,11 @@ class US01_tests(unittest.TestCase):
         expectedOutput = "ERROR: US01: INDI/FAM @F1@: Date DIV 20 APR 2024 occurs after current date " + currDateString
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
+
 class US02_tests(unittest.TestCase):
     run_gedcom_test = run_test
     # US02 tests (Birth before marriage)
+
     def testUS02_1(self):
         # Born after marriage
         testFile = '''
@@ -602,9 +609,11 @@ class US02_tests(unittest.TestCase):
         expectedOutput = "US02"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
+
 class US03_tests(unittest.TestCase):
     run_gedcom_test = run_test
     # US03 tests (Birth before death)
+
     def testUS03_1(self):
         # No error
         testFile = '''
@@ -949,9 +958,11 @@ class US03_tests(unittest.TestCase):
         expectedOutput = "US03"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
+
 class US04_tests(unittest.TestCase):
     run_gedcom_test = run_test
     # US04 tests (Marriage before divorce)
+
     def testUS04_1(self):
         # Normal situation where error should occur
         testFile = '''
@@ -1065,7 +1076,7 @@ class US04_tests(unittest.TestCase):
         0 @F1@ FAM
         1 HUSB @I1@
         1 WIFE @I2@
-        
+
         1 MARR
         2 DATE 14 FEB 1980
         0 TRLR'''
@@ -1103,9 +1114,11 @@ class US04_tests(unittest.TestCase):
         expectedOutput = "ERROR: US04: FAM @F1@: Divorce date 21 JAN 2200 occurs before marriage date 14 JUN 2300"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
+
 class US05_tests(unittest.TestCase):
     run_gedcom_test = run_test
     # US05 Tests (Marriage before death)
+
     def testUS05_1(self):
         # both members are alive. No error should occur.
         testFile = '''
@@ -1123,7 +1136,7 @@ class US05_tests(unittest.TestCase):
         1 BIRT
         2 DATE 13 FEB 1981
         1 FAMS @F1@
-        
+
         0 @F1@ FAM
         1 HUSB @I1@
         1 WIFE @I2@
@@ -1154,7 +1167,7 @@ class US05_tests(unittest.TestCase):
         1 DEAT
         2 DATE 20 FEB 1999
         1 FAMS @F1@
-        
+
         0 @F1@ FAM
         1 HUSB @I1@
         1 WIFE @I2@
@@ -1185,7 +1198,7 @@ class US05_tests(unittest.TestCase):
         1 DEAT
         2 DATE 20 FEB 1999
         1 FAMS @F1@
-        
+
         0 @F1@ FAM
         1 HUSB @I1@
         1 WIFE @I2@
@@ -1196,7 +1209,6 @@ class US05_tests(unittest.TestCase):
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
         expectedOutput = "ERROR: US05: FAM @F1@: Marriage date 14 JUN 2002 occurs after death of INDI @I2@"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
-        
 
     def testUS05_4(self):
         # both members dead. Only one is erroneous. Error should occur.
@@ -1219,7 +1231,7 @@ class US05_tests(unittest.TestCase):
         1 DEAT
         2 DATE 20 FEB 1999
         1 FAMS @F1@
-        
+
         0 @F1@ FAM
         1 HUSB @I1@
         1 WIFE @I2@
@@ -1248,7 +1260,7 @@ class US05_tests(unittest.TestCase):
         1 BIRT
         2 DATE 13 FEB 1981
         1 FAMS @F1@
-        
+
         0 @F1@ FAM
         1 HUSB @I1@
         1 WIFE @I2@
@@ -1258,9 +1270,11 @@ class US05_tests(unittest.TestCase):
         expectedOutput = "ERROR: US05: FAM @F1@: Marriage date 14 JUN 2002 occurs after death of INDI @I1@"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
+
 class US06_tests(unittest.TestCase):
     run_gedcom_test = run_test
     # US06 Tests (Divorce before death)
+
     def testUS06_1(self):
         # both members are alive. No error should occur.
         testFile = '''
@@ -1484,9 +1498,11 @@ class US06_tests(unittest.TestCase):
         expectedOutput = "US06"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
+
 class US07_tests(unittest.TestCase):
     run_gedcom_test = run_test
     # US07 tests (Less than 150 years old)
+
     def testUS07_1(self):
         # individual is older than 150
         testFile = '''
@@ -1592,9 +1608,11 @@ class US07_tests(unittest.TestCase):
         expectedOutput = "ANOMALY: US07: INDI @I3@: Age over 150 years old: 151"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
+
 class US08_tests(unittest.TestCase):
     run_gedcom_test = run_test
         # US08 Tests (Birth before marriage of parents or after 9 months after their divorce)
+
     def testUS08_1(self):
         # Birth after marriage - no error should occur
         testFile = '''
@@ -1882,9 +1900,11 @@ class US08_tests(unittest.TestCase):
         expectedOutput = "US08"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
+
 class US09_tests(unittest.TestCase):
     run_gedcom_test = run_test
     # US09 Tests (Birth before death of parents)
+
     def testUS09_1(self):
         # child born before death of both parents - no error should occur
         testFile = '''
@@ -2162,9 +2182,11 @@ class US09_tests(unittest.TestCase):
         expectedOutput = "US09"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
+
 class US10_tests(unittest.TestCase):
     run_gedcom_test = run_test
     # US10 Tests (Marriage after 14)
+
     def testUS10_1(self):
         # marriage before 14
         testFile = '''
@@ -2275,7 +2297,7 @@ class US10_tests(unittest.TestCase):
         0 TRLR'''
         expectedOutput = "ANOMALY: US10: INDI @I2@: Marriage date: 14 FEB 1980 occurs before age of 14"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
-    
+
     def testUS10_4(self):
         # both under 14
         testFile = '''
@@ -2350,9 +2372,11 @@ class US10_tests(unittest.TestCase):
         expectedOutput = "US10"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
+
 class US11_tests(unittest.TestCase):
     run_gedcom_test = run_test
     # US11 Tests (No Bigamy)
+
     def testUS11_1(self):
         # Normal simple family, no errors expected
         testFile = '''
@@ -2421,7 +2445,7 @@ class US11_tests(unittest.TestCase):
         '''
         expectedOutput = "ANOMALY: US11: INDI @I1@ is an active spouse in muliple families. FAMS: ['@F1@', '@F2@']"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
-    
+
     def testUS11_3(self):
         # Simple family with divorce, no errors expected
         testFile = '''
@@ -2557,10 +2581,12 @@ class US11_tests(unittest.TestCase):
         '''
         expectedOutput = "ANOMALY: US11: INDI @I1@ is an active spouse in muliple families. FAMS: ['@F1@', '@F2@']"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
-    
+
+
 class US12_tests(unittest.TestCase):
     run_gedcom_test = run_test
     # US12 Tests (Parents not too old)
+
     def testUS12_1(self):
         # Normal family, no errors expected
         testFile = '''
@@ -2598,7 +2624,7 @@ class US12_tests(unittest.TestCase):
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
     def testUS12_2(self):
-        #Old Dad
+        # Old Dad
         testFile = '''
         0 @I1@ INDI
         1 NAME Dick
@@ -2634,7 +2660,7 @@ class US12_tests(unittest.TestCase):
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
     def testUS12_3(self):
-        #Old Mom
+        # Old Mom
         testFile = '''
         0 @I1@ INDI
         1 NAME Dick
@@ -2668,9 +2694,9 @@ class US12_tests(unittest.TestCase):
         '''
         expectedOutput = "ANOMALY: US12: INDI @I3@: Birthdate 13 FEB 2010 occurs more than 60 years after mother's birthday: 14 FEB 1940"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
-    
+
     def testUS12_4(self):
-        #Both old
+        # Both old
         testFile = '''
         0 @I1@ INDI
         1 NAME Dick
@@ -2708,7 +2734,7 @@ class US12_tests(unittest.TestCase):
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
     def testUS12_5(self):
-        #Mom barely too old
+        # Mom barely too old
         testFile = '''
         0 @I1@ INDI
         1 NAME Dick
@@ -2742,9 +2768,9 @@ class US12_tests(unittest.TestCase):
         '''
         expectedOutput = "ANOMALY: US12: INDI @I3@: Birthdate 13 FEB 2010 occurs more than 60 years after mother's birthday: 13 FEB 1950"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
-    
+
     def testUS12_6(self):
-        #Mom barely young enough
+        # Mom barely young enough
         testFile = '''
         0 @I1@ INDI
         1 NAME` Dick
@@ -2779,9 +2805,11 @@ class US12_tests(unittest.TestCase):
         expectedOutput = "US12"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
+
 class US13_tests(unittest.TestCase):
     run_gedcom_test = run_test
     # US13 Tests (Siblings spacing)
+
     def testUS13_1(self):
         # Normal family (multiple siblings with spaced out birthdays) no errors should occur
         testFile = '''
@@ -2937,7 +2965,7 @@ class US13_tests(unittest.TestCase):
 
         expectedOutput = "US13"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
-    
+
     def testUS13_4(self):
         # Same as test 3, but order of sibling births is switched
         testFile = '''
@@ -2989,7 +3017,7 @@ class US13_tests(unittest.TestCase):
 
         expectedOutput = "US13"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
-    
+
     def testUS13_5(self):
         # Children born 2 days apart - error should occur
         testFile = '''
@@ -3285,9 +3313,11 @@ class US13_tests(unittest.TestCase):
         expectedOutput = "ANOMALY: US13: INDI @I6@: Birthdate 12 OCT 2010 occurs within 2 days to 8 months of sibling @I7@: 8 JAN 2011"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
+
 class US14_tests(unittest.TestCase):
     run_gedcom_test = run_test
     # US14 Tests (Multiple births <= 5)
+
     def testUS14_1(self):
         # 6 children born on same day. Error should occur
         testFile = '''
@@ -3306,7 +3336,7 @@ class US14_tests(unittest.TestCase):
         1 FAMS @F1@
         1 BIRT
         2 DATE 8 JAN 1990
-        
+
         0 @I3@ INDI
         1 NAME child1
         1 SEX F
@@ -3348,7 +3378,7 @@ class US14_tests(unittest.TestCase):
         1 FAMC @F1@
         1 BIRT
         2 DATE 8 JAN 2011
-        
+
         0 @F1@ FAM
         1 HUSB @I1@
         1 WIFE @I2@
@@ -3363,7 +3393,7 @@ class US14_tests(unittest.TestCase):
         '''
         expectedOutput = "ANOMALY: US14: FAM @F1@: More than 5 children born at the same time: ['@I3@', '@I4@', '@I5@', '@I6@', '@I7@', '@I8@']"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
-    
+
     def testUS14_2(self):
         # 5 children born on same day. No error should occur
         testFile = '''
@@ -3382,7 +3412,7 @@ class US14_tests(unittest.TestCase):
         1 FAMS @F1@
         1 BIRT
         2 DATE 8 JAN 1990
-        
+
         0 @I3@ INDI
         1 NAME child1
         1 SEX F
@@ -3424,7 +3454,7 @@ class US14_tests(unittest.TestCase):
         1 FAMC @F1@
         1 BIRT
         2 DATE 8 JAN 2011
-        
+
         0 @F1@ FAM
         1 HUSB @I1@
         1 WIFE @I2@
@@ -3457,7 +3487,7 @@ class US14_tests(unittest.TestCase):
         1 FAMS @F1@
         1 BIRT
         2 DATE 8 JAN 1990
-        
+
         0 @I3@ INDI
         1 NAME child1
         1 SEX F
@@ -3499,7 +3529,7 @@ class US14_tests(unittest.TestCase):
         1 FAMC @F1@
         1 BIRT
         2 DATE 9 JAN 2011
-        
+
         0 @F1@ FAM
         1 HUSB @I1@
         1 WIFE @I2@
@@ -3514,7 +3544,7 @@ class US14_tests(unittest.TestCase):
         '''
         expectedOutput = "ANOMALY: US14: FAM @F1@: More than 5 children born at the same time: ['@I3@', '@I4@', '@I5@', '@I6@', '@I7@', '@I8@']"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
-    
+
     def testUS14_4(self):
         # 7 children. 4 born close to eachother. No error should occur.
         testFile = '''
@@ -3533,7 +3563,7 @@ class US14_tests(unittest.TestCase):
         1 FAMS @F1@
         1 BIRT
         2 DATE 8 JAN 1990
-        
+
         0 @I3@ INDI
         1 NAME child1
         1 SEX F
@@ -3582,7 +3612,7 @@ class US14_tests(unittest.TestCase):
         1 FAMC @F1@
         1 BIRT
         2 DATE 8 JAN 2011
-        
+
         0 @F1@ FAM
         1 HUSB @I1@
         1 WIFE @I2@
@@ -3593,7 +3623,7 @@ class US14_tests(unittest.TestCase):
         1 CHIL @I7@
         1 CHIL @I8@
         1 CHIL @I9@
-        
+
 
         0 TRLR
         '''
@@ -3618,7 +3648,7 @@ class US14_tests(unittest.TestCase):
         1 FAMS @F1@
         1 BIRT
         2 DATE 8 JAN 1990
-        
+
         0 @I3@ INDI
         1 NAME child1
         1 SEX F
@@ -3667,7 +3697,7 @@ class US14_tests(unittest.TestCase):
         1 FAMC @F1@
         1 BIRT
         2 DATE 8 JAN 2011
-        
+
         0 @F1@ FAM
         1 HUSB @I1@
         1 WIFE @I2@
@@ -3678,18 +3708,20 @@ class US14_tests(unittest.TestCase):
         1 CHIL @I7@
         1 CHIL @I8@
         1 CHIL @I9@
-        
+
 
         0 TRLR
         '''
         expectedOutput = "ANOMALY: US14: FAM @F1@: More than 5 children born at the same time: ['@I3@', '@I4@', '@I5@', '@I6@', '@I7@', '@I8@']"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
+
 class US15_tests(unittest.TestCase):
     run_gedcom_test = run_test
     # US15 Tests (Fewer than 15 siblings)
+
     def testUS15_1(self):
-        #exactly 15 siblings
+        # exactly 15 siblings
         testFile = '''
         0 HEAD
         1 SOUR Family Echo
@@ -3797,7 +3829,7 @@ class US15_tests(unittest.TestCase):
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
     def testUS15_2(self):
-        #exactly 15 siblings
+        # exactly 15 siblings
         testFile = '''
         0 HEAD
         1 SOUR Family Echo
@@ -3900,7 +3932,7 @@ class US15_tests(unittest.TestCase):
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
     def testUS15_3(self):
-        #more than 15
+        # more than 15
         testFile = '''
         0 HEAD
         1 SOUR Family Echo
@@ -4013,7 +4045,7 @@ class US15_tests(unittest.TestCase):
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
     def testUS15_4(self):
-        #more than 15
+        # more than 15
         testFile = '''
         0 HEAD
         1 SOUR Family Echo
@@ -4131,7 +4163,7 @@ class US15_tests(unittest.TestCase):
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
     def testUS15_5(self):
-        #more than 15
+        # more than 15
         testFile = '''
         0 HEAD
         1 SOUR Family Echo
@@ -4165,13 +4197,13 @@ class US15_tests(unittest.TestCase):
         expectedOutput = "US15"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
-    
 
 class US16_tests(unittest.TestCase):
     run_gedcom_test = run_test
     # US16 Tests (Male last names)
+
     def testUS16_1(self):
-        #no problem
+        # no problem
         testFile = '''
         0 HEAD
         1 SOUR Family Echo
@@ -4206,7 +4238,7 @@ class US16_tests(unittest.TestCase):
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
     def testUS16_2(self):
-        #son different last name
+        # son different last name
         testFile = '''
         0 HEAD
         1 SOUR Family Echo
@@ -4254,7 +4286,7 @@ class US16_tests(unittest.TestCase):
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
     def testUS16_3(self):
-        #daughter different last name
+        # daughter different last name
         testFile = '''
         0 HEAD
         1 SOUR Family Echo
@@ -4302,7 +4334,7 @@ class US16_tests(unittest.TestCase):
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
     def testUS16_4(self):
-        #son different last name and daughter different last name
+        # son different last name and daughter different last name
         testFile = '''
         0 HEAD
         1 SOUR Family Echo
@@ -4358,7 +4390,7 @@ class US16_tests(unittest.TestCase):
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
 
     def testUS16_5(self):
-        #two daughters diff last name
+        # two daughters diff last name
         testFile = '''
         0 HEAD
         1 SOUR Family Echo
@@ -4413,9 +4445,11 @@ class US16_tests(unittest.TestCase):
         expectedOutput = "US16"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
+
 class US17_tests(unittest.TestCase):
     run_gedcom_test = run_test
     # US17 Tests (No marriages to descendants)
+
     def testUS17_1(self):
         # Normal family, no errors should occur
         # need to add more children/families
@@ -5306,14 +5340,16 @@ class US17_tests(unittest.TestCase):
         expectedOutput = "US17"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
+
 class US18_tests(unittest.TestCase):
     run_gedcom_test = run_test
     # US18 Tests (Siblings should not marry)
+
     def testUS18_1(self):
         # Siblings marrying, error should occur
         testFile = '''
         0 HEAD
-        
+
         0 @I1@ INDI
         1 NAME John
         1 SEX M
@@ -5353,7 +5389,7 @@ class US18_tests(unittest.TestCase):
         # Siblings not marrying, error should not occur
         testFile = '''
         0 HEAD
-        
+
         0 @I1@ INDI
         1 NAME John
         1 SEX M
@@ -5387,7 +5423,7 @@ class US18_tests(unittest.TestCase):
         # Siblings marrying, but not eachother, error should not occur
         testFile = '''
         0 HEAD
-        
+
         0 @I1@ INDI
         1 NAME John
         1 SEX M
@@ -5433,7 +5469,7 @@ class US18_tests(unittest.TestCase):
         0 @F3@ FAM
         1 HUSB @I4@
         1 WIFE @I6@
-        
+
         0 TRLR
         '''
         expectedOutput = "US18"
@@ -5444,7 +5480,7 @@ class US18_tests(unittest.TestCase):
         # (maybe it should. Would need to be another user story)
         testFile = '''
         0 HEAD
-        
+
         0 @I1@ INDI
         1 NAME John
         1 SEX M
@@ -5491,18 +5527,18 @@ class US18_tests(unittest.TestCase):
         0 @F2@ FAM
         1 HUSB @I3@
         1 WIFE @I4@
-        
+
         0 TRLR
         '''
         expectedOutput = "US18"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
-    
+
     def testUS18_5(self):
         # step-siblings marrying. Error should not occur.
         # (maybe it should. Would need to be another user story)
         testFile = '''
         0 HEAD
-        
+
         0 @I1@ INDI
         1 NAME John
         1 SEX M
@@ -5564,15 +5600,17 @@ class US18_tests(unittest.TestCase):
         0 @F2@ FAM
         1 HUSB @I3@
         1 WIFE @I4@
-        
+
         0 TRLR
         '''
         expectedOutput = "US18"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
+
 class US19_tests(unittest.TestCase):
     run_gedcom_test = run_test
     # US19 Tests (First cousins should not marry)
+
     def testUS19_1(self):
         # First cousins marrying, error should occur (simple)
         testFile = '''
@@ -5770,8 +5808,10 @@ class US19_tests(unittest.TestCase):
         expectedOutput = "US19"
         self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
 
+
 class US20_tests(unittest.TestCase):
     run_gedcom_test = run_test
+    
     # US20 Tests (Aunts and uncles should not marry nieces and nephews)
     def testUS20_1(self):
         # Normal family, no error (family consists of grandparents, parents, children)
@@ -5936,17 +5976,873 @@ class US20_tests(unittest.TestCase):
         expectedOutput = "ANOMALY: US20: FAM @F4@: Husband @I10@ has nibling relationship with Wife @I5@"
         self.run_gedcom_test(testFile, expectedOutput, self.assertIn)    
 
+
 class US21_tests(unittest.TestCase):
     run_gedcom_test = run_test
     # US21 Tests (Correct gender for role)
+
     def testUS21_1(self):
-        pass
+        # Husband is male and wife is female - no error should occur
+        testFile = '''
+        0 HEAD
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary /Smith/
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMS @F1@
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 JUN 2000
+        0 TRLR
+        '''
+
+        expectedOutput = "US21"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    def testUS21_2(self):
+        # Husband is female - error should occur
+        testFile = '''
+        0 HEAD
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary /Smith/
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMS @F1@
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 JUN 2000
+        0 TRLR
+        '''
+
+        expectedOutput = "ANOMALY: US21: INDI @I1@: Unexpected gender F for role HUSB"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    def testUS21_3(self):
+        # Wife is male - error should occur
+        testFile = '''
+        0 HEAD
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary /Smith/
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMS @F1@
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 JUN 2000
+        0 TRLR
+        '''
+
+        expectedOutput = "ANOMALY: US21: INDI @I2@: Unexpected gender M for role WIFE"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    def testUS21_4(self):
+        # Husband is female and wife is male - error should occur
+        testFile = '''
+        0 HEAD
+        0 @I1@ INDI
+        1 NAME Dick /Smith/
+        1 SEX F
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMS @F1@
+
+        0 @I2@ INDI
+        1 NAME Mary /Smith/
+        1 SEX M
+        1 BIRT
+        2 DATE 13 FEB 1981
+        1 FAMS @F1@
+
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 MARR
+        2 DATE 14 JUN 2000
+        0 TRLR
+        '''
+
+        expectedOutput = "ANOMALY: US21: INDI @I1@: Unexpected gender F for role HUSB"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+        expectedOutput = "ANOMALY: US21: INDI @I2@: Unexpected gender M for role WIFE"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+
 
 class US22_tests(unittest.TestCase):
     run_gedcom_test = run_test
     # US22 Tests (Unique IDs)
+
     def testUS22_1(self):
-        pass
+        # No duplicate IDs - no error should occur
+        testFile = '''
+        0 HEAD
+        0 @I1@ INDI
+        1 NAME John
+        2 GIVN John
+        1 SEX M
+        1 FAMS @F1@
+        0 @I2@ INDI
+        1 NAME Jane
+        2 GIVN Jane
+        1 SEX F
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Barry
+        2 GIVN Barry
+        1 SEX M
+        1 FAMS @F3@
+        1 FAMC @F1@
+        0 @I4@ INDI
+        1 NAME Beth
+        2 GIVN Beth
+        1 SEX F
+        1 DEAT Y
+        1 FAMS @F4@
+        1 FAMC @F1@
+        0 @I5@ INDI
+        1 NAME Bob
+        2 GIVN Bob
+        1 SEX M
+        1 FAMC @F1@
+        0 @I6@ INDI
+        1 NAME Brandi
+        2 GIVN Brandi
+        1 SEX F
+        1 FAMS @F3@
+        0 @I7@ INDI
+        1 NAME Braxton
+        2 GIVN Braxton
+        1 SEX M
+        1 FAMS @F4@
+        1 FAMS @F5@
+        0 @I8@ INDI
+        1 NAME Marty
+        2 GIVN Marty
+        1 SEX M
+        1 FAMC @F3@
+        0 @I9@ INDI
+        1 NAME Mary
+        2 GIVN Mary
+        1 SEX F
+        1 FAMS @F7@
+        1 FAMC @F3@
+        0 @I10@ INDI
+        1 NAME Mandy
+        2 GIVN Mandy
+        1 SEX F
+        1 FAMC @F4@
+        0 @I11@ INDI
+        1 NAME Mike
+        2 GIVN Mike
+        1 SEX M
+        1 FAMS @F6@
+        1 FAMC @F4@
+        0 @I12@ INDI
+        1 NAME Bwanda
+        2 GIVN Bwanda
+        1 SEX F
+        1 FAMS @F5@
+        0 @I13@ INDI
+        1 NAME Mitchell
+        2 GIVN Mitchell
+        1 SEX M
+        1 FAMC @F5@
+        0 @I14@ INDI
+        1 NAME Michelle
+        2 GIVN Michelle
+        1 SEX F
+        1 FAMS @F6@
+        0 @I15@ INDI
+        1 NAME Frank
+        2 GIVN Frank
+        1 SEX M
+        1 FAMC @F6@
+        0 @I16@ INDI
+        1 NAME Francine
+        2 GIVN Francine
+        1 SEX F
+        1 FAMC @F7@
+        0 @I17@ INDI
+        1 NAME Mark
+        2 GIVN Mark
+        1 SEX M
+        1 FAMS @F7@
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 CHIL @I3@
+        1 CHIL @I4@
+        1 CHIL @I5@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 @F3@ FAM
+        1 HUSB @I3@
+        1 WIFE @I6@
+        1 CHIL @I8@
+        1 CHIL @I9@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 @F4@ FAM
+        1 HUSB @I7@
+        1 WIFE @I4@
+        1 CHIL @I10@
+        1 CHIL @I11@
+        1 MARR
+        1 DIV
+        1 _CURRENT N
+        1 _PRIMARY N
+        0 @F5@ FAM
+        1 HUSB @I7@
+        1 WIFE @I12@
+        1 CHIL @I13@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 @F6@ FAM
+        1 HUSB @I11@
+        1 WIFE @I14@
+        1 CHIL @I15@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 @F7@ FAM
+        1 HUSB @I17@
+        1 WIFE @I9@
+        1 CHIL @I16@
+        1 _CURRENT N
+        1 _PRIMARY N
+        0 TRLR
+        '''
+
+        expectedOutput = "US22"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertNotIn)
+
+    def testUS22_2(self):
+        # Duplicate individual IDs - error should occur
+        testFile = '''
+        0 HEAD
+        0 @I1@ INDI
+        1 NAME John
+        2 GIVN John
+        1 SEX M
+        1 FAMS @F1@
+        0 @I1@ INDI
+        1 NAME Jane
+        2 GIVN Jane
+        1 SEX F
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Barry
+        2 GIVN Barry
+        1 SEX M
+        1 FAMS @F3@
+        1 FAMC @F1@
+        0 @I4@ INDI
+        1 NAME Beth
+        2 GIVN Beth
+        1 SEX F
+        1 DEAT Y
+        1 FAMS @F4@
+        1 FAMC @F1@
+        0 @I5@ INDI
+        1 NAME Bob
+        2 GIVN Bob
+        1 SEX M
+        1 FAMC @F1@
+        0 @I6@ INDI
+        1 NAME Brandi
+        2 GIVN Brandi
+        1 SEX F
+        1 FAMS @F3@
+        0 @I7@ INDI
+        1 NAME Braxton
+        2 GIVN Braxton
+        1 SEX M
+        1 FAMS @F4@
+        1 FAMS @F5@
+        0 @I8@ INDI
+        1 NAME Marty
+        2 GIVN Marty
+        1 SEX M
+        1 FAMC @F3@
+        0 @I9@ INDI
+        1 NAME Mary
+        2 GIVN Mary
+        1 SEX F
+        1 FAMS @F7@
+        1 FAMC @F3@
+        0 @I10@ INDI
+        1 NAME Mandy
+        2 GIVN Mandy
+        1 SEX F
+        1 FAMC @F4@
+        0 @I11@ INDI
+        1 NAME Mike
+        2 GIVN Mike
+        1 SEX M
+        1 FAMS @F6@
+        1 FAMC @F4@
+        0 @I12@ INDI
+        1 NAME Bwanda
+        2 GIVN Bwanda
+        1 SEX F
+        1 FAMS @F5@
+        0 @I13@ INDI
+        1 NAME Mitchell
+        2 GIVN Mitchell
+        1 SEX M
+        1 FAMC @F5@
+        0 @I14@ INDI
+        1 NAME Michelle
+        2 GIVN Michelle
+        1 SEX F
+        1 FAMS @F6@
+        0 @I15@ INDI
+        1 NAME Frank
+        2 GIVN Frank
+        1 SEX M
+        1 FAMC @F6@
+        0 @I16@ INDI
+        1 NAME Francine
+        2 GIVN Francine
+        1 SEX F
+        1 FAMC @F7@
+        0 @I17@ INDI
+        1 NAME Mark
+        2 GIVN Mark
+        1 SEX M
+        1 FAMS @F7@
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I1@
+        1 CHIL @I3@
+        1 CHIL @I4@
+        1 CHIL @I5@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 @F3@ FAM
+        1 HUSB @I3@
+        1 WIFE @I6@
+        1 CHIL @I8@
+        1 CHIL @I9@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 @F4@ FAM
+        1 HUSB @I7@
+        1 WIFE @I4@
+        1 CHIL @I10@
+        1 CHIL @I11@
+        1 MARR
+        1 DIV
+        1 _CURRENT N
+        1 _PRIMARY N
+        0 @F5@ FAM
+        1 HUSB @I7@
+        1 WIFE @I12@
+        1 CHIL @I13@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 @F6@ FAM
+        1 HUSB @I11@
+        1 WIFE @I14@
+        1 CHIL @I15@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 @F7@ FAM
+        1 HUSB @I17@
+        1 WIFE @I9@
+        1 CHIL @I16@
+        1 _CURRENT N
+        1 _PRIMARY N
+        0 TRLR
+        '''
+
+        expectedOutput = "ERROR: US22: INDI/FAM @I1@: ID @I1@ is not unique (multiple individuals/families share this ID) - further checks may be inaccurate"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    def testUS22_3(self):
+        # Duplicate family IDs - error should occur
+        testFile = '''
+        0 HEAD
+        0 @I1@ INDI
+        1 NAME John
+        2 GIVN John
+        1 SEX M
+        1 FAMS @F1@
+        0 @I2@ INDI
+        1 NAME Jane
+        2 GIVN Jane
+        1 SEX F
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Barry
+        2 GIVN Barry
+        1 SEX M
+        1 FAMS @F1@
+        1 FAMC @F1@
+        0 @I4@ INDI
+        1 NAME Beth
+        2 GIVN Beth
+        1 SEX F
+        1 DEAT Y
+        1 FAMS @F4@
+        1 FAMC @F1@
+        0 @I5@ INDI
+        1 NAME Bob
+        2 GIVN Bob
+        1 SEX M
+        1 FAMC @F1@
+        0 @I6@ INDI
+        1 NAME Brandi
+        2 GIVN Brandi
+        1 SEX F
+        1 FAMS @F1@
+        0 @I7@ INDI
+        1 NAME Braxton
+        2 GIVN Braxton
+        1 SEX M
+        1 FAMS @F4@
+        1 FAMS @F5@
+        0 @I8@ INDI
+        1 NAME Marty
+        2 GIVN Marty
+        1 SEX M
+        1 FAMC @F1@
+        0 @I9@ INDI
+        1 NAME Mary
+        2 GIVN Mary
+        1 SEX F
+        1 FAMS @F7@
+        1 FAMC @F1@
+        0 @I10@ INDI
+        1 NAME Mandy
+        2 GIVN Mandy
+        1 SEX F
+        1 FAMC @F4@
+        0 @I11@ INDI
+        1 NAME Mike
+        2 GIVN Mike
+        1 SEX M
+        1 FAMS @F6@
+        1 FAMC @F4@
+        0 @I12@ INDI
+        1 NAME Bwanda
+        2 GIVN Bwanda
+        1 SEX F
+        1 FAMS @F5@
+        0 @I13@ INDI
+        1 NAME Mitchell
+        2 GIVN Mitchell
+        1 SEX M
+        1 FAMC @F5@
+        0 @I14@ INDI
+        1 NAME Michelle
+        2 GIVN Michelle
+        1 SEX F
+        1 FAMS @F6@
+        0 @I15@ INDI
+        1 NAME Frank
+        2 GIVN Frank
+        1 SEX M
+        1 FAMC @F6@
+        0 @I16@ INDI
+        1 NAME Francine
+        2 GIVN Francine
+        1 SEX F
+        1 FAMC @F7@
+        0 @I17@ INDI
+        1 NAME Mark
+        2 GIVN Mark
+        1 SEX M
+        1 FAMS @F7@
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I2@
+        1 CHIL @I3@
+        1 CHIL @I4@
+        1 CHIL @I5@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I6@
+        1 CHIL @I8@
+        1 CHIL @I9@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 @F4@ FAM
+        1 HUSB @I7@
+        1 WIFE @I4@
+        1 CHIL @I10@
+        1 CHIL @I11@
+        1 MARR
+        1 DIV
+        1 _CURRENT N
+        1 _PRIMARY N
+        0 @F5@ FAM
+        1 HUSB @I7@
+        1 WIFE @I12@
+        1 CHIL @I13@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 @F6@ FAM
+        1 HUSB @I11@
+        1 WIFE @I14@
+        1 CHIL @I15@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 @F7@ FAM
+        1 HUSB @I17@
+        1 WIFE @I9@
+        1 CHIL @I16@
+        1 _CURRENT N
+        1 _PRIMARY N
+        0 TRLR
+        '''
+
+        expectedOutput = "ERROR: US22: INDI/FAM @F1@: ID @F1@ is not unique (multiple individuals/families share this ID) - further checks may be inaccurate"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    def testUS22_4(self):
+        # Duplicate individual and family IDs - error should occur
+        testFile = '''
+        0 HEAD
+        0 @I1@ INDI
+        1 NAME John
+        2 GIVN John
+        1 SEX M
+        1 FAMS @F1@
+        0 @I1@ INDI
+        1 NAME Jane
+        2 GIVN Jane
+        1 SEX F
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Barry
+        2 GIVN Barry
+        1 SEX M
+        1 FAMS @F1@
+        1 FAMC @F1@
+        0 @I4@ INDI
+        1 NAME Beth
+        2 GIVN Beth
+        1 SEX F
+        1 DEAT Y
+        1 FAMS @F4@
+        1 FAMC @F1@
+        0 @I5@ INDI
+        1 NAME Bob
+        2 GIVN Bob
+        1 SEX M
+        1 FAMC @F1@
+        0 @I6@ INDI
+        1 NAME Brandi
+        2 GIVN Brandi
+        1 SEX F
+        1 FAMS @F1@
+        0 @I7@ INDI
+        1 NAME Braxton
+        2 GIVN Braxton
+        1 SEX M
+        1 FAMS @F4@
+        1 FAMS @F5@
+        0 @I8@ INDI
+        1 NAME Marty
+        2 GIVN Marty
+        1 SEX M
+        1 FAMC @F1@
+        0 @I9@ INDI
+        1 NAME Mary
+        2 GIVN Mary
+        1 SEX F
+        1 FAMS @F7@
+        1 FAMC @F1@
+        0 @I10@ INDI
+        1 NAME Mandy
+        2 GIVN Mandy
+        1 SEX F
+        1 FAMC @F4@
+        0 @I11@ INDI
+        1 NAME Mike
+        2 GIVN Mike
+        1 SEX M
+        1 FAMS @F6@
+        1 FAMC @F4@
+        0 @I12@ INDI
+        1 NAME Bwanda
+        2 GIVN Bwanda
+        1 SEX F
+        1 FAMS @F5@
+        0 @I13@ INDI
+        1 NAME Mitchell
+        2 GIVN Mitchell
+        1 SEX M
+        1 FAMC @F5@
+        0 @I14@ INDI
+        1 NAME Michelle
+        2 GIVN Michelle
+        1 SEX F
+        1 FAMS @F6@
+        0 @I15@ INDI
+        1 NAME Frank
+        2 GIVN Frank
+        1 SEX M
+        1 FAMC @F6@
+        0 @I16@ INDI
+        1 NAME Francine
+        2 GIVN Francine
+        1 SEX F
+        1 FAMC @F7@
+        0 @I17@ INDI
+        1 NAME Mark
+        2 GIVN Mark
+        1 SEX M
+        1 FAMS @F7@
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I1@
+        1 CHIL @I3@
+        1 CHIL @I4@
+        1 CHIL @I5@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I6@
+        1 CHIL @I8@
+        1 CHIL @I9@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 @F4@ FAM
+        1 HUSB @I7@
+        1 WIFE @I4@
+        1 CHIL @I10@
+        1 CHIL @I11@
+        1 MARR
+        1 DIV
+        1 _CURRENT N
+        1 _PRIMARY N
+        0 @F5@ FAM
+        1 HUSB @I7@
+        1 WIFE @I12@
+        1 CHIL @I13@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 @F6@ FAM
+        1 HUSB @I11@
+        1 WIFE @I14@
+        1 CHIL @I15@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 @F7@ FAM
+        1 HUSB @I17@
+        1 WIFE @I9@
+        1 CHIL @I16@
+        1 _CURRENT N
+        1 _PRIMARY N
+        0 TRLR
+        '''
+
+        expectedOutput = "ERROR: US22: INDI/FAM @I1@: ID @I1@ is not unique (multiple individuals/families share this ID) - further checks may be inaccurate"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+        expectedOutput = "ERROR: US22: INDI/FAM @F1@: ID @F1@ is not unique (multiple individuals/families share this ID) - further checks may be inaccurate"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+    def testUS22_5(self):
+        # Multiple duplicate individual and family IDs - errors should occur
+        testFile = '''
+        0 HEAD
+        0 @I1@ INDI
+        1 NAME John
+        2 GIVN John
+        1 SEX M
+        1 FAMS @F1@
+        0 @I1@ INDI
+        1 NAME Jane
+        2 GIVN Jane
+        1 SEX F
+        1 FAMS @F1@
+        0 @I3@ INDI
+        1 NAME Barry
+        2 GIVN Barry
+        1 SEX M
+        1 FAMS @F1@
+        1 FAMC @F1@
+        0 @I4@ INDI
+        1 NAME Beth
+        2 GIVN Beth
+        1 SEX F
+        1 DEAT Y
+        1 FAMS @F3@
+        1 FAMC @F1@
+        0 @I4@ INDI
+        1 NAME Bob
+        2 GIVN Bob
+        1 SEX M
+        1 FAMC @F1@
+        0 @I1@ INDI
+        1 NAME Brandi
+        2 GIVN Brandi
+        1 SEX F
+        1 FAMS @F1@
+        0 @I7@ INDI
+        1 NAME Braxton
+        2 GIVN Braxton
+        1 SEX M
+        1 FAMS @F3@
+        1 FAMS @F5@
+        0 @I8@ INDI
+        1 NAME Marty
+        2 GIVN Marty
+        1 SEX M
+        1 FAMC @F1@
+        0 @I7@ INDI
+        1 NAME Mary
+        2 GIVN Mary
+        1 SEX F
+        1 FAMS @F5@
+        1 FAMC @F1@
+        0 @I10@ INDI
+        1 NAME Mandy
+        2 GIVN Mandy
+        1 SEX F
+        1 FAMC @F3@
+        0 @I11@ INDI
+        1 NAME Mike
+        2 GIVN Mike
+        1 SEX M
+        1 FAMS @F3@
+        1 FAMC @F3@
+        0 @I12@ INDI
+        1 NAME Bwanda
+        2 GIVN Bwanda
+        1 SEX F
+        1 FAMS @F5@
+        0 @I13@ INDI
+        1 NAME Mitchell
+        2 GIVN Mitchell
+        1 SEX M
+        1 FAMC @F5@
+        0 @I12@ INDI
+        1 NAME Michelle
+        2 GIVN Michelle
+        1 SEX F
+        1 FAMS @F3@
+        0 @I15@ INDI
+        1 NAME Frank
+        2 GIVN Frank
+        1 SEX M
+        1 FAMC @F3@
+        0 @I16@ INDI
+        1 NAME Francine
+        2 GIVN Francine
+        1 SEX F
+        1 FAMC @F5@
+        0 @I17@ INDI
+        1 NAME Mark
+        2 GIVN Mark
+        1 SEX M
+        1 FAMS @F5@
+        0 @F1@ FAM
+        1 HUSB @I1@
+        1 WIFE @I1@
+        1 CHIL @I3@
+        1 CHIL @I4@
+        1 CHIL @I4@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 @F1@ FAM
+        1 HUSB @I3@
+        1 WIFE @I1@
+        1 CHIL @I8@
+        1 CHIL @I7@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 @F3@ FAM
+        1 HUSB @I7@
+        1 WIFE @I4@
+        1 CHIL @I10@
+        1 CHIL @I11@
+        1 MARR
+        1 DIV
+        1 _CURRENT N
+        1 _PRIMARY N
+        0 @F5@ FAM
+        1 HUSB @I7@
+        1 WIFE @I12@
+        1 CHIL @I13@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 @F3@ FAM
+        1 HUSB @I11@
+        1 WIFE @I12@
+        1 CHIL @I15@
+        1 _CURRENT Y
+        1 _PRIMARY Y
+        0 @F5@ FAM
+        1 HUSB @I17@
+        1 WIFE @I7@
+        1 CHIL @I16@
+        1 _CURRENT N
+        1 _PRIMARY N
+        0 TRLR
+        '''
+
+        expectedOutput = "ERROR: US22: INDI/FAM @I1@: ID @I1@ is not unique (multiple individuals/families share this ID) - further checks may be inaccurate"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+        expectedOutput = "ERROR: US22: INDI/FAM @I4@: ID @I4@ is not unique (multiple individuals/families share this ID) - further checks may be inaccurate"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+        expectedOutput = "ERROR: US22: INDI/FAM @I7@: ID @I7@ is not unique (multiple individuals/families share this ID) - further checks may be inaccurate"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+        expectedOutput = "ERROR: US22: INDI/FAM @I12@: ID @I12@ is not unique (multiple individuals/families share this ID) - further checks may be inaccurate"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+        expectedOutput = "ERROR: US22: INDI/FAM @F1@: ID @F1@ is not unique (multiple individuals/families share this ID) - further checks may be inaccurate"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+        expectedOutput = "ERROR: US22: INDI/FAM @F3@: ID @F3@ is not unique (multiple individuals/families share this ID) - further checks may be inaccurate"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+        expectedOutput = "ERROR: US22: INDI/FAM @F5@: ID @F5@ is not unique (multiple individuals/families share this ID) - further checks may be inaccurate"
+        self.run_gedcom_test(testFile, expectedOutput, self.assertIn)
+
+
 
 class US23_tests(unittest.TestCase):
     run_gedcom_test = run_test
