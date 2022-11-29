@@ -20,7 +20,7 @@ stories = {
     "US19": "",
     "US20": "",
     "US21": "ANOMALY: {story}: INDI {id}: Unexpected gender {gender} for role {role}",
-    "US22": "",
-    "US23": "",
-    "US24": ""
+    "US22": "ERROR: {story}: INDI/FAM {id}: ID {id} is not unique (multiple individuals/families share this ID) - further checks may be inaccurate",
+    "US23": "ANOMALY: {story}: INDI {id}: Individuals {id} and {id2} have the same name and birthdate",
+    "US24": "ANOMALY: {story}: FAM {id}: Families {id} and {id2} have the same spouses and marriage date",
 }

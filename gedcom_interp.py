@@ -209,10 +209,12 @@ def getDecendents(i, indiList, famList):
         for f in indi["FAMS"]:
             fam = findFam(f, famList)
             for c in fam["CHIL"]:
+                if (c == i): # If child is the same as the individual, skip since this means there is a duplicate ID
+                    continue
                 decendents.append(c)
                 decendents += getDecendents(c, indiList, famList)
     return decendents
-    
+
 def displayAnomaly(storyKey, **kwargs):
     '''prints a formatted error/anomaly message'''
     anomalyString = stories[storyKey]
@@ -270,8 +272,8 @@ def processFile(filename):
         famList = [makeFamAssumptions(f, indiList) for f in famList]
         return (indiList, famList)
 
-
 def checkIndiAnomalies(indiList, famList):
+    index = 0
     # Loop through each individual and family to check for errors/anomalies
     for i in indiList:
 
@@ -348,14 +350,18 @@ def checkIndiAnomalies(indiList, famList):
 
         # US20 - Aunts and uncles
 
-        # US22 - Unique IDs
-
         # US23 - Unique name and birth date
+        for x in range(index+1,len(indiList)-1):
+            j = indiList[x]
+            if(i["NAME"] == j["NAME"] and i["BIRT DATE"] == j["BIRT DATE"]):
+                displayAnomaly("US23", id=i["INDI"], id2=j["INDI"]) 
 
         # US24 - Unique families by spouses
 
+        index+=1
 
 def checkFamAnomalies(indiList, famList):
+    indexf = 0
     for f in famList:
 
         # US01 - Dates before current date
@@ -432,8 +438,8 @@ def checkFamAnomalies(indiList, famList):
                     c2birthstr = findIndi(c2, indiList)["BIRT DATE"]
                     c2birth = gedStringToDatetime(c2birthstr)
                     if (c1birthstr != "NA" and c2birthstr != "NA"):
-                        range = (c1birth + relativedelta(days=2), c1birth + relativedelta(months=8))
-                        if (datetimeWithinRange(c2birth, range)):
+                        ranged = (c1birth + relativedelta(days=2), c1birth + relativedelta(months=8))
+                        if (datetimeWithinRange(c2birth, ranged)):
                             displayAnomaly("US13", id=c1, sibID=c2, bDate=c1birthstr, siblingBirthdate=c2birthstr)
 
         # US14 - Multiple births <= 5
@@ -520,11 +526,18 @@ def checkFamAnomalies(indiList, famList):
                 displayAnomaly("US21", id=f["WIFE"],
                                gender=gender, role="WIFE")
 
-        # US22 - Unique IDs
-
         # US23 - Unique name and birth date
-
+        
         # US24 - Unique families by spouses
+        for y in range(indexf+1,len(famList)):
+            j = famList[y] 
+            if(f["HUSB NAME"] == j["HUSB NAME"] and f["WIFE NAME"] == j["WIFE NAME"] and f["MARR DATE"] == j["MARR DATE"]):
+                displayAnomaly("US24", id=f["FAM"], id2=j["FAM"]) 
+
+        indexf+=1
+
+
+
 
 
 def main():
@@ -537,6 +550,30 @@ def main():
     # Print out the individuals and families
     print(dictListToPrettyTable(sorted(indiList, key=lambda x: x["INDI"])))
     print(dictListToPrettyTable(sorted(fam, key=lambda x: x["FAM"])))
+    # US22 - Unique Individual IDs
+    IndiIdList = []
+    dupIDs = []
+    for i in indiList:
+        if i["INDI"] in IndiIdList:
+            dupIDs.append(i["INDI"])
+            continue
+        IndiIdList.append(i["INDI"])
+
+    if len(dupIDs) > 0:
+        for ID in dupIDs:
+            displayAnomaly("US22", id=ID)
+    # US22 - Unique Family IDs
+    famIdList = []
+    dupIDs = []
+    for f in fam:
+        if f["FAM"] in famIdList:
+            dupIDs.append(f["FAM"])
+            continue
+        famIdList.append(f["FAM"])
+
+    if len(dupIDs) > 0:
+        for ID in dupIDs:
+            displayAnomaly("US22", id=ID)
     # Check for errors and anomalies for the individuals and families
     checkIndiAnomalies(indiList, fam)
     checkFamAnomalies(indiList, fam)
